@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
-
 import '../controllers/home_controller.dart';
+import 'package:platform_maps_flutter/platform_maps_flutter.dart';
 
 class HomeView extends GetView<HomeController> {
   @override
@@ -60,52 +60,52 @@ class _HomeState extends State<Home> {
     });
   }
 
-  addMarker() {
-    setState(() {
-      markers = Set.from([
-        Marker(
-          icon: customIcon,
-          markerId: MarkerId('marker_123'),
-          position: LatLng(47.6, 8.8796),
-          consumeTapEvents: true,
-          infoWindow: InfoWindow(
-            title: 'PlatformMarker',
-            snippet: "Hi I'm a Platform Marker",
-          ),
-          onTap: () {
-            userMarker(context, 'assets/user.png');
-            print("Marker tapped");
-          },
-        ),
-        Marker(
-          icon: customIcon,
-          markerId: MarkerId('marker_14'),
-          position: LatLng(47.5999254766742, 8.880098685622215),
-          consumeTapEvents: true,
-          infoWindow: InfoWindow(
-            title: 'PlatformMarker',
-            snippet: "Hi I'm a Platform Marker",
-          ),
-          onTap: () {
-            print("Marker tapped");
-          },
-        ),
-        Marker(
-          icon: customIcon,
-          markerId: MarkerId('marker_12'),
-          position: LatLng(47.60040882880962, 8.879983685910702),
-          consumeTapEvents: true,
-          infoWindow: InfoWindow(
-            title: 'PlatformMarker',
-            snippet: "Hi I'm a Platform Marker",
-          ),
-          onTap: () {
-            print("Marker tapped");
-          },
-        )
-      ]);
-    });
-  }
+  // addMarker() {
+  //   setState(() {
+  //     markers = Set.from([
+  //       Marker(
+  //         icon: customIcon,
+  //         markerId: MarkerId('marker_123'),
+  //         position: LatLng(47.6, 8.8796),
+  //         consumeTapEvents: true,
+  //         infoWindow: InfoWindow(
+  //           title: 'PlatformMarker',
+  //           snippet: "Hi I'm a Platform Marker",
+  //         ),
+  //         onTap: () {
+  //           userMarker(context, 'assets/user.png');
+  //           print("Marker tapped");
+  //         },
+  //       ),
+  //       Marker(
+  //         icon: customIcon,
+  //         markerId: MarkerId('marker_14'),
+  //         position: LatLng(47.5999254766742, 8.880098685622215),
+  //         consumeTapEvents: true,
+  //         infoWindow: InfoWindow(
+  //           title: 'PlatformMarker',
+  //           snippet: "Hi I'm a Platform Marker",
+  //         ),
+  //         onTap: () {
+  //           print("Marker tapped");
+  //         },
+  //       ),
+  //       Marker(
+  //         icon: customIcon,
+  //         markerId: MarkerId('marker_12'),
+  //         position: LatLng(47.60040882880962, 8.879983685910702),
+  //         consumeTapEvents: true,
+  //         infoWindow: InfoWindow(
+  //           title: 'PlatformMarker',
+  //           snippet: "Hi I'm a Platform Marker",
+  //         ),
+  //         onTap: () {
+  //           print("Marker tapped");
+  //         },
+  //       )
+  //     ]);
+  //   });
+  // }
 
   @override
   void initState() {
@@ -176,7 +176,7 @@ class _HomeState extends State<Home> {
                 onMapCreated: (controller) {
                   Future.delayed(Duration(seconds: 2)).then(
                     (_) {
-                      addMarker();
+                      //  addMarker();
                       controller.animateCamera(
                         CameraUpdate.newCameraPosition(
                           const CameraPosition(
