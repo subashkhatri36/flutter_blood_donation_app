@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 
 import '../../../Widgets/CustomButton.dart';
 import '../../../Widgets/custome_text_field.dart';
-import '../../home/views/home_view.dart';
 
 final largeText = TextStyle(fontSize: 20);
 final mediumText = TextStyle(fontSize: 16);

@@ -113,6 +113,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.0.0"
+  easy_rich_text:
+    dependency: "direct main"
+    description:
+      name: easy_rich_text
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.5.4"
   fake_async:
     dependency: transitive
     description:

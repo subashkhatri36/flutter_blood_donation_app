@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 
 class UserModel {
+  String photoUrl;
   final String userId;
   final String username;
   final String userAddress;
@@ -23,6 +24,7 @@ class UserModel {
     @required this.phoneNo,
     @required this.email,
     @required this.active,
+    this.photoUrl
   });
 
   @override
@@ -65,6 +67,7 @@ class UserModel {
       'phoneNo': phoneNo,
       'email': email,
       'active': active,
+      'photoUrl':photoUrl
     };
   }
 
@@ -79,6 +82,7 @@ class UserModel {
       phoneNo: map['phoneNo'],
       email: map['email'],
       active: map['active'],
+      photoUrl: map['photoUrl'],
     );
   }
 

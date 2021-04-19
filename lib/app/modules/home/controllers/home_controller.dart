@@ -2,7 +2,7 @@ import 'package:get/get.dart';
 
 class HomeController extends GetxController {
   //TODO: Implement HomeController
-  var selectedIndex = 1.obs;
+  var selectedIndex = 0.obs;
   final count = 0.obs;
   @override
   void onInit() {

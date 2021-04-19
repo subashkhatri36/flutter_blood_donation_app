@@ -1,8 +1,8 @@
 import 'package:get/get.dart';
 
-class RequestController extends GetxController {
-  //TODO: Implement RequestController
-var isSwitched=false.obs;
+class DonorDetailsController extends GetxController {
+  //TODO: Implement DonorDetailsController
+
   final count = 0.obs;
   @override
   void onInit() {
