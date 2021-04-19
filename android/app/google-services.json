@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "847192191128",
+    "project_id": "blooddonationapp-311205",
+    "storage_bucket": "blooddonationapp-311205.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:847192191128:android:24d3e169d9a394cda1e0ed",
+        "android_client_info": {
+          "package_name": "com.example.flutter_blood_donation_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "847192191128-3eq4qabsp85c9dgc3eo3840etl2f0n8o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCPFDOoCl5wWdGEc5Ya3jMCmEA_krmLnZA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "847192191128-3eq4qabsp85c9dgc3eo3840etl2f0n8o.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

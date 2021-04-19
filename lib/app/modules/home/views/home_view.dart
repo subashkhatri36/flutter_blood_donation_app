@@ -1,236 +1,184 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_blood_donation_app/app/modules/splash/views/splash_view.dart';
 
 import 'package:get/get.dart';
+
+import 'package:url_launcher/url_launcher.dart';
+
+import '../../login/views/login_view.dart';
 import '../controllers/home_controller.dart';
-import 'package:platform_maps_flutter/platform_maps_flutter.dart';
+import 'custom_map.dart';
 
 class HomeView extends GetView<HomeController> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('HomeView'),
-        centerTitle: true,
-      ),
-      body: Center(
-        child: Text(
-          'HomeView is working',
-          style: TextStyle(fontSize: 20),
-        ),
-      ),
-    );
-  }
-}
-
-class Home extends StatefulWidget {
-  @override
-  _HomeState createState() => _HomeState();
-}
-
-class _HomeState extends State<Home> {
-  final homeController = Get.put(HomeController());
-  BitmapDescriptor customIcon;
-  BitmapDescriptor userIcon;
-  Set<Marker> markers;
-  createMarker(context, image) {
-    ImageConfiguration config =
-        createLocalImageConfiguration(context, size: Size(10, 10));
-    //  ImageConfiguration configuration = createLocalImageConfiguration(context);
-    BitmapDescriptor.fromAssetImage(
-      config,
-      image,
-    ).then((icon) {
-      setState(() {
-        customIcon = icon;
-      });
-    });
+  _launchCaller(String phone) async {
+    String url = "tel:$phone";
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 
-  userMarker(context, image) {
-    ImageConfiguration config =
-        createLocalImageConfiguration(context, size: Size(10, 10));
-    //  ImageConfiguration configuration = createLocalImageConfiguration(context);
-    BitmapDescriptor.fromAssetImage(
-      config,
-      image,
-    ).then((icon) {
-      setState(() {
-        userIcon = icon;
-      });
-    });
-  }
-
-  // addMarker() {
-  //   setState(() {
-  //     markers = Set.from([
-  //       Marker(
-  //         icon: customIcon,
-  //         markerId: MarkerId('marker_123'),
-  //         position: LatLng(47.6, 8.8796),
-  //         consumeTapEvents: true,
-  //         infoWindow: InfoWindow(
-  //           title: 'PlatformMarker',
-  //           snippet: "Hi I'm a Platform Marker",
-  //         ),
-  //         onTap: () {
-  //           userMarker(context, 'assets/user.png');
-  //           print("Marker tapped");
-  //         },
-  //       ),
-  //       Marker(
-  //         icon: customIcon,
-  //         markerId: MarkerId('marker_14'),
-  //         position: LatLng(47.5999254766742, 8.880098685622215),
-  //         consumeTapEvents: true,
-  //         infoWindow: InfoWindow(
-  //           title: 'PlatformMarker',
-  //           snippet: "Hi I'm a Platform Marker",
-  //         ),
-  //         onTap: () {
-  //           print("Marker tapped");
-  //         },
-  //       ),
-  //       Marker(
-  //         icon: customIcon,
-  //         markerId: MarkerId('marker_12'),
-  //         position: LatLng(47.60040882880962, 8.879983685910702),
-  //         consumeTapEvents: true,
-  //         infoWindow: InfoWindow(
-  //           title: 'PlatformMarker',
-  //           snippet: "Hi I'm a Platform Marker",
-  //         ),
-  //         onTap: () {
-  //           print("Marker tapped");
-  //         },
-  //       )
-  //     ]);
-  //   });
-  // }
-
-  @override
-  void initState() {
-    super.initState();
-    markers = Set.from([]);
-  }
-
-  Widget buildBody() {
-    switch (homeController.selectedIndex.value) {
+  Widget buildBody(context) {
+    double height = MediaQuery.of(context).size.height;
+    switch (controller.selectedIndex.value) {
       case 0:
-        return Container(
-          child: Text('Members'),
-        );
+        return ListView.builder(
+            //padding: EdgeInsets.symmetric(horizontal:5,vertical:10),
+            shrinkWrap: true,
+            itemBuilder: (_, int i) {
+              return ListTile(
+                contentPadding: EdgeInsets.only(left: 5, right: 5),
+                title: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.grey.withOpacity(.4),
+                    ),
+                    width: double.infinity,
+                    height: 90,
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          SizedBox(width: 5),
+                          Container(
+                            decoration: BoxDecoration(
+                                image: DecorationImage(
+                                    image: NetworkImage(
+                                        'https://wallpaperaccess.com/full/2213424.jpg'),
+                                    fit: BoxFit.cover),
+                                color: Colors.grey[600],
+                                borderRadius: BorderRadius.circular(5)),
+                            height: 80,
+                            width: 80,
+                          ),
+                          SizedBox(width: 10),
+                          Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text('Lia'),
+                                Text('Location '),
+                                Text(
+                                  'AB +',
+                                  style: TextStyle(
+                                      color: Colors.red,
+                                      fontWeight: FontWeight.bold),
+                                )
+                              ]),
+                          Spacer(),
+                          Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                InkWell(
+                                  onTap: () {
+                                    Get.to(LoginView());
+                                  },
+                                  child: CircleAvatar(
+                                    radius: 11,
+                                    backgroundColor: Colors.grey,
+                                    child: CircleAvatar(
+                                        backgroundColor: Colors.grey[300],
+                                        radius: 10,
+                                        child: Icon(Icons.more_horiz,
+                                            color: Colors.grey[700], size: 18)),
+                                  ),
+                                ),
+                                InkWell(
+                                  onTap: () {
+                                    _launchCaller('123456');
+                                  },
+                                  child: CircleAvatar(
+                                      backgroundColor: Colors.green[200],
+                                      radius: 11,
+                                      child: RotatedBox(
+                                          quarterTurns: 35,
+                                          child: Icon(Icons.phone,
+                                              color: Colors.green[700],
+                                              size: 15))),
+                                )
+                              ]),
+                          SizedBox(width: 10),
+                        ])),
+              );
+            });
         break;
       case 1:
+        return Column(children: [
+          AppBar(
+              title: Text('Blood Donation', style: TextStyle(fontSize: 14)),
+              actions: [
+                Icon(Icons.add_location_alt_rounded),
+                IconButton(
+                  icon: Icon(Icons.filter_list),
+                  onPressed: () {
+                    Get.to(SplashView());
+                  },
+                )
+              ]),
+          Expanded(child: CustomMap())
+        ]);
         break;
       case 2:
+        return Container(
+            alignment: Alignment.center,
+            child: TextButton(
+              child: Text(
+                'Account',
+                style:
+                    TextStyle(color: Theme.of(context).scaffoldBackgroundColor),
+              ),
+              style: TextButton.styleFrom(backgroundColor: Colors.deepOrange),
+              onPressed: () {},
+            ));
         break;
 
       default:
+        return Text('Page not found');
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    //addMarker();
-    createMarker(context, 'assets/request.png');
-    double height = MediaQuery.of(context).size.height;
-    return Scaffold(
-      body: Column(
-        children: [
-          AppBar(title: Text('Blood Donation'), actions: [
-            Icon(Icons.add_location_alt_rounded),
-            IconButton(
-              icon: Icon(Icons.filter_list),
-              onPressed: () {},
-            )
-          ]),
-          Expanded(
-            child: Container(
-              height: height * .66,
-              child: PlatformMap(
-                initialCameraPosition: CameraPosition(
-                  target: const LatLng(47.6, 8.8796),
-                  zoom: 16.0,
-                ),
-                mapType: MapType.normal,
-                markers: markers,
-                myLocationEnabled: true,
-                myLocationButtonEnabled: true,
-                onTap: (pos) {
-                  userMarker(context, 'assets/user.png');
-                  print(pos);
-                  Marker m = Marker(
-                      markerId: MarkerId('1sfesfe'),
-                      icon: userIcon,
-                      position: pos);
-                  setState(() {
-                    markers.add(m);
-                    print(markers.length);
-                  });
-                },
-                onCameraMove: (cameraUpdate) {
-                  print('onCameraMove: $cameraUpdate');
-                  //createMarker(context);
-                },
-                compassEnabled: true,
-                onMapCreated: (controller) {
-                  Future.delayed(Duration(seconds: 2)).then(
-                    (_) {
-                      //  addMarker();
-                      controller.animateCamera(
-                        CameraUpdate.newCameraPosition(
-                          const CameraPosition(
-                            bearing: 270.0,
-                            target: LatLng(47.6, 8.8796),
-                            tilt: 30.0,
-                            zoom: 18,
-                          ),
-                        ),
-                      );
-                    },
-                  );
-                },
-              ),
+    return Obx(() => Scaffold(
+          body: buildBody(context),
+          bottomNavigationBar: BottomAppBar(
+            shape: CircularNotchedRectangle(),
+            notchMargin: 6,
+            clipBehavior: Clip.antiAlias,
+            child: BottomNavigationBar(
+              onTap: (v) {
+                controller.selectedIndex.value = v;
+              },
+              selectedItemColor: Theme.of(context).primaryColor,
+              currentIndex: controller.selectedIndex.value,
+              items: [
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.card_membership), label: 'Members'),
+                BottomNavigationBarItem(icon: Icon(Icons.clear), label: 'map'),
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.person), label: 'Account'),
+              ],
             ),
-          )
-        ],
-      ),
-      bottomNavigationBar: BottomAppBar(
-        shape: CircularNotchedRectangle(),
-        notchMargin: 6,
-        clipBehavior: Clip.antiAlias,
-        child: BottomNavigationBar(
-          onTap: (v) {
-            homeController.selectedIndex.value = v;
-          },
-          selectedItemColor: Theme.of(context).primaryColor,
-          currentIndex: homeController.selectedIndex.value,
-          items: [
-            BottomNavigationBarItem(
-                icon: Icon(Icons.card_membership), label: 'Requests'),
-            BottomNavigationBarItem(icon: Icon(Icons.clear), label: 'map'),
-            BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Account'),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: homeController.selectedIndex.value == 1
-            ? Theme.of(context).scaffoldBackgroundColor
-            : Colors.grey[300],
-        onPressed: () {
-          homeController.selectedIndex.value = 1;
-        },
-        child: CircleAvatar(
-          backgroundColor: homeController.selectedIndex.value == 1
-              ? Theme.of(context).primaryColor
-              : Colors.grey,
-          child: Icon(Icons.map_sharp,
-              color: homeController.selectedIndex.value == 1
-                  ? Colors.white
-                  : Colors.white),
-        ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-    );
+          ),
+          floatingActionButton: FloatingActionButton(
+            backgroundColor: controller.selectedIndex.value == 1
+                ? Theme.of(context).scaffoldBackgroundColor
+                : Colors.grey[300],
+            onPressed: () {
+              controller.selectedIndex.value = 1;
+            },
+            child: CircleAvatar(
+              backgroundColor: controller.selectedIndex.value == 1
+                  ? Theme.of(context).primaryColor
+                  : Colors.grey,
+              child: Icon(Icons.map_sharp,
+                  color: controller.selectedIndex.value == 1
+                      ? Colors.white
+                      : Colors.white),
+            ),
+          ),
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerDocked,
+        ));
   }
 }

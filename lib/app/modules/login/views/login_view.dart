@@ -10,12 +10,10 @@ class LoginView extends GetView<LoginController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: SingleChildScrollView(
-      child: Container(
-        height: MediaQuery.of(context).size.height,
-        child: Column(
-            children: [LoginHeaderWidget(), Expanded(child: LogInBody())]),
-      ),
+        body: Container(
+      height: MediaQuery.of(context).size.height,
+      child:
+          Column(children: [LoginHeaderWidget(), Expanded(child: LogInBody())]),
     ));
   }
 }

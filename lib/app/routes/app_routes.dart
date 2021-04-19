@@ -6,6 +6,9 @@ abstract class Routes {
   static const LOGIN = _Paths.LOGIN;
   static const CATEGORY = _Paths.CATEGORY;
   static const BLOODGROUP = _Paths.BLOODGROUP;
+  static const SPLASH = _Paths.SPLASH;
+  static const REQUEST = _Paths.REQUEST;
+  static const MYHISTORY = _Paths.MYHISTORY;
 }
 
 abstract class _Paths {
@@ -13,4 +16,7 @@ abstract class _Paths {
   static const LOGIN = '/login';
   static const CATEGORY = '/category';
   static const BLOODGROUP = '/bloodgroup';
+  static const SPLASH = '/splash';
+  static const REQUEST = '/request';
+  static const MYHISTORY = '/myhistory';
 }

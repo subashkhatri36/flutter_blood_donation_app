@@ -1,10 +1,9 @@
 import 'package:get/get.dart';
 
-class HomeController extends GetxController {
-  // RxInt selectedIndex = 0.obs;
+class MyhistoryController extends GetxController {
+  //TODO: Implement MyhistoryController
 
-  var selectedIndex = 1.obs;
-
+  final count = 0.obs;
   @override
   void onInit() {
     super.onInit();
@@ -17,4 +16,5 @@ class HomeController extends GetxController {
 
   @override
   void onClose() {}
+  void increment() => count.value++;
 }

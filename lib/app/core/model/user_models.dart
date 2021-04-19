@@ -7,22 +7,24 @@ class UserModel {
   final String username;
   final String userAddress;
   final double latitude;
-  final double longitute;
+  final double longitude;
   final String bloodgroup;
   final String phoneNo;
   final String email;
   final bool active;
+  final String password;
 
   UserModel({
     @required this.userId,
     @required this.username,
     @required this.userAddress,
     @required this.latitude,
-    @required this.longitute,
+    @required this.longitude,
     @required this.bloodgroup,
     @required this.phoneNo,
     @required this.email,
     @required this.active,
+    this.password,
   });
 
   @override
@@ -34,10 +36,11 @@ class UserModel {
         other.username == username &&
         other.userAddress == userAddress &&
         other.latitude == latitude &&
-        other.longitute == longitute &&
+        other.longitude == longitude &&
         other.bloodgroup == bloodgroup &&
         other.phoneNo == phoneNo &&
         other.email == email &&
+        other.password == password &&
         other.active == active;
   }
 
@@ -47,10 +50,11 @@ class UserModel {
         username.hashCode ^
         userAddress.hashCode ^
         latitude.hashCode ^
-        longitute.hashCode ^
+        longitude.hashCode ^
         bloodgroup.hashCode ^
         phoneNo.hashCode ^
         email.hashCode ^
+        password.hashCode ^
         active.hashCode;
   }
 
@@ -60,10 +64,11 @@ class UserModel {
       'username': username,
       'userAddress': userAddress,
       'latitude': latitude,
-      'longitute': longitute,
+      'longitute': longitude,
       'bloodgroup': bloodgroup,
       'phoneNo': phoneNo,
       'email': email,
+      'password': password,
       'active': active,
     };
   }
@@ -74,10 +79,11 @@ class UserModel {
       username: map['username'],
       userAddress: map['userAddress'],
       latitude: map['latitude'],
-      longitute: map['longitute'],
+      longitude: map['longitute'],
       bloodgroup: map['bloodgroup'],
       phoneNo: map['phoneNo'],
       email: map['email'],
+      password: map['password'],
       active: map['active'],
     );
   }
