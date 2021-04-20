@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_blood_donation_app/app/constant/defaults.dart';
 
-import '../modules/login/views/registration_widget.dart';
 
 class CustomButton extends StatelessWidget {
   // final TextEditingController controller;

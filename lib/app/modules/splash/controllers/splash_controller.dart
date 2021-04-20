@@ -1,16 +1,13 @@
 import 'dart:async';
 
+import 'package:flutter_blood_donation_app/app/constant/const.dart';
+import 'package:flutter_blood_donation_app/app/modules/home/bindings/home_binding.dart';
+import 'package:flutter_blood_donation_app/app/modules/home/views/home_view.dart';
+import 'package:flutter_blood_donation_app/app/modules/login/bindings/login_binding.dart';
+import 'package:flutter_blood_donation_app/app/modules/login/views/login_view.dart';
 import 'package:get/get.dart';
 
-import '../../home/bindings/home_binding.dart';
-import '../../home/views/home_view.dart';
-import '../../login/bindings/login_binding.dart';
-import '../../login/views/login_view.dart';
-
 class SplashController extends GetxController {
-  //TODO: Implement SplashController
-
-  final count = 0.obs;
   var height = 0.0.obs;
   @override
   void onInit() {
@@ -25,16 +22,16 @@ class SplashController extends GetxController {
 
   @override
   void onClose() {}
-  void increment() => count.value++;
 
   loadPage() {
-    var _duration = Duration(seconds: 0);
-
+    var _duration = Duration(seconds: 1);
     return Timer(_duration, navigate);
   }
 
   void navigate() {
-     Get.off(() => LoginView(),binding: LoginBinding());
-   // Get.off(() => HomeView(),binding: HomeBinding());
+    if (auth.currentUser != null)
+      Get.off(() => HomeView(), binding: HomeBinding());
+    else
+      Get.off(() => LoginView(), binding: LoginBinding());
   }
 }

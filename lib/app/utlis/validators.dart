@@ -14,7 +14,9 @@ String validatePassword({@required String string}) {
 
 String confirmPassword(
     {@required String password, @required String cPassword}) {
-  if (password == cPassword) {
+  if (password.isEmpty) {
+    return "* Required";
+  } else if (password == cPassword) {
     return null;
   } else
     return "Passwords do not match.";

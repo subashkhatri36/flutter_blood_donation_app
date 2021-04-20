@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_blood_donation_app/app/Widgets/CustomButton.dart';
+import 'package:flutter_blood_donation_app/app/Widgets/custome_text_field.dart';
+import 'package:flutter_blood_donation_app/app/constant/defaults.dart';
+import 'package:flutter_blood_donation_app/app/modules/login/controllers/login_controller.dart';
+import 'package:flutter_blood_donation_app/app/utlis/validators.dart';
 import 'package:get/get.dart';
 
 import '../../../Widgets/CustomButton.dart';
@@ -9,100 +14,77 @@ final mediumText = TextStyle(fontSize: 16);
 final smallText = TextStyle(fontSize: 12);
 
 class RegistrationWidget extends StatelessWidget {
-  final _formKey = GlobalKey<FormState>();
-
   @override
   Widget build(BuildContext context) {
-    // double height = MediaQuery.of(context).size.height;
+    final loginController = Get.find<LoginController>();
     return ListView(
-      // mainAxisAlignment: MainAxisAlignment.center,
+      padding: EdgeInsets.all(Defaults.paddingnormal),
       children: [
-        // Container(
-        //   decoration: BoxDecoration(
-        //       color: Colors.deepOrange,
-        //       borderRadius:
-        //           BorderRadius.only(bottomRight: Radius.circular(60))),
-        //   height: height * .3,
-        //   width: double.infinity,
-        //   child: Stack(alignment: Alignment.center, children: [
-        //     CircleAvatar(
-        //       backgroundColor: Colors.white,
-        //       radius: 35,
-        //       child: CircleAvatar(
-        //         radius: 34,
-        //         backgroundColor: Theme.of(context).primaryColor,
-        //         child: Container(
-        //           height: 30,
-        //           width: 30,
-        //           decoration: BoxDecoration(
-        //             //border: Border.all(color: Colors.white),
-        //             borderRadius: BorderRadius.circular(40),
-        //             image: DecorationImage(
-        //               image: AssetImage(
-        //                 'assets/images/request.png',
-        //               ),
-        //             ),
-        //           ),
-        //         ),
-        //       ),
-        //     ),
-        //     Positioned(
-        //         right: 30,
-        //         bottom: 30,
-        //         child: Text(
-        //           'Register',
-        //           style: mediumText.copyWith(
-        //               color: Colors.white, fontWeight: FontWeight.w600),
-        //         ))
-        //   ]),
-        // ),
-        // Expanded(
-        //   child: Container(),
-        // ),
-        Padding(
-          padding: EdgeInsets.all(10),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(height: 16),
-                CustomTextField(
-                  round: true,
-                  obscureText: false,
-                  hintText: 'Fullname',
-                  prefixIcon: Icons.email,
-                ),
-                SizedBox(height: 16),
-                CustomTextField(
-                  round: true,
-                  obscureText: false,
-                  hintText: 'Email',
-                  prefixIcon: Icons.email,
-                ),
-                SizedBox(height: 16),
-                CustomTextField(
-                  round: true,
-                  obscureText: false,
-                  hintText: 'Phone',
-                  prefixIcon: Icons.email,
-                ),
-                SizedBox(height: 16),
-                CustomTextField(
-                  round: true,
-                  obscureText: true,
-                  hintText: 'Password',
-                  prefixIcon: Icons.lock,
-                ),
-                SizedBox(height: 16),
-                CustomTextField(
-                  round: true,
-                  obscureText: true,
-                  hintText: 'Confirm Password',
-                  prefixIcon: Icons.lock,
-                ),
-              ],
-            ),
+        Form(
+          key: loginController.signupformKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: Defaults.paddingmiddle),
+              CustomTextField(
+                round: true,
+                obscureText: false,
+                hintText: 'Fullname',
+                controller: loginController.nameController,
+                prefixIcon: Icons.account_box,
+                validator: (value) =>
+                    validateMinLength(string: value, length: 3),
+              ),
+              SizedBox(height: Defaults.paddingmiddle),
+              CustomTextField(
+                round: true,
+                obscureText: false,
+                hintText: 'Email',
+                prefixIcon: Icons.email,
+                controller: loginController.emailController,
+                validator: (value) => validateEmail(string: value),
+              ),
+              SizedBox(height: Defaults.paddingmiddle),
+              CustomTextField(
+                round: true,
+                obscureText: false,
+                hintText: 'Phone',
+                prefixIcon: Icons.phone,
+                controller: loginController.phoneController,
+                validator: (value) =>
+                    validateMinMaxLength(string: value, minLegth: 10),
+              ),
+              SizedBox(height: Defaults.paddingmiddle),
+              CustomTextField(
+                round: true,
+                obscureText: false,
+                hintText: 'Address',
+                controller: loginController.addressController,
+                prefixIcon: Icons.location_on,
+                validator: (value) =>
+                    validateMinLength(string: value, length: 3),
+              ),
+              SizedBox(height: Defaults.paddingmiddle),
+              CustomTextField(
+                round: true,
+                obscureText: true,
+                hintText: 'Password',
+                prefixIcon: Icons.lock,
+                controller: loginController.passwordController,
+                validator: (value) => validatePassword(string: value),
+              ),
+              SizedBox(height: 16),
+              CustomTextField(
+                round: true,
+                obscureText: true,
+                hintText: 'Confirm Password',
+                prefixIcon: Icons.lock,
+                controller: loginController.rconformController,
+                validator: (value) => confirmPassword(
+                    password: loginController.passwordController.text,
+                    cPassword: loginController.rconformController.text),
+              ),
+            ],
           ),
         ),
         SizedBox(height: 10),
@@ -114,7 +96,10 @@ class RegistrationWidget extends StatelessWidget {
             label: 'REGISTER',
             labelColor: Colors.white,
             onPressed: () {
-              Get.offNamed('/home');
+              if (loginController.signupformKey.currentState.validate()) {
+                loginController.register();
+                loginController.clearController();
+              }
             },
           ),
         ),
@@ -124,16 +109,21 @@ class RegistrationWidget extends StatelessWidget {
             Text("Already hava account "),
             InkWell(
               onTap: () {
-                // authController.islogin.value = true;
+                if (loginController.currentpage.value == 0) {
+                  loginController.currentpage.value = 1;
+                } else {
+                  loginController.currentpage.value = 0;
+                }
+                loginController.jumppage(context);
               },
               child: Text(" Login",
-                  style: smallText.copyWith(
+                  style: TextStyle(
                       fontWeight: FontWeight.bold,
                       color: Theme.of(context).primaryColor)),
             )
           ],
         ),
-        SizedBox(height: 10),
+        SizedBox(height: Defaults.paddingnormal),
       ],
     );
   }

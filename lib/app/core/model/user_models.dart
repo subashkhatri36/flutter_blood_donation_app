@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 
 class UserModel {
   String photoUrl;
-  final String userId;
+   String userId;
   final String username;
   final String userAddress;
   final double latitude;
@@ -13,9 +13,10 @@ class UserModel {
   final String phoneNo;
   final String email;
   final bool active;
+   String password;
 
   UserModel({
-    @required this.userId,
+    this.userId,
     @required this.username,
     @required this.userAddress,
     @required this.latitude,
@@ -40,6 +41,7 @@ class UserModel {
         other.bloodgroup == bloodgroup &&
         other.phoneNo == phoneNo &&
         other.email == email &&
+        other.password == password &&
         other.active == active;
   }
 
@@ -53,6 +55,7 @@ class UserModel {
         bloodgroup.hashCode ^
         phoneNo.hashCode ^
         email.hashCode ^
+        password.hashCode ^
         active.hashCode;
   }
 
@@ -66,6 +69,7 @@ class UserModel {
       'bloodgroup': bloodgroup,
       'phoneNo': phoneNo,
       'email': email,
+      'password': password,
       'active': active,
       'photoUrl':photoUrl
     };
@@ -81,6 +85,7 @@ class UserModel {
       bloodgroup: map['bloodgroup'],
       phoneNo: map['phoneNo'],
       email: map['email'],
+ 
       active: map['active'],
       photoUrl: map['photoUrl'],
     );
