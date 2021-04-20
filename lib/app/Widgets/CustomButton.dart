@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_blood_donation_app/app/constant/defaults.dart';
 
 class CustomButton extends StatelessWidget {
   // final TextEditingController controller;
@@ -7,7 +6,8 @@ class CustomButton extends StatelessWidget {
   final Color btnColor;
   final VoidCallback onPressed;
   final Color labelColor;
-  final int borderRadius;
+  final double borderRadius;
+
   const CustomButton({
     Key key,
     this.label,
@@ -22,12 +22,15 @@ class CustomButton extends StatelessWidget {
       width: double.infinity,
       child: TextButton(
         onPressed: onPressed,
-        child: Text(label),
+        child: Text(
+          label,
+          style: TextStyle(color: labelColor),
+        ),
         style: TextButton.styleFrom(
-            primary: Theme.of(context).accentColor,
-            backgroundColor: Theme.of(context).primaryColor,
+            //  primary: labelColor,
+            backgroundColor: btnColor,
             shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(Defaults.paddingbig))),
+                borderRadius: BorderRadius.circular(borderRadius))),
       ),
     );
   }

@@ -22,12 +22,19 @@ class SplashView extends GetView {
         children: [
           Expanded(child: Container()),
           CircleAvatar(
-            radius: 73,
+            radius: 63,
             backgroundColor: Colors.white,
             child: CircleAvatar(
-                radius: 70,
-                backgroundImage: AssetImage('assets/images/blooddonation.png'),
-                child: Container()),
+              backgroundColor: Colors.red.shade900,
+              radius: 60,
+              child: RotatedBox(
+                quarterTurns: 90,
+                child: Image.asset(
+                  'assets/images/request.png',
+                  fit: BoxFit.contain,
+                ),
+              ),
+            ),
           ),
           Expanded(child: Container()),
           Padding(

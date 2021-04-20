@@ -17,18 +17,12 @@ class Authentication implements AuthenticationRepo {
       String email, String password) async {
     try {
       // _getCurrentLocation();
-      String id = '';
+
       bool complete = false;
       await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password)
-          .then((value) => id = value.user.uid)
-          .whenComplete(() async {
-        if (id.isNotEmpty) {
-          await FirebaseFirestore.instance.collection('User').doc(id).update({
-            'active': true,
-          }).whenComplete(() => complete = true);
-        }
-      });
+          .whenComplete(() => complete = true);
+
       if (complete) {
         return right('Successfully Logged In');
       } else {
@@ -50,29 +44,37 @@ class Authentication implements AuthenticationRepo {
 
       String id = '';
       bool complete = false;
-      await FirebaseAuth.instance
+      UserCredential userreg = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(
-              email: model.email, password: model.password)
-          .then((value) => id = value.user.uid)
-          .whenComplete(() async {
-        if (id.isNotEmpty) {
-          Map<String, dynamic> userData = {
-            'userId': id,
-            'username': model.username,
-            'userAddress': '',
-            'latitude': lat,
-            'longitute': logi,
-            'bloodgroup': '',
-            'phoneNo': model.phoneNo,
-            'email': model.username,
-            'active': true,
-          };
-          await FirebaseFirestore.instance
-              .collection('User')
-              .add(userData)
-              .whenComplete(() => complete = true);
-        }
-      });
+              email: model.email, password: model.password);
+
+      if (userreg != null) {
+        Map<String, dynamic> userData = {
+          'userId': id,
+          'username': model.username,
+          'userAddress': model.userAddress,
+          'onestar': model.onestar,
+          'twostar': model.twostar,
+          'threestar': model.threestar,
+          'fourstar': model.fourstar,
+          'fivestar': model.fivestar,
+          'average': model.average,
+          'candonate': model.candonate,
+          'latitude': lat,
+          'longitute': logi,
+          'bloodgroup': '',
+          'phoneNo': model.phoneNo,
+          'email': model.email,
+          'password': model.password,
+          'active': model.active
+        };
+        await FirebaseFirestore.instance
+            .collection('User')
+            .doc(userreg.user.uid)
+            .set(userData)
+            .whenComplete(() => complete = true);
+      }
+
       if (complete) {
         return right('Successfully Register ');
       } else {

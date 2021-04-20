@@ -1,9 +1,13 @@
 import 'package:get/get.dart';
 
+import 'package:flutter_blood_donation_app/app/modules/account/bindings/account_binding.dart';
+import 'package:flutter_blood_donation_app/app/modules/account/views/account_view.dart';
 import 'package:flutter_blood_donation_app/app/modules/bloodgroup/bindings/bloodgroup_binding.dart';
 import 'package:flutter_blood_donation_app/app/modules/bloodgroup/views/bloodgroup_view.dart';
 import 'package:flutter_blood_donation_app/app/modules/category/bindings/category_binding.dart';
 import 'package:flutter_blood_donation_app/app/modules/category/views/category_view.dart';
+import 'package:flutter_blood_donation_app/app/modules/donor_details/bindings/donor_details_binding.dart';
+import 'package:flutter_blood_donation_app/app/modules/donor_details/views/donor_details_view.dart';
 import 'package:flutter_blood_donation_app/app/modules/home/bindings/home_binding.dart';
 import 'package:flutter_blood_donation_app/app/modules/home/views/home_view.dart';
 import 'package:flutter_blood_donation_app/app/modules/login/bindings/login_binding.dart';
@@ -55,6 +59,16 @@ class AppPages {
       name: _Paths.MYHISTORY,
       page: () => MyhistoryView(),
       binding: MyhistoryBinding(),
+    ),
+    GetPage(
+      name: _Paths.DONOR_DETAILS,
+      page: () => DonorDetailsView(),
+      binding: DonorDetailsBinding(),
+    ),
+    GetPage(
+      name: _Paths.ACCOUNT,
+      page: () => AccountView(),
+      binding: AccountBinding(),
     ),
   ];
 }

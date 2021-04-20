@@ -4,6 +4,11 @@ import 'package:platform_maps_flutter/platform_maps_flutter.dart';
 import '../../../core/model/user_models.dart';
 
 class CustomMap extends StatefulWidget {
+  final bool zoomEnabled;
+  final bool compassEnabled;
+
+  const CustomMap({Key key, this.zoomEnabled, this.compassEnabled})
+      : super(key: key);
   @override
   _CustomMapState createState() => _CustomMapState();
 }
@@ -12,17 +17,38 @@ class _CustomMapState extends State<CustomMap> {
   BitmapDescriptor customIcon;
   BitmapDescriptor userIcon;
   Set<Marker> markers;
+
   List<UserModel> users = [
     UserModel(
-        userId: '1',
+        userId: '123',
         username: "User",
         userAddress: "Gongabu",
-        latitude: 34,
-        longitude: 94,
-        active: true,
-        bloodgroup: 'A+',
-        email: 'abcd@gmail.com',
-        phoneNo: '938339')
+        latitude: 47.6,
+        longitude: 8.8796,
+        active: null,
+        bloodgroup: '',
+        email: '',
+        phoneNo: ''),
+    UserModel(
+        userId: '13',
+        username: "User",
+        userAddress: "Gongabu",
+        latitude: 47.5999254766742,
+        longitude: 8.879983685910702,
+        active: null,
+        bloodgroup: '',
+        email: '',
+        phoneNo: ''),
+    UserModel(
+        userId: '12',
+        username: "User",
+        userAddress: "Gongabu",
+        latitude: 47.60040882880962,
+        longitude: 8.879983685910702,
+        active: null,
+        bloodgroup: '',
+        email: '',
+        phoneNo: ''),
   ];
 
   createMarker(context, image) {
@@ -82,23 +108,20 @@ class _CustomMapState extends State<CustomMap> {
           print("Marker tapped");
         },
       ),
-      Marker(
-        icon: customIcon,
-        markerId: MarkerId('marker_12'),
-        position: LatLng(47.60040882880962, 8.879983685910702),
-        consumeTapEvents: true,
-        infoWindow: InfoWindow(
-          title: 'PlatformMarker',
-          snippet: "Hi I'm a Platform Marker",
-        ),
-        onTap: () {
-          print("Marker tapped");
-        },
-      )
     ];
-    marker.forEach((element) {
+    users.forEach((element) {
       setState(() {
-        markers.add(element);
+        markers.add(Marker(
+          icon: customIcon,
+          markerId: MarkerId('${element.userId}'),
+          position: LatLng(element.latitude, element.longitude),
+          consumeTapEvents: true,
+          infoWindow: InfoWindow(
+              title: '${element.username}', snippet: "${element.userAddress}"),
+          onTap: () {
+            print("Marker tapped");
+          },
+        ));
       });
     });
   }
@@ -111,7 +134,6 @@ class _CustomMapState extends State<CustomMap> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
   }
 
@@ -143,7 +165,7 @@ class _CustomMapState extends State<CustomMap> {
         print('onCameraMove: $cameraUpdate');
         //createMarker(context);
       },
-      compassEnabled: true,
+      // compassEnabled: true,
       onMapCreated: (controller) {
         Future.delayed(Duration(seconds: 2)).then(
           (_) {
@@ -154,7 +176,7 @@ class _CustomMapState extends State<CustomMap> {
                   bearing: 270.0,
                   target: LatLng(47.6, 8.8796),
                   tilt: 30.0,
-                  zoom: 18,
+                  zoom: 16,
                 ),
               ),
             );

@@ -1,7 +1,10 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
+
+import 'package:flutter_blood_donation_app/app/constant/const.dart';
 import 'package:flutter_blood_donation_app/app/core/model/user_models.dart';
 import 'package:flutter_blood_donation_app/app/core/repositories/authentication_repositories.dart';
+import 'package:flutter_blood_donation_app/app/modules/home/bindings/home_binding.dart';
 import 'package:flutter_blood_donation_app/app/modules/home/views/home_view.dart';
 import 'package:get/get.dart';
 
@@ -14,15 +17,31 @@ class LoginController extends GetxController {
 
   //for Login
   //
-  TextEditingController emailControllerd = new TextEditingController();
+  TextEditingController emailController = new TextEditingController();
   TextEditingController passwordController = new TextEditingController();
 
   //for register
+  final signupformKey = GlobalKey<FormState>();
   TextEditingController nameController = new TextEditingController();
   TextEditingController remailController = new TextEditingController();
   TextEditingController phoneController = new TextEditingController();
+  TextEditingController addressController = new TextEditingController();
   TextEditingController rpasswordController = new TextEditingController();
   TextEditingController rconformController = new TextEditingController();
+  RxString bloodgroup = ''.obs;
+  List<String> bloodgouplist = [
+    'your blood group',
+    'A+',
+    'A-',
+    'B+',
+    'B-',
+    'O+',
+    'O-',
+    'AB+',
+    'AB-'
+  ];
+
+  RxBool loginProcess = false.obs;
 
   @override
   void onInit() {
@@ -39,30 +58,49 @@ class LoginController extends GetxController {
   }
 
   void login() async {
-    Either<String, String> userLog = await _authenticationRepo.userLogin(
-        emailControllerd.text, passwordController.text);
-    userLog.fold((l) {
-      print(l);
-    }, (r) => Get.off(HomeView()));
+    // try {
+    print(emailController.text);
+    Either<String, String> userLogin = await _authenticationRepo.userLogin(
+        emailController.text, passwordController.text);
+    userLogin.fold(
+        (l) => Get.snackbar('Error !', l, snackPosition: SnackPosition.BOTTOM),
+        (r) {
+      Get.to(HomeView(), binding: HomeBinding());
+    });
+    loginProcess.value = false;
   }
 
   void register() async {
     UserModel user = new UserModel(
         userId: '',
         username: nameController.text,
-        userAddress: '',
-        latitude: 0,
-        longitude: 0,
-        bloodgroup: '',
+        userAddress: addressController.text,
+        latitude: 0.0,
+        longitude: 0.0,
+        bloodgroup: bloodgroup.value,
+        photoUrl: '',
+        password: rpasswordController.text,
         phoneNo: phoneController.text,
         email: remailController.text,
+        average: 0.0,
+        onestar: 0.0,
+        twostar: 0.0,
+        threestar: 0.0,
+        fourstar: 0.0,
+        fivestar: 0.0,
+        candonate: true,
         active: true);
 
     Either<String, String> userLog =
         await _authenticationRepo.userRegister(user);
     userLog.fold((l) {
       print(l);
-    }, (r) => Get.off(HomeView()));
+    }, (r) => Get.off(HomeView(), binding: HomeBinding()));
+    loginProcess.value = false;
+  }
+
+  signout() async {
+    await auth.signOut();
   }
 
   @override
@@ -73,12 +111,13 @@ class LoginController extends GetxController {
   @override
   void onClose() {
     pageviewScroll.dispose();
-    emailControllerd.dispose();
+    emailController.dispose();
     passwordController.dispose();
-    nameController.dispose();
-    remailController.dispose();
-    phoneController.dispose();
     rpasswordController.dispose();
+    remailController.dispose();
+    bloodgroup.value = '';
+    nameController.dispose();
+    phoneController.dispose();
     rconformController.dispose();
   }
 }

@@ -14,15 +14,13 @@ class LogInBody extends StatelessWidget {
     final loginController = Get.find<LoginController>();
     return PageView.builder(
       physics: new NeverScrollableScrollPhysics(),
-      // physics: BouncingScrollPhysics(),
       controller: loginController.pageviewScroll,
       itemCount: 2,
       itemBuilder: (context, position) {
-        return Form(
-          key: loginController.loginformKey,
-          child: Obx(() => loginController.currentpage.value == 0
+        return Obx(
+          () => loginController.currentpage.value == 0
               ? LoginWidgets()
-              : RegistrationWidget()),
+              : RegistrationWidget(),
         );
       },
     );

@@ -9,6 +9,8 @@ abstract class Routes {
   static const SPLASH = _Paths.SPLASH;
   static const REQUEST = _Paths.REQUEST;
   static const MYHISTORY = _Paths.MYHISTORY;
+  static const DONOR_DETAILS = _Paths.DONOR_DETAILS;
+  static const ACCOUNT = _Paths.ACCOUNT;
 }
 
 abstract class _Paths {
@@ -19,4 +21,6 @@ abstract class _Paths {
   static const SPLASH = '/splash';
   static const REQUEST = '/request';
   static const MYHISTORY = '/myhistory';
+  static const DONOR_DETAILS = '/donor-details';
+  static const ACCOUNT = '/account';
 }

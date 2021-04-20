@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_blood_donation_app/app/constant/const.dart';
 import 'package:flutter_blood_donation_app/app/modules/home/bindings/home_binding.dart';
 import 'package:flutter_blood_donation_app/app/modules/home/views/home_view.dart';
 import 'package:flutter_blood_donation_app/app/modules/login/bindings/login_binding.dart';
@@ -29,7 +29,7 @@ class SplashController extends GetxController {
   }
 
   void navigate() {
-    if (FirebaseAuth.instance.currentUser != null)
+    if (auth.currentUser != null)
       Get.off(() => HomeView(), binding: HomeBinding());
     else
       Get.off(() => LoginView(), binding: LoginBinding());
