@@ -79,20 +79,18 @@ class LoginController extends GetxController {
         longitude: 0.0,
         bloodgroup: bloodgroup.value,
         photoUrl: '',
-        password: rpasswordController.text,
         phoneNo: phoneController.text,
         email: remailController.text,
-        average: 0.0,
-        onestar: 0.0,
-        twostar: 0.0,
-        threestar: 0.0,
-        fourstar: 0.0,
-        fivestar: 0.0,
+        onestar: 0,
+        twostar: 0,
+        threestar: 0,
+        fourstar: 0,
+        fivestar: 0,
         candonate: true,
         active: true);
 
     Either<String, String> userLog =
-        await _authenticationRepo.userRegister(user);
+        await _authenticationRepo.userRegister(user, rpasswordController.text);
     userLog.fold((l) {
       print(l);
     }, (r) => Get.off(HomeView(), binding: HomeBinding()));

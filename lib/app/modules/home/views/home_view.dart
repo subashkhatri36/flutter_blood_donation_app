@@ -3,7 +3,6 @@ import 'package:flutter_blood_donation_app/app/constant/defaults.dart';
 import 'package:flutter_blood_donation_app/app/modules/account/bindings/account_binding.dart';
 import 'package:flutter_blood_donation_app/app/modules/account/views/account_view.dart';
 import 'package:get/get.dart';
-
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/model/user_models.dart';
@@ -125,20 +124,9 @@ class RequestsHome extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final homeController = Get.find<HomeController>();
-    //  double height = MediaQuery.of(context).size.height;
+
     return ListView(
-      children: [
-        ...homeController.user.map((e) => UserRequest(user: e))
-        // TextButton(
-        //   child: Text(
-        //     'Account',
-        //     style:
-        //         TextStyle(color: Theme.of(context).scaffoldBackgroundColor),
-        //   ),
-        //   style: TextButton.styleFrom(backgroundColor: Colors.deepOrange),
-        //   onPressed: () {},
-        // )
-      ],
+      children: [...homeController.user.map((e) => UserRequest(user: e))],
     );
   }
 }

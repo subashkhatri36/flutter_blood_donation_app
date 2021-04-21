@@ -6,7 +6,7 @@ import 'package:geolocator/geolocator.dart';
 
 abstract class AuthenticationRepo {
   Future<Either<String, String>> userLogin(String email, String password);
-  Future<Either<String, String>> userRegister(UserModel model);
+  Future<Either<String, String>> userRegister(UserModel model, String password);
 }
 
 class Authentication implements AuthenticationRepo {
@@ -34,11 +34,14 @@ class Authentication implements AuthenticationRepo {
   }
 
   @override
-  Future<Either<String, String>> userRegister(UserModel model) async {
+  Future<Either<String, String>> userRegister(
+      UserModel model, String password) async {
     try {
       _getCurrentLocation();
       double lat = 0.0;
       double logi = 0.0;
+      print(_currentPosition.latitude);
+      print(_currentPosition.longitude);
       if (_currentPosition.latitude != null) lat = _currentPosition.latitude;
       if (_currentPosition.longitude != null) logi = _currentPosition.longitude;
 
@@ -46,32 +49,13 @@ class Authentication implements AuthenticationRepo {
       bool complete = false;
       UserCredential userreg = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(
-              email: model.email, password: model.password);
+              email: model.email, password: password);
 
       if (userreg != null) {
-        Map<String, dynamic> userData = {
-          'userId': id,
-          'username': model.username,
-          'userAddress': model.userAddress,
-          'onestar': model.onestar,
-          'twostar': model.twostar,
-          'threestar': model.threestar,
-          'fourstar': model.fourstar,
-          'fivestar': model.fivestar,
-          'average': model.average,
-          'candonate': model.candonate,
-          'latitude': lat,
-          'longitute': logi,
-          'bloodgroup': '',
-          'phoneNo': model.phoneNo,
-          'email': model.email,
-          'password': model.password,
-          'active': model.active
-        };
         await FirebaseFirestore.instance
             .collection('User')
             .doc(userreg.user.uid)
-            .set(userData)
+            .set(model.toMap())
             .whenComplete(() => complete = true);
       }
 
