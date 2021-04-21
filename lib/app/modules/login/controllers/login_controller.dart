@@ -1,4 +1,4 @@
-import 'package:dartz/dartz.dart';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -74,8 +74,8 @@ class LoginController extends GetxController {
           'userId': usercred.user.uid,
           'username': nameController.text,
           'userAddress': addressController.text,
-          'latitude': 'lat',
-          'longitute': 'logi',
+          'latitude': '',
+          'longitute': '',
           'bloodgroup': 'AB+',
           'phoneNo': phoneController.text,
           'email': emailController.text,

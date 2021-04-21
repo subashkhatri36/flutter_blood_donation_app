@@ -9,28 +9,52 @@ import '../controllers/home_controller.dart';
 import 'custom_map.dart';
 import 'request_widgets.dart';
 
-final grey = Colors.grey;
+const grey = Colors.grey;
+List<PopupMenuItem> menuItem = [
+  PopupMenuItem(
+    child: Text('Settings'),
+    value: 'settings',
+  ),
+  PopupMenuItem(
+    child: Text('Home'),
+    value: '/home',
+  ),
+  PopupMenuItem(
+    child: Text('Profie'),
+    value: '/profie',
+  ),
+  PopupMenuItem(
+    child: Text('Settings'),
+    value: '/settings',
+  ),
+  PopupMenuItem(
+    child: Text('Signout'),
+    value: '/login',
+  ),
+];
 List<UserModel> user = [
   UserModel(
       userId: 'sfs',
       phoneNo: '12323',
       username: 'Ram',
       active: null,
-      bloodgroup: '',
+      bloodgroup: 'B +',
       email: '',
-      latitude: null,
-      longitude: null,
+      latitude: 22,
+      longitude: 32,
       userAddress: '',
+      rating: [2, 8],
       photoUrl: 'https://wallpaperaccess.com/full/2213424.jpg'),
   UserModel(
       userId: 'sfas',
       phoneNo: '12323',
       username: 'Sita',
       active: false,
-      bloodgroup: '',
+      bloodgroup: 'A -',
       email: '',
       latitude: 23,
       longitude: 77,
+      rating: [3, 8],
       userAddress: 'B',
       photoUrl:
           'https://images.unsplash.com/photo-1457449940276-e8deed18bfff?ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8cHJvZmlsZXxlbnwwfHwwfHw%3D&ixlib=rb-1.2.1&w=1000&q=80'),
@@ -39,11 +63,12 @@ List<UserModel> user = [
       phoneNo: '12323',
       username: 'Hari',
       active: null,
-      bloodgroup: 'A',
+      bloodgroup: 'A +',
       email: '',
-      latitude: null,
-      longitude: null,
+      latitude: 22,
+      longitude: 22,
       userAddress: '',
+      rating: [2, 5],
       photoUrl:
           'https://images.unsplash.com/photo-1532074205216-d0e1f4b87368?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MjJ8fHByb2ZpbGV8ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80'),
   UserModel(
@@ -53,9 +78,10 @@ List<UserModel> user = [
       active: null,
       bloodgroup: 'AB +',
       email: '',
-      latitude: null,
-      longitude: null,
+      latitude: 32,
+      longitude: 32,
       userAddress: '',
+      rating: [2, 3],
       photoUrl:
           'https://expertphotography.com/wp-content/uploads/2018/10/cool-profile-pictures-retouching-1.jpg'),
   UserModel(
@@ -65,8 +91,9 @@ List<UserModel> user = [
       active: null,
       bloodgroup: 'AB -',
       email: '',
-      latitude: null,
-      longitude: null,
+      latitude: 33,
+      longitude: 22,
+      rating: [2, 8],
       userAddress: '',
       photoUrl: 'https://i.stack.imgur.com/HILmr.png'),
 ];
@@ -87,55 +114,7 @@ class HomeView extends GetView<HomeController> {
             });
         break;
       case 1:
-        return Column(children: [
-          AppBar(
-              title: Row(
-                children: [
-                  Image.asset(
-                    'assets/images/logoapp.png',
-                    height: 50,
-                    width: 70,
-                  ),
-                 // Text('Blood Donation', style: smallText),
-                ],
-              ),
-              actions: [
-               // Icon(Icons.add_location_alt_rounded),
-                IconButton(
-                  icon: Icon(Icons.filter_list),
-                  onPressed: () {
-                    Get.offNamed('/request');
-                  },
-                )
-              ]),
-          Expanded(
-              child: Stack(
-            children: [
-              CustomMap(),
-              // Padding(
-              //   padding: const EdgeInsets.only(bottom: 8.0),
-              //   child: Align(
-              //       alignment: Alignment.bottomRight,
-              //       child: RotatedBox(
-              //         quarterTurns: -45,
-              //         child: FloatingActionButton.extended(
-              //           backgroundColor: Theme.of(context).primaryColor,
-              //           onPressed: () {
-              //             Get.toNamed('/request');
-              //           },
-              //           shape: RoundedRectangleBorder(
-              //               borderRadius:
-              //                   BorderRadius.all(Radius.circular(10.0))),
-              //           label: Text(
-              //             'Request',
-              //             style: smallText,
-              //           ),
-              //         ),
-              //       )),
-              // ),
-            ],
-          )),
-        ]);
+        return CustomMap();
         break;
       case 0:
         return RequestsHome();
@@ -149,11 +128,48 @@ class HomeView extends GetView<HomeController> {
   @override
   Widget build(BuildContext context) {
     return Obx(() => Scaffold(
+          appBar: AppBar(
+              title: Row(
+                children: [
+                  Image.asset(
+                    'assets/images/logoapp.png',
+                    height: 50,
+                    width: 70,
+                  ),
+                  // Text('Blood Donation', style: smallText),
+                ],
+              ),
+              actions: [
+                InkWell(
+                    onTap: () {
+                      Get.toNamed('/request');
+                    },
+                    child: Icon(Icons.add_location_alt_rounded)),
+                IconButton(
+                  icon: Icon(Icons.filter_list),
+                  onPressed: () {
+                    Get.toNamed('/donor-details');
+                  },
+                ),
+              //  Text(auth.currentUser.email,overflow: TextOverflow.clip,),
+                
+                PopupMenuButton(
+                    onSelected: (v) {
+                      Get.snackbar(v,v);
+                      Get.toNamed(v);
+                    },
+                    itemBuilder: (context) {
+                      return List.generate(5, (i) {
+                        return menuItem[i];
+                      });
+                    })
+              ]),
           body: buildBody(context),
           bottomNavigationBar: BottomAppBar(
+            elevation: 0,
             shape: CircularNotchedRectangle(),
-            notchMargin: 6,
-            clipBehavior: Clip.antiAlias,
+            notchMargin: 3,
+            clipBehavior: Clip.antiAliasWithSaveLayer,
             child: BottomNavigationBar(
               onTap: (v) {
                 controller.selectedIndex.value = v;
@@ -186,7 +202,7 @@ class HomeView extends GetView<HomeController> {
             ),
           ),
           floatingActionButtonLocation:
-              FloatingActionButtonLocation.centerDocked,
+              FloatingActionButtonLocation.miniCenterDocked,
         ));
   }
 }
@@ -198,10 +214,9 @@ class RequestsHome extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double height = MediaQuery.of(context).size.height;
+    // double height = MediaQuery.of(context).size.height;
     return ListView(
       children: [
-        AppBar(title: Text(' Requests')),
         ...user.map((e) => UserRequest(user: e))
         // TextButton(
         //   child: Text(
@@ -254,10 +269,10 @@ class MemberInfo extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Lia'),
-                Text('Location '),
+                Text(user.username),
+                Text(user.userAddress),
                 Text(
-                  'AB +',
+                  user.bloodgroup,
                   style:
                       TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
                 )

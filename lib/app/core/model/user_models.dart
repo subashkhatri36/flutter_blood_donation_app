@@ -1,10 +1,11 @@
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 
 class UserModel {
   String photoUrl;
-   String userId;
+  String userId;
   final String username;
   final String userAddress;
   final double latitude;
@@ -13,20 +14,22 @@ class UserModel {
   final String phoneNo;
   final String email;
   final bool active;
-   String password;
+  final List<int> rating;
+  //final List<UserModel> usersRated;
+  String password;
 
-  UserModel({
-    this.userId,
-    @required this.username,
-    @required this.userAddress,
-    @required this.latitude,
-    @required this.longitude,
-    @required this.bloodgroup,
-    @required this.phoneNo,
-    @required this.email,
-    @required this.active,
-    this.photoUrl
-  });
+  UserModel(
+      {this.userId,
+      @required this.username,
+      @required this.userAddress,
+      @required this.latitude,
+      @required this.longitude,
+      @required this.bloodgroup,
+      @required this.phoneNo,
+      @required this.email,
+      @required this.active,
+      this.rating,
+      this.photoUrl});
 
   @override
   bool operator ==(Object other) {
@@ -71,7 +74,7 @@ class UserModel {
       'email': email,
       'password': password,
       'active': active,
-      'photoUrl':photoUrl
+      'photoUrl': photoUrl
     };
   }
 
@@ -85,12 +88,25 @@ class UserModel {
       bloodgroup: map['bloodgroup'],
       phoneNo: map['phoneNo'],
       email: map['email'],
- 
       active: map['active'],
       photoUrl: map['photoUrl'],
     );
   }
 
+  factory UserModel.fromDocumentSnapshot(DocumentSnapshot map) {
+    return UserModel(
+      userId: map.id,
+      username: map.data()['username'],
+      userAddress: map.data()['userAddress'],
+      latitude: map.data()['latitude'],
+      longitude: map.data()['longitute'],
+      bloodgroup: map.data()['bloodgroup'],
+      phoneNo: map.data()['phoneNo'],
+      email: map.data()['email'],
+      active: map.data()['active'],
+      photoUrl: map.data()['photoUrl'],
+    );
+  }
   String toJson() => json.encode(toMap());
 
   factory UserModel.fromJson(String source) =>
