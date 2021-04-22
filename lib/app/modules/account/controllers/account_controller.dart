@@ -12,8 +12,10 @@ import 'package:image_picker/image_picker.dart';
 
 class AccountController extends GetxController {
   UserModel model;
+
   AccountRepo _accountRepo = new AccountRepositories();
   FirebaseAuth _auth = FirebaseAuth.instance;
+  RxBool backfromupdate = false.obs;
 
   RxBool isImageUploading = false.obs;
   RxBool isImageNetwork = false.obs;
@@ -24,6 +26,8 @@ class AccountController extends GetxController {
 
   RxDouble average = 0.0.obs;
   RxDouble total = 0.0.obs;
+
+  RxBool requestSendOn = false.obs;
 
   @override
   void onInit() {
@@ -73,7 +77,7 @@ class AccountController extends GetxController {
   }
 
   double calculate(int value) {
-    return (value / 100) / 5;
+    return value / total.value;
   }
 
   double showpercentage(int i) {

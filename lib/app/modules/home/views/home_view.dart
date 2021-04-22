@@ -61,14 +61,9 @@ class HomeView extends GetView<HomeController> {
               ),
               actions: [
                 // Icon(Icons.add_location_alt_rounded),
+
                 IconButton(
-                  icon: Icon(Icons.filter_list),
-                  onPressed: () {
-                    Get.offNamed('/request');
-                  },
-                ),
-                IconButton(
-                  icon: Icon(Icons.account_box),
+                  icon: Icon(Icons.account_box_rounded),
                   onPressed: () {
                     Get.to(() => AccountView(), binding: AccountBinding());
                   },

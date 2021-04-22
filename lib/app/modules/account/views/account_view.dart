@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_blood_donation_app/app/Widgets/CustomButton.dart';
 import 'package:flutter_blood_donation_app/app/constant/defaults.dart';
+import 'package:flutter_blood_donation_app/app/modules/request/bindings/request_binding.dart';
+import 'package:flutter_blood_donation_app/app/modules/request/views/request_view.dart';
+import 'package:flutter_blood_donation_app/app/modules/updateaccount/bindings/updateaccount_binding.dart';
+import 'package:flutter_blood_donation_app/app/modules/updateaccount/views/updateaccount_view.dart';
 
 import 'package:get/get.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
@@ -18,37 +22,265 @@ class AccountView extends GetView<AccountController> {
       ),
       body: SingleChildScrollView(
         child: Container(
-          height: MediaQuery.of(context).size.height,
+          height: MediaQuery.of(context).size.height * 2,
           child: Column(
             children: [
+              Obx(() => controller.backfromupdate.value
+                  ? AccountHeaderWidget()
+                  : AccountHeaderWidget()),
               Expanded(
-                flex: 4,
-                child: AccountHeaderWidget(),
+                child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: Defaults.paddingnormal,
+                      ),
+                      Obx(() => controller.requestSendOn.value
+                          ? RequestViewWidget()
+                          : Container(
+                              alignment: Alignment.center,
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: Defaults.paddingsmall),
+                              width: MediaQuery.of(context).size.width,
+                              height: Defaults.paddinglarge * 11,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    'Send Blood Request',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: Defaults.fontheading),
+                                    textAlign: TextAlign.left,
+                                  ),
+                                  Container(
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: Defaults.paddingbig),
+                                    child: CustomButton(
+                                      btnColor:
+                                          Theme.of(context).backgroundColor,
+                                      label: 'Send',
+                                      labelColor: Colors.white,
+                                      onPressed: () {
+                                        Get.to(() => RequestView(),
+                                            binding: RequestBinding());
+                                      },
+                                      borderRadius: 10,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )),
+                      RatingWidget(),
+                      CommentWidget(),
+                      CustomButton(
+                        borderRadius: 15,
+                        btnColor: Theme.of(context).backgroundColor,
+                        label: 'Log Out',
+                        labelColor: Colors.white,
+                        onPressed: () {
+                          accountController.signout();
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class RequestViewWidget extends StatelessWidget {
+  const RequestViewWidget({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: Defaults.paddingsmall),
+      width: MediaQuery.of(context).size.width,
+      height: Defaults.paddinglarge * 11,
+      child: Card(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              margin: EdgeInsets.all(Defaults.paddingsmall),
+              padding: EdgeInsets.symmetric(horizontal: Defaults.paddingsmall),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    flex: 8,
+                    child: Text(
+                      'Current Request',
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: Defaults.fontheading),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 3,
+                    child: CustomButton(
+                      btnColor: Colors.white,
+                      label: 'VIEW',
+                      labelColor: Theme.of(context).backgroundColor,
+                      onPressed: () {},
+                      borderRadius: 10,
+                    ),
+                  )
+                ],
               ),
-              Expanded(
-                  flex: 6,
-                  child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    child: Column(
+            ),
+            SizedBox(height: Defaults.paddingnormal),
+            Expanded(
+              child: Container(
+                alignment: Alignment.center,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Searching For',
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: Defaults.fontheading),
+                      textAlign: TextAlign.left,
+                    ),
+                    CircleAvatar(
+                      radius: Defaults.paddingbig * 2,
+                      backgroundColor: Colors.blue,
+                      child: CircleAvatar(
+                        radius: Defaults.paddingbig * 2 - 4,
+                        backgroundColor: Theme.of(context).backgroundColor,
+                        child: Text('A+'),
+                      ),
+                    ),
+                    Container(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: Defaults.paddingbig),
+                      child: Text(
+                        'Near abcd Near abcdNear abcdNear abcdNear abcdNear abcdNear abcd',
+                        maxLines: 2,
+                      ),
+                    ),
+                    SizedBox(
+                      width: Defaults.paddingnormal,
+                    ),
+                    Container(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: Defaults.paddingbig),
+                      child: CustomButton(
+                        btnColor: Theme.of(context).backgroundColor,
+                        label: 'Close',
+                        labelColor: Colors.white,
+                        onPressed: () {},
+                        borderRadius: 10,
+                      ),
+                    ),
+                    SizedBox(
+                      width: Defaults.paddingnormal,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class CommentWidget extends StatelessWidget {
+  const CommentWidget({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      height: Defaults.paddinglarge * 12,
+      margin: EdgeInsets.all(Defaults.paddingnormal),
+      child: Card(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              padding: EdgeInsets.all(Defaults.paddingsmall),
+              width: MediaQuery.of(context).size.width,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    flex: 8,
+                    child: Text(
+                      'Comments',
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: Defaults.fontheading),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 3,
+                    child: CustomButton(
+                      btnColor: Colors.white,
+                      label: 'VIEW ALL',
+                      labelColor: Theme.of(context).backgroundColor,
+                      onPressed: () {},
+                      borderRadius: 10,
+                    ),
+                  )
+                ],
+              ),
+            ),
+            Divider(),
+            ListView.separated(
+                physics: NeverScrollableScrollPhysics(),
+                reverse: true,
+                shrinkWrap: true,
+                itemBuilder: (context, index) {
+                  return Container(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        RatingWidget(),
-                        Card(
-                          child: Text('Current Request'),
+                        SizedBox(
+                          width: Defaults.paddingnormal,
                         ),
-                        CustomButton(
-                          borderRadius: 15,
-                          btnColor: Theme.of(context).backgroundColor,
-                          label: 'Log Out',
-                          labelColor: Colors.white,
-                          onPressed: () {
-                            accountController.signout();
-                          },
+                        CircleAvatar(
+                          backgroundImage:
+                              AssetImage('assets/images/logoapp.png'),
+                        ),
+                        SizedBox(
+                          width: Defaults.paddingnormal,
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('Name'),
+                            Text(
+                              'Message',
+                              maxLines: 1,
+                              style: TextStyle(fontSize: Defaults.fontnormal),
+                            ),
+                          ],
                         ),
                       ],
                     ),
-                  ))
-            ],
-          ),
+                  );
+                },
+                separatorBuilder: (context, index) {
+                  return Divider();
+                },
+                itemCount: 4)
+          ],
         ),
       ),
     );
@@ -71,6 +303,7 @@ class AccountHeaderWidget extends StatelessWidget {
           )
         : Container(
             width: MediaQuery.of(context).size.width,
+            height: Defaults.paddinglarge * 10,
             color: Theme.of(context).backgroundColor,
             child: Center(
               child: Column(
@@ -96,12 +329,6 @@ class AccountHeaderWidget extends StatelessWidget {
                                   : AssetImage(
                                       'assets/images/logo.PNG',
                                     )),
-
-                      //  accountController.model.photoUrl !=
-                      //         null
-                      //     ? AssetImage('assets/images/blooddonation.png')
-                      // //     : NetworkImage(accountController.model.photoUrl)
-                      //     ),
                     ),
                     CircleAvatar(
                       radius: 25,
@@ -151,7 +378,11 @@ class AccountHeaderWidget extends StatelessWidget {
                   ),
                   IconButton(
                       icon: Icon(Icons.edit, color: Colors.white),
-                      onPressed: () {})
+                      onPressed: () {
+                        Get.to(() => UpdateaccountView(),
+                            binding: UpdateaccountBinding(),
+                            arguments: accountController.model);
+                      })
                 ],
               ),
             )));
@@ -244,14 +475,8 @@ Color progressColor(int i, BuildContext context) {
     case 4:
       return Colors.green[300];
       break;
-    case 5:
-      return Colors.green[900];
-      break;
-    case 6:
-      return Colors.deepPurple;
-      break;
     default:
-      return Colors.blue[900];
+      return Colors.orange;
       break;
   }
 }

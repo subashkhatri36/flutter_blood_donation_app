@@ -8,6 +8,7 @@ import 'package:flutter_blood_donation_app/app/core/model/user_models.dart';
 
 abstract class AccountRepo {
   Future<Either<String, UserModel>> getUserData(String userId);
+  Future<Either<String, String>> updateUser(String userId, UserModel userModel);
   Future<Either<String, String>> uploadImage(File path, String userId);
 }
 
@@ -77,6 +78,32 @@ class AccountRepositories implements AccountRepo {
     } catch (erro) {
       print(erro);
       return left('Error While Fetching User Data');
+    }
+  }
+
+  @override
+  Future<Either<String, String>> updateUser(
+      String userId, UserModel userModel) async {
+    Map<String, dynamic> updateData = {
+      'username': userModel.username,
+      'userAddress': userModel.userAddress,
+      'phoneNo': userModel.phoneNo,
+      'bloodgroup': userModel.bloodgroup,
+    };
+    try {
+      bool complete = false;
+      await FirebaseFirestore.instance
+          .collection('User')
+          .doc(userId)
+          .update(updateData)
+          .whenComplete(() => complete = true);
+      if (complete) {
+        return right('Successful');
+      } else {
+        return left('Something went wrong while updating');
+      }
+    } catch (error) {
+      return left('Error while updating User Info');
     }
   }
 }

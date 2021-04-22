@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_blood_donation_app/app/constant/defaults.dart';
 
 import 'package:get/get.dart';
 
@@ -25,23 +26,18 @@ class SplashView extends GetView {
             radius: 63,
             backgroundColor: Colors.white,
             child: CircleAvatar(
-              backgroundColor: Colors.red.shade900,
               radius: 60,
-              child: RotatedBox(
-                quarterTurns: 90,
-                child: Image.asset(
-                  'assets/images/request.png',
-                  fit: BoxFit.contain,
-                ),
+              backgroundImage: AssetImage(
+                'assets/images/blooddonation.png',
               ),
             ),
           ),
           Expanded(child: Container()),
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(Defaults.paddingbig),
             child: Row(children: [
               Text(
-                '1.1',
+                'V1.1',
                 style: TextStyle(
                     color: Theme.of(context).scaffoldBackgroundColor,
                     fontSize: 12),

@@ -5,12 +5,12 @@ import 'package:flutter/foundation.dart';
 class UserModel {
   String photoUrl;
   String userId;
-  final String username;
-  final String userAddress;
+  String username;
+  String userAddress;
   final double latitude;
   final double longitude;
-  final String bloodgroup;
-  final String phoneNo;
+  String bloodgroup;
+  String phoneNo;
   final String email;
   final bool active;
   final int onestar;

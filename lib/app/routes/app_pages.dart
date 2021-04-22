@@ -18,6 +18,8 @@ import 'package:flutter_blood_donation_app/app/modules/request/bindings/request_
 import 'package:flutter_blood_donation_app/app/modules/request/views/request_view.dart';
 import 'package:flutter_blood_donation_app/app/modules/splash/bindings/splash_binding.dart';
 import 'package:flutter_blood_donation_app/app/modules/splash/views/splash_view.dart';
+import 'package:flutter_blood_donation_app/app/modules/updateaccount/bindings/updateaccount_binding.dart';
+import 'package:flutter_blood_donation_app/app/modules/updateaccount/views/updateaccount_view.dart';
 
 part 'app_routes.dart';
 
@@ -69,6 +71,11 @@ class AppPages {
       name: _Paths.ACCOUNT,
       page: () => AccountView(),
       binding: AccountBinding(),
+    ),
+    GetPage(
+      name: _Paths.UPDATEACCOUNT,
+      page: () => UpdateaccountView(),
+      binding: UpdateaccountBinding(),
     ),
   ];
 }
