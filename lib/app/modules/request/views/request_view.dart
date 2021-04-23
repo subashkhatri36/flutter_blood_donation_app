@@ -4,26 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_blood_donation_app/app/constant/const.dart';
 import 'package:flutter_blood_donation_app/app/modules/home/controllers/home_controller.dart';
 import 'package:flutter_blood_donation_app/app/modules/request/controllers/request_controller.dart';
-import 'package:flutter_blood_donation_app/app/utlis/validators.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 List bloodgroup = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 
 class RequestView extends GetView<RequestController> {
-  // static final CameraPosition _kGooglePlex = CameraPosition(
-  //   target: LatLng(37.42796133580664, -122.085749655962),
-  //   zoom: 14.4746,
-  // );
-
-  // static final CameraPosition _kLake = CameraPosition(
-  //     bearing: 192.8334901395799,
-  //     target: LatLng(37.43296265331129, -122.08832357078792),
-  //     tilt: 59.440717697143555,
-  //     zoom: 19.151926040649414);
   @override
   Widget build(BuildContext context) {
-    var scr = new GlobalKey();
+    //  var scr = new GlobalKey();
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
@@ -55,26 +44,30 @@ class RequestView extends GetView<RequestController> {
                     ),
                   ]),
                   SizedBox(height: 10),
-                  Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                    Text('Find donor near my location'),
-                    Obx(
-                      () => Switch(
-                        value: controller.mylocation.value,
-                        onChanged: (value) {
-                          controller.mylocation.value = value;
-                        },
-                        activeTrackColor: Colors.lightGreenAccent,
-                        activeColor: Colors.green,
-                      ),
-                    ),
-                  ]),
-                  SizedBox(height: 10),
+                  // Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                  //   Text('Find donor near my location'),
+                  //   Obx(
+                  //     () => Switch(
+                  //       value: controller.mylocation.value,
+                  //       onChanged: (value) {
+                  //         controller.mylocation.value = value;
+                  //       },
+                  //       activeTrackColor: Colors.lightGreenAccent,
+                  //       activeColor: Colors.green,
+                  //     ),
+                  //   ),
+                  // ]),
+                  // SizedBox(height: 10),
                   Obx(
                     () => !controller.mylocation.value
                         ? TextFormField(
                             controller: controller.locationController,
-                            validator: (v) =>
-                                validateMinLength(string: v, length: 3),
+                            validator: (v) {
+                              if (v.length != 0) {
+                                return null;
+                              } else
+                                return 'Enter a valid location';
+                            },
                             decoration: InputDecoration(
                                 contentPadding: const EdgeInsets.all(8.0),
                                 border: UnderlineInputBorder(),
@@ -97,26 +90,27 @@ class RequestView extends GetView<RequestController> {
                             child: CustomGoogleMap(),
                           )
                         : Image.memory(
-                            controller.list,
+                            controller.data.value,
                             height: 100,
                             width: double.infinity,
                           ),
                   ),
-                  // Obx(() => controller.imagePath.value == ''
-                  //     ? InkWell(
-                  //         onTap: () {
-                  //           controller.captureImage();
-                  //         },
-                  //         child: Text('Take screenshot'))
-                  //     : Text('')),
                   SizedBox(height: 10),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: TextFormField(
+                        controller: controller.detailController,
+                        validator: (v) {
+                          if (v.isEmpty)
+                            return 'Enter a valid';
+                          else if (v.isNum)
+                            return 'Enter a prover result';
+                          else
+                            return null;
+                        },
                         decoration: InputDecoration(
                             hintMaxLines: 3,
-                            hintText:
-                                'Tell us why and how urgent you\n need blood donor? Give us many details as possible')),
+                            hintText: 'Tell use about hospital detail')),
                   ),
                   SizedBox(height: 10),
                   Obx(() => controller.isSwitched.value
@@ -128,7 +122,6 @@ class RequestView extends GetView<RequestController> {
                     if (controller.isSwitched.value)
                       return Container(
                           height: 200,
-                          //   color: Colors.grey,
                           child: GridView(
                             padding:
                                 EdgeInsets.only(top: 10, left: 20, right: 20),
@@ -168,7 +161,6 @@ class RequestView extends GetView<RequestController> {
                       onPressed: () {
                         if (controller.requestformKey.currentState.validate()) {
                           controller.sendrequest();
-                          //print('');
                         }
                       },
                       child: Text('Continue'),
@@ -205,70 +197,92 @@ class CustomGoogleMap extends StatefulWidget {
 }
 
 class _CustomGoogleMapState extends State<CustomGoogleMap> {
-  //final controller = Get.find<RequestController>();
   Uint8List _imageBytes;
+  final reqController = Get.find<RequestController>();
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 140,
-      child: _imageBytes == null
-          ? GoogleMap(
-              initialCameraPosition: CameraPosition(
-                target: LatLng(userController.mylatitude.value,
-                    userController.mylongitude.value),
-                zoom: 16.0,
-              ),
-              markers: Set<Marker>.of(
-                [
-                  Marker(
-                    markerId: MarkerId('marker_1'),
-                    position: LatLng(userController.mylatitude.value,
+    return Column(
+      children: [
+        Container(
+          height: 140,
+          child: _imageBytes == null
+              ? GoogleMap(
+                  initialCameraPosition: CameraPosition(
+                    target: LatLng(userController.mylatitude.value,
                         userController.mylongitude.value),
-                    consumeTapEvents: true,
-                    infoWindow: InfoWindow(
-                      title: 'Blood Request location',
-                      snippet: "My location",
-                    ),
-                    onTap: () {
-                      print("Marker tapped");
-                    },
+                    zoom: 0.0,
                   ),
-                ],
-              ),
-              mapType: MapType.normal,
-              onTap: (location) => print('onTap: $location'),
-              onCameraMove: (cameraUpdate) =>
-                  print('onCameraMove: $cameraUpdate'),
-              compassEnabled: true,
-              onMapCreated: (controller) {
-                // _mapController = controller;
-                Future.delayed(Duration(seconds: 2)).then((_) async {
-                  Uint8List image = await controller.takeSnapshot();
-                  setState(() {
-                    _imageBytes = image;
-                  });
-                });
-                // Future.delayed(Duration(seconds: 2)).then(
-                //   (_) {
-                //     controller.animateCamera(
-                //       CameraUpdate.newCameraPosition(
-                //         CameraPosition(
-                //           bearing: 270.0,
-                //           target: LatLng(userController.mylatitude.value,
-                //               userController.mylongitude.value),
-                //           tilt: 30.0,
-                //           zoom: 18,
-                //         ),
-                //       ),
-                //     );
-                //   controller.getVisibleRegion().then(
-                //       (bounds) => print("bounds: ${bounds.toString()}"));
-
-                // },
-                //);
-              },
-            )
-          : Image.memory(_imageBytes),
+                  markers: Set<Marker>.of(
+                    [
+                      Marker(
+                        markerId: MarkerId('marker_1'),
+                        position: LatLng(userController.mylatitude.value,
+                            userController.mylongitude.value),
+                        consumeTapEvents: true,
+                        infoWindow: InfoWindow(
+                          title: 'Blood Request location',
+                          snippet: "My location",
+                        ),
+                        onTap: () {
+                          print("Marker tapped");
+                        },
+                      ),
+                    ],
+                  ),
+                  mapType: MapType.normal,
+                  onTap: (location) => print('onTap: $location'),
+                  onCameraMove: (cameraUpdate) =>
+                      print('onCameraMove: $cameraUpdate'),
+                  compassEnabled: true,
+                  onMapCreated: (controller) {
+                    Future.delayed(Duration(seconds: 2)).then(
+                      (_) {
+                        controller
+                            .animateCamera(
+                              CameraUpdate.newCameraPosition(
+                                CameraPosition(
+                                  bearing: 270.0,
+                                  target: LatLng(
+                                      userController.mylatitude.value,
+                                      userController.mylongitude.value),
+                                  tilt: 30.0,
+                                  zoom: 14,
+                                ),
+                              ),
+                            )
+                            .then((value) =>
+                                Future.delayed(Duration(seconds: 6))
+                                    .then((_) async {
+                                  Uint8List image =
+                                      await controller.takeSnapshot();
+                                  setState(() {
+                                    _imageBytes = image;
+                                  });
+                                  reqController.data.value = _imageBytes;
+                                  //  print(reqController.data.value);
+                                }));
+                        //   controller.getVisibleRegion().then(
+                        //       (bounds) => print("bounds: ${bounds.toString()}"));
+                      },
+                    );
+                    // _mapController = controller;
+                  },
+                )
+              : Image.memory(_imageBytes),
+        ),
+        // if (_imageBytes == null)
+        //   TextButton(
+        //     child: Text(
+        //       'Take a snapshot',
+        //     ),
+        //     onPressed: () async {
+        //       final imageBytes = await _mapController?.takeSnapshot();
+        //       setState(() {
+        //         _imageBytes = imageBytes;
+        //       });
+        //     },
+        //   ),
+      ],
     );
   }
 }

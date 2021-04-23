@@ -31,7 +31,7 @@ class UserReop {
             .set(user.toMap());
         print('completed');
       } else {
-        print(true);
+        // print(true);
         return UserModel.fromDocumentSnapshot(data);
       }
     } catch (e) {
@@ -43,18 +43,19 @@ class UserReop {
     List<UserModel> userlist = [];
     var data = await firebaseFirestore
         .collection('User')
-        .where('userId', isNotEqualTo: auth.currentUser.uid)
+        //  .where('userId', isNotEqualTo: auth.currentUser.uid)
         .get();
     data.docs.forEach((element) async {
+      //  print(element.id);
       try {
-        print(element.data()['userAddress']);
+        // print(element.data()['userAddress']);
         String str = element.data()['userAddress'];
         List arr = str.split('\\s');
         String word = arr[0];
         if (element.data()['latitude'] == 0.0 ||
             element.data()['latitude'] == null) {
           List<Location> data = await getcoordinatefromAddress(word);
-          print(data[0].latitude);
+          //print(data[0].latitude);
           firebaseFirestore.collection('User').doc(element.id).update(
               {'latitude': data[0].latitude, 'longitude': data[0].longitude});
         } else {

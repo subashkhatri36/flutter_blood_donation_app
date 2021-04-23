@@ -45,7 +45,7 @@ class Authentication implements AuthenticationRepo {
       if (_currentPosition.latitude != null) lat = _currentPosition.latitude;
       if (_currentPosition.longitude != null) logi = _currentPosition.longitude;
 
-      String id = '';
+     // String id = '';
       bool complete = false;
       UserCredential userreg = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(

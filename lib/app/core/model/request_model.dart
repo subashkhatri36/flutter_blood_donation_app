@@ -5,13 +5,11 @@ class RequestModel {
   String name;
   String bloodgroup;
   Timestamp timestamp;
-  double latitude;
-  double longitude;
   String city;
   String address;
   String detail;
   String photoUrl;
-
+  String userphotoUrl;
   RequestModel(
       {this.id,
       this.name,
@@ -20,6 +18,7 @@ class RequestModel {
       this.address,
       this.timestamp,
       this.photoUrl,
+      this.userphotoUrl,
       this.city = 'Kathmandu'});
 
   RequestModel.fromJson(Map<String, dynamic> json) {
@@ -38,6 +37,7 @@ class RequestModel {
     this.address = json.data()['address'];
     this.timestamp = json.data()['timestamp'];
     this.photoUrl = json.data()['photoUrl'];
+    this.userphotoUrl = json.data()['userphotoUrl'];
   }
 
   Map<String, dynamic> toJson() {
@@ -48,7 +48,8 @@ class RequestModel {
     data['address'] = this.address;
     data['detail'] = this.detail;
     data['photoUrl'] = this.photoUrl;
-
+    data['timestamp'] = Timestamp.now();
+    data['userPhotourl'] = this.userphotoUrl;
     return data;
   }
 }

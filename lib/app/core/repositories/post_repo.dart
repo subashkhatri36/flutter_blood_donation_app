@@ -19,12 +19,16 @@ class PostsRepo {
 
 //get stream of request
   getRequest() {
-    return repo.snapshots().map((QuerySnapshot query) {
+    return repo
+        .orderBy('timestamp', descending: true)
+        .snapshots()
+        .map((QuerySnapshot query) {
       List<RequestModel> requests = [];
       query.docs.forEach((element) {
-        print(element.id);
+      //  print(element.id);
         requests.add(RequestModel.fromDocumentSnapshot(element));
       });
+
       return requests;
     });
   }

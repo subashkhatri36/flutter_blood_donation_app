@@ -1,3 +1,4 @@
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blood_donation_app/app/constant/defaults.dart';
@@ -44,6 +45,11 @@ List<PopupMenuItem> menuItem = [
   //   child: Text('Home'),
   //   value: '/home',
   // ),
+  //
+  PopupMenuItem(
+    child: Text('Donors available'),
+    value: '/donor-details',
+  ),
   PopupMenuItem(
     child: Text('Account'),
     value: '/account',
@@ -58,7 +64,7 @@ List<PopupMenuItem> menuItem = [
   ),
 ];
 
-List<UserModel> user = [
+List<UserModel> users = [
   UserModel(
       userId: 'sfs',
       phoneNo: '12323',
@@ -123,6 +129,7 @@ class HomeView extends GetView<HomeController> {
   Widget buildBody(context) {
     //double height = MediaQuery.of(context).size.height;
     switch (controller.selectedIndex.value) {
+    
       case 2:
         return ListView.builder(
             //padding: EdgeInsets.symmetric(horizontal:5,vertical:10),
@@ -131,18 +138,11 @@ class HomeView extends GetView<HomeController> {
             itemBuilder: (_, int i) {
               return ListTile(
                   contentPadding: EdgeInsets.only(left: 5, right: 5),
-                  title: MemberInfo(user[i]));
+                  title: MemberInfo(users[i]));
             });
         break;
       case 1:
-        return Column(children: [
-          Expanded(
-              child: Stack(
-            children: [
-              CustomMap(),
-            ],
-          )),
-        ]);
+        return CustomMap();
         break;
       case 0:
         return RequestsHome();
@@ -165,7 +165,6 @@ class HomeView extends GetView<HomeController> {
                     height: 60,
                     width: 70,
                   ),
-                  // Text('Blood Donation', style: smallText),
                 ],
               ),
               actions: [
@@ -175,19 +174,13 @@ class HomeView extends GetView<HomeController> {
                     },
                     child: Icon(Icons.add_location_alt_rounded)),
                 PopupMenuButton(onSelected: (v) {
-                  Get.snackbar(v, v);
+                  // Get.snackbar(v, v);
                   Get.toNamed(v);
                 }, itemBuilder: (context) {
-                  return List.generate(5, (i) {
+                  return List.generate(menuItem.length, (i) {
                     return menuItem[i];
                   });
                 }),
-                // IconButton(
-                //   icon: Icon(Icons.account_box_rounded),
-                //   onPressed: () {
-                //     Get.to(() => AccountView(), binding: AccountBinding());
-                //   },
-                // )
               ]),
           body: buildBody(context),
           bottomNavigationBar: BottomAppBar(
@@ -241,9 +234,25 @@ class RequestsHome extends StatelessWidget {
   Widget build(BuildContext context) {
     final homeController = Get.find<HomeController>();
 
-    return ListView(
-      physics: BouncingScrollPhysics(),
-      children: [...request.map((e) => UserRequest(user: e))],
+    return Obx(
+      () => !homeController.loading.value
+          ? ListView.builder(
+              physics: BouncingScrollPhysics(),
+              itemCount: homeController.requestData.length,
+              itemBuilder: (BuildContext context, int index) {
+                return UserRequest(user: homeController.requestData[index]);
+
+                // Container(
+                //   height: 100,
+                //   color: Colors.red,
+                //   child: Image.memory(
+                //     base64Decode(homeController.requestData[index].photoUrl),
+                //     fit: BoxFit.fill,
+                //   ),
+                // );
+              },
+            )
+          : CircularProgressIndicator(),
     );
   }
 }
@@ -265,7 +274,7 @@ class MemberInfo extends StatelessWidget {
     return Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          color: Colors.grey.withOpacity(.4),
+          color: Colors.white.withOpacity(.9),
         ),
         width: double.infinity,
         height: 90,
