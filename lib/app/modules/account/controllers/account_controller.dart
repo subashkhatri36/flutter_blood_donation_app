@@ -39,13 +39,6 @@ class AccountController extends GetxController {
     super.onInit();
   }
 
-  Future<bool> getDelete(String docId) async {
-    bool value = false;
-    Either<bool, bool> dele = await _accountRepo.deleteComment(docId);
-    dele.fold((l) => value = l, (r) => value = r);
-    return value;
-  }
-
   getUserData() async {
     loadigUserData.toggle();
 

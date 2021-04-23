@@ -9,8 +9,14 @@ class RequestModel {
   String city;
   String address;
   String detail;
+  bool active;
   RequestModel(
-      {this.id, this.name, this.bloodgroup, this.detail, this.address});
+      {this.id,
+      this.name,
+      this.bloodgroup,
+      this.detail,
+      this.address,
+      this.active});
 
   RequestModel.fromJson(Map<String, dynamic> json) {
     this.id = json['id'];
@@ -18,6 +24,7 @@ class RequestModel {
     this.bloodgroup = json['bloodgroup'];
     this.detail = json['detail'];
     this.address = json['address'];
+    this.active = json['active'];
   }
 
   Map<String, dynamic> toJson() {
@@ -27,6 +34,7 @@ class RequestModel {
     data['bloodgroup'] = this.bloodgroup;
     data['address'] = this.address;
     data['detail'] = this.detail;
+    data['active'] = this.active;
     return data;
   }
 }

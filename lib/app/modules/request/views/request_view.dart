@@ -130,8 +130,9 @@ class RequestView extends GetView<RequestController> {
                     width: double.infinity,
                     child: TextButton(
                       onPressed: () {
-                        if (controller.requestformKey.currentState.validate())
-                          print('');
+                        if (controller.requestformKey.currentState
+                            .validate()) {}
+                        // print('');
                       },
                       child: Text('Continue'),
                       style: TextButton.styleFrom(
