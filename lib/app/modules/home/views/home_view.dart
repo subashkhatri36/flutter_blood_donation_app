@@ -71,9 +71,10 @@ class HomeView extends GetView<HomeController> {
               ]),
           body: buildBody(context),
           bottomNavigationBar: BottomAppBar(
+            elevation: 0,
             shape: CircularNotchedRectangle(),
-            notchMargin: 6,
-            clipBehavior: Clip.antiAlias,
+            notchMargin: 3,
+            clipBehavior: Clip.antiAliasWithSaveLayer,
             child: BottomNavigationBar(
               onTap: (v) {
                 controller.selectedIndex.value = v;
@@ -106,7 +107,7 @@ class HomeView extends GetView<HomeController> {
             ),
           ),
           floatingActionButtonLocation:
-              FloatingActionButtonLocation.centerDocked,
+              FloatingActionButtonLocation.miniCenterDocked,
         ));
   }
 }
@@ -163,10 +164,10 @@ class MemberInfo extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Lia'),
-                Text('Location '),
+                Text(user.username),
+                Text(user.userAddress),
                 Text(
-                  'AB +',
+                  user.bloodgroup,
                   style:
                       TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
                 )

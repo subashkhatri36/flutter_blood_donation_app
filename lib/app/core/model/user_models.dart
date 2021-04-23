@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 
 class UserModel {
@@ -79,6 +80,20 @@ class UserModel {
     );
   }
 
+  factory UserModel.fromDocumentSnapshot(DocumentSnapshot map) {
+    return UserModel(
+      userId: map.id,
+      username: map.data()['username'],
+      userAddress: map.data()['userAddress'],
+      latitude: map.data()['latitude'],
+      longitude: map.data()['longitute'],
+      bloodgroup: map.data()['bloodgroup'],
+      phoneNo: map.data()['phoneNo'],
+      email: map.data()['email'],
+      active: map.data()['active'],
+      photoUrl: map.data()['photoUrl'],
+    );
+  }
   String toJson() => json.encode(toMap());
 
   factory UserModel.fromJson(String source) =>

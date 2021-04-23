@@ -27,7 +27,7 @@ class AccountController extends GetxController {
   RxDouble average = 0.0.obs;
   RxDouble total = 0.0.obs;
 
-  RxBool requestSendOn = false.obs;
+  RxBool requestSendOn = true.obs;
 
   @override
   void onInit() {

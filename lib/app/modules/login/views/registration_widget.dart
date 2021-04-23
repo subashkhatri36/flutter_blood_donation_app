@@ -9,9 +9,9 @@ import 'package:get/get.dart';
 import '../../../Widgets/CustomButton.dart';
 import '../../../Widgets/custome_text_field.dart';
 
-final largeText = TextStyle(fontSize: 20);
-final mediumText = TextStyle(fontSize: 16);
-final smallText = TextStyle(fontSize: 12);
+ const largeText = TextStyle(fontSize: 20);
+const mediumText = TextStyle(fontSize: 16);
+const smallText = TextStyle(fontSize: 12);
 
 class RegistrationWidget extends StatefulWidget {
   @override
