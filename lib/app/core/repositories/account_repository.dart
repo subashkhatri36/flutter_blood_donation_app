@@ -2,12 +2,16 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter_blood_donation_app/app/core/model/comment_model.dart';
 
 import 'package:flutter_blood_donation_app/app/core/model/user_models.dart';
 
 abstract class AccountRepo {
   Future<Either<String, UserModel>> getUserData(String userId);
+  Future<Either<bool, bool>> deleteComment(String docId);
+  Future<Either<String, List<CommentModel>>> getUserComment(String userId);
   Future<Either<String, String>> updateUser(String userId, UserModel userModel);
   Future<Either<String, String>> uploadImage(File path, String userId);
 }
@@ -104,6 +108,58 @@ class AccountRepositories implements AccountRepo {
       }
     } catch (error) {
       return left('Error while updating User Info');
+    }
+  }
+
+  @override
+  Future<Either<String, List<CommentModel>>> getUserComment(
+      String userId) async {
+    try {
+      bool complete = false;
+      List<CommentModel> modelList = [];
+      await FirebaseFirestore.instance
+          .collection('User')
+          .doc(userId)
+          .collection('comment')
+          .get()
+          .then((value) {
+        value.docs.forEach((element) {
+          modelList.add(CommentModel(
+            id: element.id,
+            name: element['name'],
+            photo: element['photo'],
+            comment: element['comment'],
+          ));
+        });
+      }).whenComplete(() => complete = true);
+      if (complete) {
+        return right(modelList);
+      } else {
+        return left('Something went Wrong while getting data');
+      }
+    } catch (error) {
+      return left('Sorry Error Occured while geting comment.');
+    }
+  }
+
+  @override
+  Future<Either<bool, bool>> deleteComment(String docId) async {
+    try {
+      bool complete = false;
+      await FirebaseFirestore.instance
+          .collection('User')
+          .doc(FirebaseAuth.instance.currentUser.uid)
+          .collection('comment')
+          .doc(docId)
+          .delete()
+          .whenComplete(() => complete = true);
+      if (complete) {
+        return right(true);
+      } else {
+        return left(false);
+      }
+    } catch (error) {
+      return left(false);
     }
   }
 }

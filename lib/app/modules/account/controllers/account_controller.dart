@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_blood_donation_app/app/core/model/comment_model.dart';
 import 'package:get/get.dart';
 
 import 'package:flutter_blood_donation_app/app/core/model/user_models.dart';
@@ -12,6 +13,9 @@ import 'package:image_picker/image_picker.dart';
 
 class AccountController extends GetxController {
   UserModel model;
+
+  RxList commentList;
+  RxBool loadComment = false.obs;
 
   AccountRepo _accountRepo = new AccountRepositories();
   FirebaseAuth _auth = FirebaseAuth.instance;
@@ -35,6 +39,13 @@ class AccountController extends GetxController {
     super.onInit();
   }
 
+  Future<bool> getDelete(String docId) async {
+    bool value = false;
+    Either<bool, bool> dele = await _accountRepo.deleteComment(docId);
+    dele.fold((l) => value = l, (r) => value = r);
+    return value;
+  }
+
   getUserData() async {
     loadigUserData.toggle();
 
@@ -46,6 +57,7 @@ class AccountController extends GetxController {
         if (r.phoneNo.isNotEmpty) {
           isImageNetwork.value = true;
           userImage.value = r.photoUrl;
+          loadingComment();
         }
 
         calculateAverage();
@@ -72,8 +84,24 @@ class AccountController extends GetxController {
           .toDouble();
 
       double av = first / second;
+      if (second < 1) av = 0.0;
       average = av.obs;
     }
+  }
+
+  loadingComment() async {
+    loadComment.toggle();
+    List<CommentModel> model = [];
+    var id = FirebaseAuth.instance.currentUser.uid;
+    if (id != null) {
+      Either<String, List<CommentModel>> data =
+          await _accountRepo.getUserComment(id);
+      data.fold((l) => print(l), (r) {
+        model = r.toList();
+        commentList = model.obs;
+      });
+    }
+    loadComment.toggle();
   }
 
   double calculate(int value) {

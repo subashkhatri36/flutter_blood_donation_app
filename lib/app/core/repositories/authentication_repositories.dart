@@ -3,6 +3,7 @@ import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_blood_donation_app/app/core/model/user_models.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:get/get.dart';
 
 abstract class AuthenticationRepo {
   Future<Either<String, String>> userLogin(String email, String password);
@@ -76,6 +77,8 @@ class Authentication implements AuthenticationRepo {
               forceAndroidLocationManager: true)
           .then((Position position) => _currentPosition = position)
           .catchError((e) {
+        Get.snackbar('Info', 'Please Trun On Your Location',
+            snackPosition: SnackPosition.BOTTOM);
         print(e);
       });
     } catch (error) {

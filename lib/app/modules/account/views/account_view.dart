@@ -5,6 +5,8 @@ import 'package:flutter_blood_donation_app/app/modules/request/bindings/request_
 import 'package:flutter_blood_donation_app/app/modules/request/views/request_view.dart';
 import 'package:flutter_blood_donation_app/app/modules/updateaccount/bindings/updateaccount_binding.dart';
 import 'package:flutter_blood_donation_app/app/modules/updateaccount/views/updateaccount_view.dart';
+import 'package:flutter_blood_donation_app/app/modules/viewcomment/bindings/viewcomment_binding.dart';
+import 'package:flutter_blood_donation_app/app/modules/viewcomment/views/viewcomment_view.dart';
 
 import 'package:get/get.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
@@ -205,6 +207,7 @@ class CommentWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final accountController = Get.find<AccountController>();
     return Container(
       width: MediaQuery.of(context).size.width,
       height: Defaults.paddinglarge * 12,
@@ -234,7 +237,12 @@ class CommentWidget extends StatelessWidget {
                       btnColor: Colors.white,
                       label: 'VIEW ALL',
                       labelColor: Theme.of(context).backgroundColor,
-                      onPressed: () {},
+                      onPressed: () {
+                        Get.to(
+                          () => ViewcommentView(),
+                          binding: ViewcommentBinding(),
+                        );
+                      },
                       borderRadius: 10,
                     ),
                   )
@@ -242,44 +250,60 @@ class CommentWidget extends StatelessWidget {
               ),
             ),
             Divider(),
-            ListView.separated(
-                physics: NeverScrollableScrollPhysics(),
-                reverse: true,
-                shrinkWrap: true,
-                itemBuilder: (context, index) {
-                  return Container(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        SizedBox(
-                          width: Defaults.paddingnormal,
-                        ),
-                        CircleAvatar(
-                          backgroundImage:
-                              AssetImage('assets/images/logoapp.png'),
-                        ),
-                        SizedBox(
-                          width: Defaults.paddingnormal,
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('Name'),
-                            Text(
-                              'Message',
-                              maxLines: 1,
-                              style: TextStyle(fontSize: Defaults.fontnormal),
+            Obx(() => accountController.loadComment.value
+                ? CircularProgressIndicator()
+                : accountController.commentList.length < 1
+                    ? Container(
+                        child: Text('NO COMMENTS'),
+                      )
+                    : ListView.separated(
+                        physics: NeverScrollableScrollPhysics(),
+                        reverse: true,
+                        shrinkWrap: true,
+                        itemBuilder: (context, index) {
+                          final data = accountController.commentList[index];
+                          return InkWell(
+                            onTap: () {},
+                            child: Container(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  SizedBox(
+                                    width: Defaults.paddingnormal,
+                                  ),
+                                  CircleAvatar(
+                                    backgroundImage: data.photo.isEmpty
+                                        ? AssetImage(
+                                            'assets/images/logoapp.png')
+                                        : NetworkImage(data.photo),
+                                  ),
+                                  SizedBox(
+                                    width: Defaults.paddingnormal,
+                                  ),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(data.name),
+                                      Text(
+                                        data.comment,
+                                        maxLines: 1,
+                                        style: TextStyle(
+                                            fontSize: Defaults.fontnormal),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  );
-                },
-                separatorBuilder: (context, index) {
-                  return Divider();
-                },
-                itemCount: 4)
+                          );
+                        },
+                        separatorBuilder: (context, index) {
+                          return Divider();
+                        },
+                        itemCount: accountController.commentList.length > 4
+                            ? 4
+                            : accountController.commentList.length))
           ],
         ),
       ),

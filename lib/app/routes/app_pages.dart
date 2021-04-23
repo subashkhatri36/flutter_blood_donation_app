@@ -20,6 +20,8 @@ import 'package:flutter_blood_donation_app/app/modules/splash/bindings/splash_bi
 import 'package:flutter_blood_donation_app/app/modules/splash/views/splash_view.dart';
 import 'package:flutter_blood_donation_app/app/modules/updateaccount/bindings/updateaccount_binding.dart';
 import 'package:flutter_blood_donation_app/app/modules/updateaccount/views/updateaccount_view.dart';
+import 'package:flutter_blood_donation_app/app/modules/viewcomment/bindings/viewcomment_binding.dart';
+import 'package:flutter_blood_donation_app/app/modules/viewcomment/views/viewcomment_view.dart';
 
 part 'app_routes.dart';
 
@@ -76,6 +78,11 @@ class AppPages {
       name: _Paths.UPDATEACCOUNT,
       page: () => UpdateaccountView(),
       binding: UpdateaccountBinding(),
+    ),
+    GetPage(
+      name: _Paths.VIEWCOMMENT,
+      page: () => ViewcommentView(),
+      binding: ViewcommentBinding(),
     ),
   ];
 }
