@@ -1,77 +1,22 @@
 import 'package:flutter_blood_donation_app/app/core/model/user_models.dart';
+import 'package:flutter_blood_donation_app/app/core/repositories/users_repo.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 
 class HomeController extends GetxController {
+  //TODO: Implement HomeController
   var selectedIndex = 0.obs;
-  List<UserModel> user = [
-    UserModel(
-      userId: 'sfs',
-      phoneNo: '12323',
-      username: 'Ram',
-      active: true,
-      bloodgroup: '',
-      email: '',
-      latitude: 0.0,
-      longitude: 0.0,
-      userAddress: '',
-      photoUrl: 'https://wallpaperaccess.com/full/2213424.jpg',
-    ),
-    UserModel(
-      userId: 'sfas',
-      phoneNo: '12323',
-      username: 'Sita',
-      active: false,
-      bloodgroup: '',
-      email: '',
-      latitude: 23,
-      longitude: 77,
-      userAddress: 'B',
-      photoUrl:
-          'https://images.unsplash.com/photo-1457449940276-e8deed18bfff?ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8cHJvZmlsZXxlbnwwfHwwfHw%3D&ixlib=rb-1.2.1&w=1000&q=80',
-    ),
-    UserModel(
-      userId: 'sf',
-      phoneNo: '12323',
-      username: 'Hari',
-      active: true,
-      bloodgroup: 'A',
-      email: '',
-      latitude: 0.0,
-      longitude: 0.0,
-      userAddress: '',
-      photoUrl:
-          'https://images.unsplash.com/photo-1532074205216-d0e1f4b87368?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MjJ8fHByb2ZpbGV8ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80',
-    ),
-    UserModel(
-      userId: 'sf',
-      phoneNo: '12323',
-      username: 'Ramesh',
-      active: true,
-      bloodgroup: 'AB +',
-      email: '',
-      latitude: 0.0,
-      longitude: 0.0,
-      userAddress: '',
-      photoUrl:
-          'https://expertphotography.com/wp-content/uploads/2018/10/cool-profile-pictures-retouching-1.jpg',
-    ),
-    UserModel(
-      userId: 'sf',
-      phoneNo: '12323',
-      username: 'Shyam',
-      active: true,
-      bloodgroup: 'AB -',
-      email: '',
-      latitude: 0.0,
-      longitude: 0.0,
-      userAddress: '',
-      photoUrl: 'https://i.stack.imgur.com/HILmr.png',
-    ),
-  ];
-
+  final count = 0.obs;
+  var mylatitude = 0.0.obs;
+  var mylongitude = 0.0.obs;
+  var myinfo = UserModel().obs;
+  var userlist = List<UserModel>.empty(growable: true);
   @override
   void onInit() {
     super.onInit();
+    getPosition();
+    getUsers();
+    getmyinfo();
   }
 
   @override
@@ -81,4 +26,23 @@ class HomeController extends GetxController {
 
   @override
   void onClose() {}
+  getmyinfo() async {
+    myinfo.value = await userRepo.getmyinfo();
+   
+  }
+
+  getUsers() async {
+    List<UserModel> users = await userRepo.getuser();
+    userlist = users;
+    //print(userlist.length);
+  }
+
+  getPosition() async {
+    await Geolocator.getCurrentPosition().then((location) {
+      mylatitude.value = location.latitude;
+      mylongitude.value = location.longitude;
+    });
+  }
 }
+
+final userController = Get.find<HomeController>();

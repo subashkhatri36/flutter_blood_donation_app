@@ -1,7 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blood_donation_app/app/constant/defaults.dart';
-import 'package:flutter_blood_donation_app/app/modules/account/bindings/account_binding.dart';
-import 'package:flutter_blood_donation_app/app/modules/account/views/account_view.dart';
+import 'package:flutter_blood_donation_app/app/core/model/request_model.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -10,6 +10,118 @@ import '../../login/views/login_view.dart';
 import '../controllers/home_controller.dart';
 import 'custom_map.dart';
 import 'request_widgets.dart';
+
+List<RequestModel> request = [
+  RequestModel(
+      id: '1',
+      name: 'Ram',
+      bloodgroup: 'B+',
+      detail: 'Detail',
+      address: 'Ranibari',
+      photoUrl: '',
+      timestamp: Timestamp.now()),
+  RequestModel(
+      id: '1',
+      name: 'Ram',
+      bloodgroup: 'B+',
+      detail: 'Detail',
+      address: 'Ranibari',
+      timestamp: Timestamp.now()),
+  RequestModel(
+      id: '1',
+      name: 'Ram',
+      bloodgroup: 'B+',
+      detail: 'Detail',
+      address: 'Ranibari',
+      timestamp: Timestamp.now()),
+];
+List<PopupMenuItem> menuItem = [
+  PopupMenuItem(
+    child: Text('Request Blood'),
+    value: '/request',
+  ),
+  PopupMenuItem(
+    child: Text('Home'),
+    value: '/home',
+  ),
+  PopupMenuItem(
+    child: Text('Account'),
+    value: '/account',
+  ),
+  PopupMenuItem(
+    child: Text('Settings'),
+    value: '/settings',
+  ),
+  PopupMenuItem(
+    child: Text('Signout'),
+    value: '/login',
+  ),
+];
+
+List<UserModel> user = [
+  UserModel(
+      userId: 'sfs',
+      phoneNo: '12323',
+      username: 'Ram',
+      active: null,
+      bloodgroup: 'B +',
+      email: '',
+      latitude: 22,
+      longitude: 32,
+      userAddress: '',
+      photoUrl: 'https://wallpaperaccess.com/full/2213424.jpg'),
+  UserModel(
+      userId: 'sfas',
+      phoneNo: '12323',
+      username: 'Sita',
+      active: false,
+      bloodgroup: 'A -',
+      email: '',
+      latitude: 23,
+      longitude: 77,
+    
+      userAddress: 'B',
+      photoUrl:
+          'https://images.unsplash.com/photo-1457449940276-e8deed18bfff?ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8cHJvZmlsZXxlbnwwfHwwfHw%3D&ixlib=rb-1.2.1&w=1000&q=80'),
+  UserModel(
+      userId: 'sf',
+      phoneNo: '12323',
+      username: 'Hari',
+      active: null,
+      bloodgroup: 'A +',
+      email: '',
+      latitude: 22,
+      longitude: 22,
+      userAddress: '',
+   
+      photoUrl:
+          'https://images.unsplash.com/photo-1532074205216-d0e1f4b87368?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MjJ8fHByb2ZpbGV8ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80'),
+  UserModel(
+      userId: 'sf',
+      phoneNo: '12323',
+      username: 'Ramesh',
+      active: null,
+      bloodgroup: 'AB +',
+      email: '',
+      latitude: 32,
+      longitude: 32,
+      userAddress: '',
+     
+      photoUrl:
+          'https://expertphotography.com/wp-content/uploads/2018/10/cool-profile-pictures-retouching-1.jpg'),
+  UserModel(
+      userId: 'sf',
+      phoneNo: '12323',
+      username: 'Shyam',
+      active: null,
+      bloodgroup: 'AB -',
+      email: '',
+      latitude: 33,
+      longitude: 22,
+     
+      userAddress: '',
+      photoUrl: 'https://i.stack.imgur.com/HILmr.png'),
+];
 
 class HomeView extends GetView<HomeController> {
   Widget buildBody(context) {
@@ -23,7 +135,7 @@ class HomeView extends GetView<HomeController> {
             itemBuilder: (_, int i) {
               return ListTile(
                   contentPadding: EdgeInsets.only(left: 5, right: 5),
-                  title: MemberInfo(controller.user[i]));
+                  title: MemberInfo(user[i]));
             });
         break;
       case 1:
@@ -48,6 +160,7 @@ class HomeView extends GetView<HomeController> {
   @override
   Widget build(BuildContext context) {
     return Obx(() => Scaffold(
+          backgroundColor: Colors.grey[300],
           appBar: AppBar(
               title: Row(
                 children: [
@@ -60,14 +173,25 @@ class HomeView extends GetView<HomeController> {
                 ],
               ),
               actions: [
-                // Icon(Icons.add_location_alt_rounded),
-
-                IconButton(
-                  icon: Icon(Icons.account_box_rounded),
-                  onPressed: () {
-                    Get.to(() => AccountView(), binding: AccountBinding());
-                  },
-                )
+                InkWell(
+                    onTap: () {
+                      Get.toNamed('/request');
+                    },
+                    child: Icon(Icons.add_location_alt_rounded)),
+                PopupMenuButton(onSelected: (v) {
+                  Get.snackbar(v, v);
+                  Get.toNamed(v);
+                }, itemBuilder: (context) {
+                  return List.generate(5, (i) {
+                    return menuItem[i];
+                  });
+                }),
+                // IconButton(
+                //   icon: Icon(Icons.account_box_rounded),
+                //   onPressed: () {
+                //     Get.to(() => AccountView(), binding: AccountBinding());
+                //   },
+                // )
               ]),
           body: buildBody(context),
           bottomNavigationBar: BottomAppBar(
@@ -122,7 +246,8 @@ class RequestsHome extends StatelessWidget {
     final homeController = Get.find<HomeController>();
 
     return ListView(
-      children: [...homeController.user.map((e) => UserRequest(user: e))],
+      physics: BouncingScrollPhysics(),
+      children: [...request.map((e) => UserRequest(user: e))],
     );
   }
 }

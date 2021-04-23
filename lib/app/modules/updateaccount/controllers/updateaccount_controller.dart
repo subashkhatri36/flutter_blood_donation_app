@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_blood_donation_app/app/core/model/user_models.dart';
 import 'package:flutter_blood_donation_app/app/core/repositories/account_repository.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:get/get.dart';
 
 class UpdateaccountController extends GetxController {
@@ -10,7 +11,8 @@ class UpdateaccountController extends GetxController {
   TextEditingController nameController = new TextEditingController();
   TextEditingController poneController = new TextEditingController();
   TextEditingController addressController = new TextEditingController();
-
+  var mylatitude = 0.0.obs;
+  var mylongitude = 0.0.obs;
   AccountRepo accountRepo = new AccountRepositories();
 
   RxString bloodgroup = ''.obs;
@@ -30,20 +32,32 @@ class UpdateaccountController extends GetxController {
   RxBool updateState = false.obs;
   bool oneload = true;
 
-  void loading(UserModel model) {
+  Future<void> loading(UserModel model) async {
     if (oneload) {
+      List<Location> location =
+          await getcoordinatefromAddress(model.userAddress);
       nameController.text = model.username;
       poneController.text = model.phoneNo;
       addressController.text = model.userAddress;
-      bloodgroup.value = model.bloodgroup;
+    //  bloodgroup.value = model.bloodgroup;
       selectedData = model.bloodgroup;
+      mylatitude.value = location[0].latitude;
+      mylongitude.value = location[0].longitude;
       oneload = false;
+      print(location[0].latitude);
     }
   }
 
   @override
   void onInit() {
     super.onInit();
+  }
+
+  //geocoding
+  getcoordinatefromAddress(String address) async {
+    List<Location> locations = await locationFromAddress("$address,kathmandu");
+
+    return locations;
   }
 
   Future<bool> updateProfile() async {
@@ -53,8 +67,8 @@ class UpdateaccountController extends GetxController {
       UserModel model = new UserModel(
           username: nameController.text,
           userAddress: addressController.text,
-          latitude: 0,
-          longitude: 0,
+          latitude: mylatitude.value,
+          longitude: mylongitude.value,
           bloodgroup: bloodgroup.value,
           phoneNo: poneController.text,
           email: 'email',

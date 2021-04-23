@@ -45,6 +45,8 @@ class UpdateaccountView extends GetView<UpdateaccountController> {
                         validateMinMaxLength(string: value, minLegth: 10),
                   ),
                   SizedBox(height: Defaults.paddingmiddle),
+                 // Obx(() => Text(controller.mylatitude.value.toString())),
+                  SizedBox(height: Defaults.paddingmiddle),
                   CustomTextField(
                     round: true,
                     obscureText: false,
@@ -119,7 +121,7 @@ class UpdateaccountView extends GetView<UpdateaccountController> {
                           if (!controller.updateState.value) {
                             controller.updateState.value = true;
                             bool body = await controller.updateProfile();
-                            if (body) {
+                            if (body) { 
                               controller.updateState.value = false;
                               mcontroller.model.phoneNo =
                                   controller.poneController.text;
