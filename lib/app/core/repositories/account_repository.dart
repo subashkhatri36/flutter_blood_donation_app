@@ -87,12 +87,16 @@ class AccountRepositories implements AccountRepo {
 
   @override
   Future<Either<String, String>> updateUser(
+      
+      
       String userId, UserModel userModel) async {
     Map<String, dynamic> updateData = {
       'username': userModel.username,
       'userAddress': userModel.userAddress,
       'phoneNo': userModel.phoneNo,
       'bloodgroup': userModel.bloodgroup,
+      'latitude': userModel.latitude,
+      'longitude': userModel.longitude
     };
     try {
       bool complete = false;

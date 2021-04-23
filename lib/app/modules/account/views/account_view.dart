@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_blood_donation_app/app/Widgets/CustomButton.dart';
 import 'package:flutter_blood_donation_app/app/constant/defaults.dart';
-import 'package:flutter_blood_donation_app/app/modules/request/bindings/request_binding.dart';
-import 'package:flutter_blood_donation_app/app/modules/request/views/request_view.dart';
 import 'package:flutter_blood_donation_app/app/modules/updateaccount/bindings/updateaccount_binding.dart';
 import 'package:flutter_blood_donation_app/app/modules/updateaccount/views/updateaccount_view.dart';
 import 'package:flutter_blood_donation_app/app/modules/viewcomment/bindings/viewcomment_binding.dart';
@@ -66,8 +64,8 @@ class AccountView extends GetView<AccountController> {
                                       label: 'Send',
                                       labelColor: Colors.white,
                                       onPressed: () {
-                                        Get.to(() => RequestView(),
-                                            binding: RequestBinding());
+                                        // Get.to(() => RequestView(),
+                                        //     binding: RequestBinding());
                                       },
                                       borderRadius: 10,
                                     ),
@@ -400,6 +398,11 @@ class AccountHeaderWidget extends StatelessWidget {
                     style: TextStyle(
                         color: Colors.white, fontWeight: FontWeight.bold),
                   ),
+                  // Text(
+                  //   " ${accountController.model.latitude.toString()}",
+                  //   style: TextStyle(
+                  //       color: Colors.white, fontWeight: FontWeight.bold),
+                  // ),
                   IconButton(
                       icon: Icon(Icons.edit, color: Colors.white),
                       onPressed: () {

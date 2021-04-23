@@ -8,18 +8,18 @@ class UserModel {
   String userId;
   String username;
   String userAddress;
-  final double latitude;
-  final double longitude;
+  double latitude;
+  double longitude;
   String bloodgroup;
   String phoneNo;
-  final String email;
-  final bool active;
-  final int onestar;
-  final int twostar;
-  final int threestar;
-  final int fourstar;
-  final int fivestar;
-  final bool candonate;
+  String email;
+  bool active;
+  int onestar;
+  int twostar;
+  int threestar;
+  int fourstar;
+  int fivestar;
+  bool candonate;
 
   UserModel({
     this.onestar = 0,
@@ -29,14 +29,14 @@ class UserModel {
     this.fivestar = 0,
     this.candonate = true,
     this.userId,
-    @required this.username,
-    @required this.userAddress,
-    @required this.latitude,
-    @required this.longitude,
-    @required this.bloodgroup,
-    @required this.phoneNo,
-    @required this.email,
-    @required this.active,
+    this.username,
+    this.userAddress,
+    this.latitude,
+    this.longitude,
+    this.bloodgroup,
+    this.phoneNo,
+    this.email,
+    this.active,
     this.photoUrl = '',
   });
 

@@ -1,18 +1,19 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_blood_donation_app/app/constant/const.dart';
+import 'package:flutter_blood_donation_app/app/constant/timeformatting.dart';
+import 'package:flutter_blood_donation_app/app/core/model/request_model.dart';
 
 import '../../../Widgets/CustomButton.dart';
-import '../../../core/model/user_models.dart';
-import '../../login/views/registration_widget.dart';
 
 class UserRequest extends StatelessWidget {
-  final UserModel user;
+  final RequestModel user;
 
   const UserRequest({Key key, this.user}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 15),
+      padding: const EdgeInsets.only(bottom: 15),
       child: Container(
         width: double.infinity,
         color: Colors.white,
@@ -30,13 +31,14 @@ class UserRequest extends StatelessWidget {
                 SizedBox(width: 5),
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                   Text(
-                    user.username,
+                    user.name,
                     style: mediumText.copyWith(fontWeight: FontWeight.w400),
                   ),
-                  Text('looking for ${user.bloodgroup}  in ${user.userAddress}',
+                  Text('looking for ${user.bloodgroup}  in ${user.address}',
                       style: smallText, overflow: TextOverflow.ellipsis),
                   Text(
-                    'about 4 hour ago',
+                    StringExtension.displayTimeAgoFromTimestamp(
+                        user.timestamp.toString()),
                     style: smallText.copyWith(color: Colors.grey),
                   )
                 ]),
@@ -70,9 +72,12 @@ class UserRequest extends StatelessWidget {
                       children: [
                         Text(
                           user.bloodgroup,
-                          style: mediumText,
+                          style: mediumText.copyWith(color: Colors.grey[900]),
                         ),
                       ]),
+                  SizedBox(
+                    width: 10,
+                  ),
                   Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -99,7 +104,6 @@ class UserRequest extends StatelessWidget {
                           label: 'Help',
                           labelColor: Colors.white,
                           btnColor: Colors.purple,
-                          onPressed: () {},
                           borderRadius: 5)),
                 ]),
           ),
@@ -117,16 +121,15 @@ class UserRequest extends StatelessWidget {
               Spacer(),
               Row(
                 children: [
-                  Icon(Icons.comment, color: Colors.grey),
-                  Text('COMMENT',
-                      style: mediumText.copyWith(color: Colors.grey)),
+                  Icon(Icons.comment, color: grey),
+                  Text('COMMENT', style: mediumText.copyWith(color: grey)),
                 ],
               ),
               Spacer(),
               Row(
                 children: [
-                  Icon(Icons.share, color: Colors.grey),
-                  Text('SHARE', style: mediumText.copyWith(color: Colors.grey)),
+                  Icon(Icons.share, color: grey),
+                  Text('SHARE', style: mediumText.copyWith(color: grey)),
                 ],
               ),
             ]),

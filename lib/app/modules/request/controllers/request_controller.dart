@@ -15,6 +15,7 @@ class RequestController extends GetxController {
   TextEditingController detailController = new TextEditingController();
   TextEditingController locationController = new TextEditingController();
   final requestformKey = GlobalKey<FormState>();
+
   void sendrequest() {
     RequestModel req = RequestModel(
         name: 'hh',
