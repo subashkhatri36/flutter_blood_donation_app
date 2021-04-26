@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blood_donation_app/app/constant/const.dart';
@@ -9,7 +11,7 @@ import '../../../Widgets/CustomButton.dart';
 class UserRequest extends StatelessWidget {
   final RequestModel user;
 
-  const UserRequest({Key key, this.user}) : super(key: key);
+  const UserRequest({this.user});
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -25,26 +27,38 @@ class UserRequest extends StatelessWidget {
               children: [
                 SizedBox(width: 10),
                 CircleAvatar(
-                  backgroundImage: NetworkImage(user.photoUrl),
-                  backgroundColor: Colors.grey,
+                  radius: 25,
+                  backgroundColor: Colors.blueGrey[700],
+                  child: CircleAvatar(
+                    radius: 24,
+                    backgroundImage: user.userphotoUrl != null
+                        ? NetworkImage(user.userphotoUrl)
+                        : AssetImage(
+                            'assets/images/blooddonation.png',
+                          ),
+                    backgroundColor: Colors.grey,
+                  ),
                 ),
-                SizedBox(width: 5),
+                SizedBox(width: 15),
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                   Text(
                     user.name,
+                    //capitalize(),
                     style: mediumText.copyWith(fontWeight: FontWeight.w400),
                   ),
                   Text('looking for ${user.bloodgroup}  in ${user.address}',
-                      style: smallText, overflow: TextOverflow.ellipsis),
+                      style: smallText.copyWith(
+                          fontWeight: FontWeight.w400, color: Colors.grey[700]),
+                      overflow: TextOverflow.ellipsis),
                   Text(
-                    StringExtension.displayTimeAgoFromTimestamp(
-                        user.timestamp.toString()),
+                    " ${user.timestamp != null ? StringExtension.displayTimeAgoFromTimestamp(user.timestamp.toDate().toString()) : ''}",
                     style: smallText.copyWith(color: Colors.grey),
-                  )
+                  ),
                 ]),
                 Spacer(),
                 SizedBox(width: 10),
                 Icon(Icons.more_horiz, color: Colors.grey),
+                SizedBox(width: 10),
               ],
             ),
           ),
@@ -53,8 +67,8 @@ class UserRequest extends StatelessWidget {
               height: 150,
               width: double.infinity,
               color: Colors.grey,
-              child: Image.network('https://i.stack.imgur.com/HILmr.png',
-                  fit: BoxFit.cover)
+              child:
+                  Image.memory(base64Decode(user.photoUrl), fit: BoxFit.cover)
               // child: CustomMap(zoomEnabled: false, compassEnabled: false),
               ),
           SizedBox(height: 10),
@@ -76,7 +90,7 @@ class UserRequest extends StatelessWidget {
                         ),
                       ]),
                   SizedBox(
-                    width: 10,
+                    width: 15,
                   ),
                   Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -85,12 +99,12 @@ class UserRequest extends StatelessWidget {
                         Text('Blood Donors Needed'),
                         Row(children: [
                           Icon(Icons.location_on, size: 16, color: Colors.grey),
-                          Text('Textas Children\'s Hospital,',
+                          Text('${user.detail} Hospital',
                               style: smallText.copyWith(
                                   color: Colors.grey,
                                   fontWeight: FontWeight.w400)),
                         ]),
-                        Text('Houston ,TX',
+                        Text('${user.address} ,Kathmandu',
                             style: smallText.copyWith(color: Colors.grey)),
                         //
                       ]),
@@ -114,8 +128,19 @@ class UserRequest extends StatelessWidget {
             child: Row(children: [
               Row(
                 children: [
+                  SizedBox(
+                    width: 10,
+                  ),
                   Icon(Icons.thumb_up, color: Colors.grey),
-                  Text('LIKE', style: mediumText.copyWith(color: Colors.grey)),
+                  InkWell(
+                      onTap: () {
+                        // firebaseFirestore
+                        //     .collection('request')
+                        //     .doc(user.id)
+                        //     .delete();
+                      },
+                      child: Text('LIKE',
+                          style: mediumText.copyWith(color: Colors.grey))),
                 ],
               ),
               Spacer(),

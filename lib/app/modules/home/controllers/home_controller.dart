@@ -1,22 +1,27 @@
+import 'package:flutter_blood_donation_app/app/core/model/request_model.dart';
 import 'package:flutter_blood_donation_app/app/core/model/user_models.dart';
+import 'package:flutter_blood_donation_app/app/core/repositories/post_repo.dart';
 import 'package:flutter_blood_donation_app/app/core/repositories/users_repo.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 
 class HomeController extends GetxController {
-  //TODO: Implement HomeController
   var selectedIndex = 0.obs;
+  var loading = false.obs;
   final count = 0.obs;
   var mylatitude = 0.0.obs;
   var mylongitude = 0.0.obs;
   var myinfo = UserModel().obs;
-  var userlist = List<UserModel>.empty(growable: true);
+  var userlist = List<UserModel>.empty(growable: true).obs;
+  var requestData = List<RequestModel>.empty(growable: true).obs;
   @override
   void onInit() {
     super.onInit();
     getPosition();
     getUsers();
+
     getmyinfo();
+    streamRequest();
   }
 
   @override
@@ -28,13 +33,12 @@ class HomeController extends GetxController {
   void onClose() {}
   getmyinfo() async {
     myinfo.value = await userRepo.getmyinfo();
-   
   }
 
   getUsers() async {
     List<UserModel> users = await userRepo.getuser();
-    userlist = users;
-    //print(userlist.length);
+    // print(users.length);
+    userlist = users.obs;
   }
 
   getPosition() async {
@@ -42,6 +46,13 @@ class HomeController extends GetxController {
       mylatitude.value = location.latitude;
       mylongitude.value = location.longitude;
     });
+  }
+
+  streamRequest() async {
+    loading.value = true;
+    // print('streaming request');
+    requestData.bindStream(postRepo.getRequest());
+    loading.value = false;
   }
 }
 

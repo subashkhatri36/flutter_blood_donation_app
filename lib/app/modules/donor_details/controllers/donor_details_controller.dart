@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter_blood_donation_app/app/constant/const.dart';
 import 'package:flutter_blood_donation_app/app/core/model/user_models.dart';
+import 'package:flutter_blood_donation_app/app/modules/home/controllers/home_controller.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
@@ -19,17 +20,18 @@ class DonorDetailsController extends GetxController {
   //geocoding
   getcoordinatefromAddress(String address) async {
     List<Location> locations = await locationFromAddress("$address,kathmandu");
-   
+
     return locations[0];
   }
 
   getuser() async {
     var data = await firebaseFirestore
         .collection('User')
-        .where('userId', isNotEqualTo: auth.currentUser.uid)
+        // .where('username', isNotEqualTo: userController.myinfo.value.username)
+        //  .where('userId', isNotEqualTo: auth.currentUser.uid)
         .get();
     data.docs.forEach((element) async {
-      print(element.id);
+      //print(element.id);
       if (element.data()['userAddress'] == '' ||
           element.data()['userAddress'] == null) {
         bool updated = false;
@@ -51,7 +53,7 @@ class DonorDetailsController extends GetxController {
   void onInit() {
     super.onInit();
     getPosition();
-    loading.value = false;
+
     //getcoordinatefromAddress();
   }
 
@@ -85,14 +87,14 @@ class DonorDetailsController extends GetxController {
       }
 
       var loc = await getcoordinatefromAddress(element.userAddress);
-      print(loc.latitude);
+      //print(loc.latitude);
 
       UsermodelSortedtoMyLocationModel mod = UsermodelSortedtoMyLocationModel()
         ..distance = getVincentyDistance(
             mylatitude.value, mylongitude.value, loc.latitude, loc.longitude)
         ..name = element.username
         ..donorindex = userlist.indexOf(element);
-      print(donorlist.length);
+      //  print(donorlist.length);
       donorlist.add(mod);
     });
 
@@ -172,7 +174,7 @@ class DonorDetailsController extends GetxController {
                         (-3 + 4 * sinSigma * sinSigma) *
                         (-3 + 4 * cos2SigmaM * cos2SigmaM)));
     double s = b * A * (sigma - deltaSigma);
-    return s;
+    return s / 1000;
   }
 }
 

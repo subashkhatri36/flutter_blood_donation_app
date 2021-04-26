@@ -2,10 +2,6 @@ import 'package:get/get.dart';
 
 import 'package:flutter_blood_donation_app/app/modules/account/bindings/account_binding.dart';
 import 'package:flutter_blood_donation_app/app/modules/account/views/account_view.dart';
-import 'package:flutter_blood_donation_app/app/modules/bloodgroup/bindings/bloodgroup_binding.dart';
-import 'package:flutter_blood_donation_app/app/modules/bloodgroup/views/bloodgroup_view.dart';
-import 'package:flutter_blood_donation_app/app/modules/category/bindings/category_binding.dart';
-import 'package:flutter_blood_donation_app/app/modules/category/views/category_view.dart';
 import 'package:flutter_blood_donation_app/app/modules/donor_details/bindings/donor_details_binding.dart';
 import 'package:flutter_blood_donation_app/app/modules/donor_details/views/donor_details_view.dart';
 import 'package:flutter_blood_donation_app/app/modules/home/bindings/home_binding.dart';
@@ -39,16 +35,7 @@ class AppPages {
       page: () => LoginView(),
       binding: LoginBinding(),
     ),
-    GetPage(
-      name: _Paths.CATEGORY,
-      page: () => CategoryView(),
-      binding: CategoryBinding(),
-    ),
-    GetPage(
-      name: _Paths.BLOODGROUP,
-      page: () => BloodgroupView(),
-      binding: BloodgroupBinding(),
-    ),
+ 
     GetPage(
       name: _Paths.SPLASH,
       page: () => SplashView(),

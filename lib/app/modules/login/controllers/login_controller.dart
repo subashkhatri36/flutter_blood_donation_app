@@ -65,7 +65,7 @@ class LoginController extends GetxController {
     userLogin.fold(
         (l) => Get.snackbar('Error !', l, snackPosition: SnackPosition.BOTTOM),
         (r) {
-      Get.to(HomeView(), binding: HomeBinding());
+      Get.offAll(HomeView(), binding: HomeBinding());
     });
     loginProcess.value = false;
   }
@@ -93,7 +93,7 @@ class LoginController extends GetxController {
         await _authenticationRepo.userRegister(user, rpasswordController.text);
     userLog.fold((l) {
       print(l);
-    }, (r) => Get.off(HomeView(), binding: HomeBinding()));
+    }, (r) => Get.offAll(HomeView(), binding: HomeBinding()));
     loginProcess.value = false;
   }
 

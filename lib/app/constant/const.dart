@@ -15,4 +15,8 @@ final mediumText = TextStyle(fontSize: 16);
 final smallText = TextStyle(fontSize: 14);
 
 //colors
-const grey=Colors.grey;
+const grey = Colors.grey;
+
+//noimage
+String noimage =
+    'https://upload.wikimedia.org/wikipedia/commons/0/0a/No-image-available.png';

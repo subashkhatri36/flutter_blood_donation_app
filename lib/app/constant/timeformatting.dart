@@ -1,5 +1,5 @@
 extension StringExtension on String {
-  static String displayTimeAgoFromTimestamp(String timestamp) {
+  static String displayTimeAgoFromTimestamp(timestamp) {
     final year = int.parse(timestamp.substring(0, 4));
     final month = int.parse(timestamp.substring(5, 7));
     final day = int.parse(timestamp.substring(8, 10));

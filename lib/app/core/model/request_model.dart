@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class RequestModel {
@@ -5,14 +7,12 @@ class RequestModel {
   String name;
   String bloodgroup;
   Timestamp timestamp;
-  double latitude;
-  double longitude;
   String city;
   String address;
   String detail;
   bool active;
   String photoUrl;
-
+  String userphotoUrl;
   RequestModel(
       {this.id,
       this.name,
@@ -22,36 +22,72 @@ class RequestModel {
       this.active,
       this.timestamp,
       this.photoUrl,
+      this.userphotoUrl,
       this.city = 'Kathmandu'});
 
-  RequestModel.fromJson(Map<String, dynamic> json) {
-    this.id = json['id'];
-    this.name = json['name'];
-    this.bloodgroup = json['bloodgroup'];
-    this.detail = json['detail'];
-    this.address = json['address'];
-    this.timestamp = Timestamp.now();
-  }
-  RequestModel.fromDocumentSnapshot(DocumentSnapshot json) {
-    this.id = json.id;
-    this.name = json.data()['name'];
-    this.bloodgroup = json.data()['bloodgroup'];
-    this.detail = json.data()['detail'];
-    this.address = json.data()['address'];
-    this.timestamp = json.data()['timestamp'];
-    this.photoUrl = json.data()['photoUrl'];
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is RequestModel &&
+        other.id == id &&
+        other.name == name &&
+        other.bloodgroup == bloodgroup &&
+        other.timestamp == timestamp &&
+        other.city == city &&
+        other.address == address &&
+        other.detail == detail &&
+        other.active == active &&
+        other.photoUrl == photoUrl &&
+        other.userphotoUrl == userphotoUrl;
   }
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-
-    data['name'] = this.name;
-    data['bloodgroup'] = this.bloodgroup;
-    data['address'] = this.address;
-    data['detail'] = this.detail;
-    data['active'] = this.active;
-    data['photoUrl'] = this.photoUrl;
-
-    return data;
+  @override
+  int get hashCode {
+    return id.hashCode ^
+        name.hashCode ^
+        bloodgroup.hashCode ^
+        timestamp.hashCode ^
+        city.hashCode ^
+        address.hashCode ^
+        detail.hashCode ^
+        active.hashCode ^
+        photoUrl.hashCode ^
+        userphotoUrl.hashCode;
   }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'name': name,
+      'bloodgroup': bloodgroup,
+      'timestamp': timestamp,
+      'city': city,
+      'address': address,
+      'detail': detail,
+      'active': active,
+      'photoUrl': photoUrl,
+      'userphotoUrl': userphotoUrl,
+    };
+  }
+
+  factory RequestModel.fromMap(Map<String, dynamic> map) {
+    return RequestModel(
+      id: map['id'],
+      name: map['name'],
+      bloodgroup: map['bloodgroup'],
+      timestamp: map['timestamp'],
+      city: map['city'],
+      address: map['address'],
+      detail: map['detail'],
+      active: map['active'],
+      photoUrl: map['photoUrl'],
+      userphotoUrl: map['userphotoUrl'],
+    );
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory RequestModel.fromJson(String source) =>
+      RequestModel.fromMap(json.decode(source));
 }

@@ -5,6 +5,7 @@ import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_blood_donation_app/app/core/model/comment_model.dart';
+import 'package:flutter_blood_donation_app/app/core/model/request_model.dart';
 
 import 'package:flutter_blood_donation_app/app/core/model/user_models.dart';
 
@@ -14,10 +15,12 @@ abstract class AccountRepo {
   Future<Either<String, List<CommentModel>>> getUserComment(String userId);
   Future<Either<String, String>> updateUser(String userId, UserModel userModel);
   Future<Either<String, String>> uploadImage(File path, String userId);
+  Future<Either<String, RequestModel>> getCurrentRequest(String userId);
 }
 
 class AccountRepositories implements AccountRepo {
   final _firebaseStorage = FirebaseStorage.instance;
+
   @override
   Future<Either<String, String>> uploadImage(File path, String userId) async {
     try {
@@ -87,8 +90,6 @@ class AccountRepositories implements AccountRepo {
 
   @override
   Future<Either<String, String>> updateUser(
-      
-      
       String userId, UserModel userModel) async {
     Map<String, dynamic> updateData = {
       'username': userModel.username,
@@ -164,6 +165,33 @@ class AccountRepositories implements AccountRepo {
       }
     } catch (error) {
       return left(false);
+    }
+  }
+
+  @override
+  Future<Either<String, RequestModel>> getCurrentRequest(String userId) async {
+    try {
+      bool complete = false;
+      RequestModel rmodel;
+      await FirebaseFirestore.instance
+          .collection('request')
+          .where('id', isEqualTo: userId)
+          .where('active', isEqualTo: true)
+          .limit(1)
+          .get()
+          .then((value) {
+        value.docs.forEach((element) {
+          rmodel = RequestModel.fromMap(element.data());
+          print('from data here');
+        });
+      }).whenComplete(() => complete = true);
+      if (complete) {
+        return right(rmodel);
+      } else {
+        return left('Some Things went fetching user info of request.');
+      }
+    } catch (error) {
+      return left(error.toString());
     }
   }
 }

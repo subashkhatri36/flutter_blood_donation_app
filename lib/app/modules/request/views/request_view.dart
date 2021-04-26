@@ -2,9 +2,9 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_blood_donation_app/app/constant/const.dart';
+import 'package:flutter_blood_donation_app/app/constant/defaults.dart';
 import 'package:flutter_blood_donation_app/app/modules/home/controllers/home_controller.dart';
 import 'package:flutter_blood_donation_app/app/modules/request/controllers/request_controller.dart';
-import 'package:flutter_blood_donation_app/app/utlis/validators.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -13,165 +13,197 @@ List bloodgroup = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 class RequestView extends GetView<RequestController> {
   @override
   Widget build(BuildContext context) {
-    var scr = new GlobalKey();
+    //  var scr = new GlobalKey();
+    bool expand = false;
     return Scaffold(
+      appBar: AppBar(
+        title: Text('RequestBlood'),
+      ),
       body: SingleChildScrollView(
-        child: Container(
-          height: MediaQuery.of(context).size.height,
-          child: Form(
-            key: controller.requestformKey,
-            child: Column(mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                // padding: EdgeInsets.only(left: 20, right: 10, top: 20),
-                children: [
-                  AppBar(
-                    title: Text('RequestBlood'),
-                    centerTitle: true,
-                  ),
-                  Text(
-                    'Our donors help when you need them the most',
-                    style: mediumText.copyWith(color: grey[800]),
-                  ),
-                  Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                    Text(' Request on behalf of friend'),
+        child: Column(
+          children: [
+            SizedBox(
+              height: Defaults.paddingbig,
+            ),
+            Form(
+              key: controller.requestformKey,
+              child: Column(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  // padding: EdgeInsets.only(left: 20, right: 10, top: 20),
+                  children: [
+                    Text(
+                      'Our donors help when you need them the most',
+                      style: mediumText.copyWith(color: grey[800]),
+                    ),
+                    Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                      Text(' Request on behalf of friend'),
+                      Obx(
+                        () => Switch(
+                          value: controller.isSwitched.value,
+                          onChanged: (value) {
+                            controller.isSwitched.value = value;
+                            expand = value;
+                          },
+                          activeTrackColor: Colors.lightGreenAccent,
+                          activeColor: Colors.green,
+                        ),
+                      ),
+                    ]),
+                    SizedBox(height: 10),
+                    // Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                    //   Text('Find donor near my location'),
+                    //   Obx(
+                    //     () => Switch(
+                    //       value: controller.mylocation.value,
+                    //       onChanged: (value) {
+                    //         controller.mylocation.value = value;
+                    //       },
+                    //       activeTrackColor: Colors.lightGreenAccent,
+                    //       activeColor: Colors.green,
+                    //     ),
+                    //   ),
+                    // ]),
+                    // SizedBox(height: 10),
                     Obx(
-                      () => Switch(
-                        value: controller.isSwitched.value,
-                        onChanged: (value) {
-                          controller.isSwitched.value = value;
+                      () => !controller.mylocation.value
+                          ? Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: Defaults.paddingnormal),
+                              child: TextFormField(
+                                controller: controller.locationController,
+                                validator: (v) {
+                                  if (v.length != 0) {
+                                    return null;
+                                  } else
+                                    return 'Enter a valid location';
+                                },
+                                decoration: InputDecoration(
+                                    contentPadding: const EdgeInsets.all(8.0),
+                                    border: UnderlineInputBorder(),
+                                    labelText:
+                                        'Hospital or emergency location'),
+                              ),
+                            )
+                          : Text(''),
+                    ),
+                    Obx(
+                      () => controller.mylocation.value
+                          ? Text(
+                              'Ranibari,Kathmandu',
+                              style: mediumText,
+                            )
+                          : Container(),
+                    ),
+                    Obx(
+                      () => controller.imagePath.value == ''
+                          ? Container(
+                              // height: 200,
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: Defaults.paddingnormal),
+                                child: CustomGoogleMap(),
+                              ),
+                            )
+                          : Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: Defaults.paddingnormal),
+                              child: Image.memory(
+                                controller.data.value,
+                                height: 100,
+                                width: double.infinity,
+                              ),
+                            ),
+                    ),
+                    SizedBox(height: 10),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: Defaults.paddingnormal),
+                      child: TextFormField(
+                          controller: controller.detailController,
+                          validator: (v) {
+                            if (v.isEmpty)
+                              return 'Enter a valid';
+                            else if (v.isNum)
+                              return 'Enter a prover result';
+                            else
+                              return null;
+                          },
+                          decoration: InputDecoration(
+                              hintMaxLines: 3,
+                              hintText: 'Tell use about hospital detail')),
+                    ),
+                    SizedBox(height: 10),
+                    Obx(() => controller.isSwitched.value
+                        ? Text('Required Blood Group',
+                            style: largeText.copyWith(color: Colors.grey))
+                        : const Text('')),
+                    SizedBox(height: 10),
+                    Obx(() {
+                      if (controller.isSwitched.value)
+                        return Container(
+                            height: 140,
+                            child: GridView(
+                              physics: NeverScrollableScrollPhysics(),
+                              padding:
+                                  EdgeInsets.only(top: 10, left: 20, right: 20),
+                              gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisCount: 5,
+                                      crossAxisSpacing: 20,
+                                      mainAxisSpacing: 20),
+                              children: [
+                                for (int i = 0; i < 8; i++)
+                                  InkWell(
+                                    onTap: () {
+                                      controller.bloodgroup.value =
+                                          bloodgroup[i];
+                                    },
+                                    child: CircleAvatar(
+                                        radius: 10,
+                                        backgroundColor:
+                                            controller.bloodgroup.value ==
+                                                    bloodgroup[i]
+                                                ? Colors.red
+                                                : Colors.grey,
+                                        child: Text(
+                                          bloodgroup[i],
+                                          style: mediumText.copyWith(
+                                              color: Theme.of(context)
+                                                  .scaffoldBackgroundColor),
+                                        )),
+                                  ),
+                              ],
+                            ));
+                      return Container();
+                    }),
+                    Container(
+                      padding: EdgeInsets.only(left: 20, right: 20),
+                      width: double.infinity,
+                      child: TextButton(
+                        onPressed: () {
+                          if (controller.requestformKey.currentState
+                              .validate()) {
+                            controller.sendrequest();
+                          }
                         },
-                        activeTrackColor: Colors.lightGreenAccent,
-                        activeColor: Colors.green,
+                        child: Text('Continue'),
+                        style: TextButton.styleFrom(
+                            primary: Colors.white,
+                            backgroundColor: Colors.deepOrange),
                       ),
                     ),
-                  ]),
-                  SizedBox(height: 10),
-                  Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                    Text('Find donor near my location'),
-                    Obx(
-                      () => Switch(
-                        value: controller.mylocation.value,
-                        onChanged: (value) {
-                          controller.mylocation.value = value;
-                        },
-                        activeTrackColor: Colors.lightGreenAccent,
-                        activeColor: Colors.green,
-                      ),
+                    SizedBox(
+                      height: 10,
                     ),
-                  ]),
-                  SizedBox(height: 10),
-                  Obx(
-                    () => !controller.mylocation.value
-                        ? TextFormField(
-                            controller: controller.locationController,
-                            validator: (v) =>
-                                validateMinLength(string: v, length: 3),
-                            decoration: InputDecoration(
-                                contentPadding: const EdgeInsets.all(8.0),
-                                border: UnderlineInputBorder(),
-                                labelText: 'Hospital or emergency location'),
-                          )
-                        : Text(''),
-                  ),
-                  Obx(
-                    () => controller.mylocation.value
-                        ? Text(
-                            'Ranibari,Kathmandu',
-                            style: mediumText,
-                          )
-                        : Container(),
-                  ),
-                  Obx(
-                    () => controller.imagePath.value == ''
-                        ? Container(
-                            // height: 200,
-                            child: CustomGoogleMap(),
-                          )
-                        : Image.memory(
-                            controller.list,
-                            height: 100,
-                            width: double.infinity,
-                          ),
-                  ),
-                  SizedBox(height: 10),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: TextFormField(
-                        decoration: InputDecoration(
-                            hintMaxLines: 3,
-                            hintText:
-                                'Tell us why and how urgent you\n need blood donor? Give us many details as possible')),
-                  ),
-                  SizedBox(height: 10),
-                  Obx(() => controller.isSwitched.value
-                      ? Text('Required Blood Group',
-                          style: largeText.copyWith(color: Colors.grey))
-                      : const Text('')),
-                  SizedBox(height: 10),
-                  Obx(() {
-                    if (controller.isSwitched.value)
-                      return Container(
-                          height: 200,
-                          //   color: Colors.grey,
-                          child: GridView(
-                            padding:
-                                EdgeInsets.only(top: 10, left: 20, right: 20),
-                            gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 4,
-                                    crossAxisSpacing: 30,
-                                    mainAxisSpacing: 30),
-                            children: [
-                              for (int i = 0; i < 8; i++)
-                                InkWell(
-                                  onTap: () {
-                                    controller.bloodgroup.value = bloodgroup[i];
-                                  },
-                                  child: CircleAvatar(
-                                      radius: 40,
-                                      backgroundColor:
-                                          controller.bloodgroup.value ==
-                                                  bloodgroup[i]
-                                              ? Colors.red
-                                              : Colors.grey,
-                                      child: Text(
-                                        bloodgroup[i],
-                                        style: mediumText.copyWith(
-                                            color: Theme.of(context)
-                                                .scaffoldBackgroundColor),
-                                      )),
-                                ),
-                            ],
-                          ));
-                    return Container();
-                  }),
-                  Container(
-                    padding: EdgeInsets.only(left: 20, right: 20),
-                    width: double.infinity,
-                    child: TextButton(
-                      onPressed: () {
-                        if (controller.requestformKey.currentState.validate()) {
-                          controller.sendrequest();
-                          //print('');
-                        }
-                      },
-                      child: Text('Continue'),
-                      style: TextButton.styleFrom(
-                          primary: Colors.white,
-                          backgroundColor: Colors.deepOrange),
+                    Text(
+                      'These Services are free of cost. do not pay anyone',
+                      style: smallText.copyWith(color: grey),
                     ),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Text(
-                    'These Services are free of cost. do not pay anyone',
-                    style: smallText.copyWith(color: grey),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  )
-                ]),
-          ),
+                    SizedBox(
+                      height: 10,
+                    )
+                  ]),
+            ),
+          ],
         ),
       ),
     );
@@ -188,70 +220,92 @@ class CustomGoogleMap extends StatefulWidget {
 }
 
 class _CustomGoogleMapState extends State<CustomGoogleMap> {
-  //final controller = Get.find<RequestController>();
   Uint8List _imageBytes;
+  final reqController = Get.find<RequestController>();
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 140,
-      child: _imageBytes == null
-          ? GoogleMap(
-              initialCameraPosition: CameraPosition(
-                target: LatLng(userController.mylatitude.value,
-                    userController.mylongitude.value),
-                zoom: 16.0,
-              ),
-              markers: Set<Marker>.of(
-                [
-                  Marker(
-                    markerId: MarkerId('marker_1'),
-                    position: LatLng(userController.mylatitude.value,
+    return Column(
+      children: [
+        Container(
+          height: 140,
+          child: _imageBytes == null
+              ? GoogleMap(
+                  initialCameraPosition: CameraPosition(
+                    target: LatLng(userController.mylatitude.value,
                         userController.mylongitude.value),
-                    consumeTapEvents: true,
-                    infoWindow: InfoWindow(
-                      title: 'Blood Request location',
-                      snippet: "My location",
-                    ),
-                    onTap: () {
-                      print("Marker tapped");
-                    },
+                    zoom: 0.0,
                   ),
-                ],
-              ),
-              mapType: MapType.normal,
-              onTap: (location) => print('onTap: $location'),
-              onCameraMove: (cameraUpdate) =>
-                  print('onCameraMove: $cameraUpdate'),
-              compassEnabled: true,
-              onMapCreated: (controller) {
-                // _mapController = controller;
-                Future.delayed(Duration(seconds: 2)).then((_) async {
-                  Uint8List image = await controller.takeSnapshot();
-                  setState(() {
-                    _imageBytes = image;
-                  });
-                });
-                // Future.delayed(Duration(seconds: 2)).then(
-                //   (_) {
-                //     controller.animateCamera(
-                //       CameraUpdate.newCameraPosition(
-                //         CameraPosition(
-                //           bearing: 270.0,
-                //           target: LatLng(userController.mylatitude.value,
-                //               userController.mylongitude.value),
-                //           tilt: 30.0,
-                //           zoom: 18,
-                //         ),
-                //       ),
-                //     );
-                //   controller.getVisibleRegion().then(
-                //       (bounds) => print("bounds: ${bounds.toString()}"));
-
-                // },
-                //);
-              },
-            )
-          : Image.memory(_imageBytes),
+                  markers: Set<Marker>.of(
+                    [
+                      Marker(
+                        markerId: MarkerId('marker_1'),
+                        position: LatLng(userController.mylatitude.value,
+                            userController.mylongitude.value),
+                        consumeTapEvents: true,
+                        infoWindow: InfoWindow(
+                          title: 'Blood Request location',
+                          snippet: "My location",
+                        ),
+                        onTap: () {
+                          print("Marker tapped");
+                        },
+                      ),
+                    ],
+                  ),
+                  mapType: MapType.normal,
+                  onTap: (location) => print('onTap: $location'),
+                  onCameraMove: (cameraUpdate) =>
+                      print('onCameraMove: $cameraUpdate'),
+                  compassEnabled: true,
+                  onMapCreated: (controller) {
+                    Future.delayed(Duration(seconds: 2)).then(
+                      (_) {
+                        controller
+                            .animateCamera(
+                              CameraUpdate.newCameraPosition(
+                                CameraPosition(
+                                  bearing: 270.0,
+                                  target: LatLng(
+                                      userController.mylatitude.value,
+                                      userController.mylongitude.value),
+                                  tilt: 30.0,
+                                  zoom: 14,
+                                ),
+                              ),
+                            )
+                            .then((value) =>
+                                Future.delayed(Duration(seconds: 6))
+                                    .then((_) async {
+                                  Uint8List image =
+                                      await controller.takeSnapshot();
+                                  setState(() {
+                                    _imageBytes = image;
+                                  });
+                                  reqController.data.value = _imageBytes;
+                                  //  print(reqController.data.value);
+                                }));
+                        //   controller.getVisibleRegion().then(
+                        //       (bounds) => print("bounds: ${bounds.toString()}"));
+                      },
+                    );
+                    // _mapController = controller;
+                  },
+                )
+              : Image.memory(_imageBytes),
+        ),
+        // if (_imageBytes == null)
+        //   TextButton(
+        //     child: Text(
+        //       'Take a snapshot',
+        //     ),
+        //     onPressed: () async {
+        //       final imageBytes = await _mapController?.takeSnapshot();
+        //       setState(() {
+        //         _imageBytes = imageBytes;
+        //       });
+        //     },
+        //   ),
+      ],
     );
   }
 }
