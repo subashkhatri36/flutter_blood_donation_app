@@ -36,14 +36,14 @@ List<RequestModel> request = [
       timestamp: Timestamp.now()),
 ];
 List<PopupMenuItem> menuItem = [
-  PopupMenuItem(
-    child: Text('Request Blood'),
-    value: '/request',
-  ),
-  PopupMenuItem(
-    child: Text('Home'),
-    value: '/home',
-  ),
+  // PopupMenuItem(
+  //   child: Text('Request Blood'),
+  //   value: '/request',
+  // ),
+  // PopupMenuItem(
+  //   child: Text('Home'),
+  //   value: '/home',
+  // ),
   PopupMenuItem(
     child: Text('Account'),
     value: '/account',
@@ -79,7 +79,6 @@ List<UserModel> user = [
       email: '',
       latitude: 23,
       longitude: 77,
-    
       userAddress: 'B',
       photoUrl:
           'https://images.unsplash.com/photo-1457449940276-e8deed18bfff?ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8cHJvZmlsZXxlbnwwfHwwfHw%3D&ixlib=rb-1.2.1&w=1000&q=80'),
@@ -93,7 +92,6 @@ List<UserModel> user = [
       latitude: 22,
       longitude: 22,
       userAddress: '',
-   
       photoUrl:
           'https://images.unsplash.com/photo-1532074205216-d0e1f4b87368?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MjJ8fHByb2ZpbGV8ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80'),
   UserModel(
@@ -106,7 +104,6 @@ List<UserModel> user = [
       latitude: 32,
       longitude: 32,
       userAddress: '',
-     
       photoUrl:
           'https://expertphotography.com/wp-content/uploads/2018/10/cool-profile-pictures-retouching-1.jpg'),
   UserModel(
@@ -118,7 +115,6 @@ List<UserModel> user = [
       email: '',
       latitude: 33,
       longitude: 22,
-     
       userAddress: '',
       photoUrl: 'https://i.stack.imgur.com/HILmr.png'),
 ];

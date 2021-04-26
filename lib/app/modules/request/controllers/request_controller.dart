@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_blood_donation_app/app/constant/const.dart';
@@ -10,6 +12,8 @@ class RequestController extends GetxController {
   var formyself = false.obs;
   var mylocation = false.obs;
   var bloodgroup = 'A+'.obs;
+  RxString imagePath = ''.obs;
+  Uint8List list;
   //
   //blood request controller
   TextEditingController detailController = new TextEditingController();

@@ -1,15 +1,19 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
-
+import 'package:flutter_blood_donation_app/app/constant/const.dart';
+import 'package:flutter_blood_donation_app/app/modules/home/controllers/home_controller.dart';
+import 'package:flutter_blood_donation_app/app/modules/request/controllers/request_controller.dart';
+import 'package:flutter_blood_donation_app/app/utlis/validators.dart';
 import 'package:get/get.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-import '../../login/views/registration_widget.dart';
-import '../controllers/request_controller.dart';
-
-List<String> bloodgroup = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
+List bloodgroup = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 
 class RequestView extends GetView<RequestController> {
   @override
   Widget build(BuildContext context) {
+    var scr = new GlobalKey();
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
@@ -25,7 +29,7 @@ class RequestView extends GetView<RequestController> {
                   ),
                   Text(
                     'Our donors help when you need them the most',
-                    style: mediumText.copyWith(color: Colors.grey[800]),
+                    style: mediumText.copyWith(color: grey[800]),
                   ),
                   Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                     Text(' Request on behalf of friend'),
@@ -58,6 +62,9 @@ class RequestView extends GetView<RequestController> {
                   Obx(
                     () => !controller.mylocation.value
                         ? TextFormField(
+                            controller: controller.locationController,
+                            validator: (v) =>
+                                validateMinLength(string: v, length: 3),
                             decoration: InputDecoration(
                                 contentPadding: const EdgeInsets.all(8.0),
                                 border: UnderlineInputBorder(),
@@ -72,6 +79,18 @@ class RequestView extends GetView<RequestController> {
                             style: mediumText,
                           )
                         : Container(),
+                  ),
+                  Obx(
+                    () => controller.imagePath.value == ''
+                        ? Container(
+                            // height: 200,
+                            child: CustomGoogleMap(),
+                          )
+                        : Image.memory(
+                            controller.list,
+                            height: 100,
+                            width: double.infinity,
+                          ),
                   ),
                   SizedBox(height: 10),
                   Padding(
@@ -130,9 +149,10 @@ class RequestView extends GetView<RequestController> {
                     width: double.infinity,
                     child: TextButton(
                       onPressed: () {
-                        if (controller.requestformKey.currentState
-                            .validate()) {}
-                        // print('');
+                        if (controller.requestformKey.currentState.validate()) {
+                          controller.sendrequest();
+                          //print('');
+                        }
                       },
                       child: Text('Continue'),
                       style: TextButton.styleFrom(
@@ -145,7 +165,7 @@ class RequestView extends GetView<RequestController> {
                   ),
                   Text(
                     'These Services are free of cost. do not pay anyone',
-                    style: smallText.copyWith(color: Colors.grey),
+                    style: smallText.copyWith(color: grey),
                   ),
                   SizedBox(
                     height: 10,
@@ -154,6 +174,84 @@ class RequestView extends GetView<RequestController> {
           ),
         ),
       ),
+    );
+  }
+}
+
+class CustomGoogleMap extends StatefulWidget {
+  const CustomGoogleMap({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  _CustomGoogleMapState createState() => _CustomGoogleMapState();
+}
+
+class _CustomGoogleMapState extends State<CustomGoogleMap> {
+  //final controller = Get.find<RequestController>();
+  Uint8List _imageBytes;
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 140,
+      child: _imageBytes == null
+          ? GoogleMap(
+              initialCameraPosition: CameraPosition(
+                target: LatLng(userController.mylatitude.value,
+                    userController.mylongitude.value),
+                zoom: 16.0,
+              ),
+              markers: Set<Marker>.of(
+                [
+                  Marker(
+                    markerId: MarkerId('marker_1'),
+                    position: LatLng(userController.mylatitude.value,
+                        userController.mylongitude.value),
+                    consumeTapEvents: true,
+                    infoWindow: InfoWindow(
+                      title: 'Blood Request location',
+                      snippet: "My location",
+                    ),
+                    onTap: () {
+                      print("Marker tapped");
+                    },
+                  ),
+                ],
+              ),
+              mapType: MapType.normal,
+              onTap: (location) => print('onTap: $location'),
+              onCameraMove: (cameraUpdate) =>
+                  print('onCameraMove: $cameraUpdate'),
+              compassEnabled: true,
+              onMapCreated: (controller) {
+                // _mapController = controller;
+                Future.delayed(Duration(seconds: 2)).then((_) async {
+                  Uint8List image = await controller.takeSnapshot();
+                  setState(() {
+                    _imageBytes = image;
+                  });
+                });
+                // Future.delayed(Duration(seconds: 2)).then(
+                //   (_) {
+                //     controller.animateCamera(
+                //       CameraUpdate.newCameraPosition(
+                //         CameraPosition(
+                //           bearing: 270.0,
+                //           target: LatLng(userController.mylatitude.value,
+                //               userController.mylongitude.value),
+                //           tilt: 30.0,
+                //           zoom: 18,
+                //         ),
+                //       ),
+                //     );
+                //   controller.getVisibleRegion().then(
+                //       (bounds) => print("bounds: ${bounds.toString()}"));
+
+                // },
+                //);
+              },
+            )
+          : Image.memory(_imageBytes),
     );
   }
 }
