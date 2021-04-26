@@ -47,6 +47,8 @@ class PostsRepo {
         //  print(element.id);
         // print()
         RequestModel rmodle = RequestModel.fromMap(element.data());
+        rmodle.id = element.id;
+        print(rmodle.id);
         // rmodle.timestamp = element['timestamp'];
         requests.add(rmodle);
         //print(element.data()['userphotoUrl']);

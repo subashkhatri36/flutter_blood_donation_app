@@ -42,7 +42,7 @@ class UserRequest extends StatelessWidget {
                 SizedBox(width: 15),
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                   Text(
-                    user.name,
+                    user.id,
                     //capitalize(),
                     style: mediumText.copyWith(fontWeight: FontWeight.w400),
                   ),

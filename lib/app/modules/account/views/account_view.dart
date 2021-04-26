@@ -12,6 +12,7 @@ import 'package:percent_indicator/linear_percent_indicator.dart';
 import '../controllers/account_controller.dart';
 
 class AccountView extends GetView<AccountController> {
+  final args = Get.arguments;
   @override
   Widget build(BuildContext context) {
     final accountController = Get.find<AccountController>();

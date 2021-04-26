@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blood_donation_app/app/constant/defaults.dart';
 import 'package:flutter_blood_donation_app/app/core/model/request_model.dart';
+import 'package:flutter_blood_donation_app/app/modules/account/bindings/account_binding.dart';
+import 'package:flutter_blood_donation_app/app/modules/account/views/account_view.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -11,30 +13,6 @@ import '../controllers/home_controller.dart';
 import 'custom_map.dart';
 import 'request_widgets.dart';
 
-List<RequestModel> request = [
-  RequestModel(
-      id: '1',
-      name: 'Ram',
-      bloodgroup: 'B+',
-      detail: 'Detail',
-      address: 'Ranibari',
-      photoUrl: '',
-      timestamp: Timestamp.now()),
-  RequestModel(
-      id: '1',
-      name: 'Ram',
-      bloodgroup: 'B+',
-      detail: 'Detail',
-      address: 'Ranibari',
-      timestamp: Timestamp.now()),
-  RequestModel(
-      id: '1',
-      name: 'Ram',
-      bloodgroup: 'B+',
-      detail: 'Detail',
-      address: 'Ranibari',
-      timestamp: Timestamp.now()),
-];
 List<PopupMenuItem> menuItem = [
   // PopupMenuItem(
   //   child: Text('Request Blood'),
@@ -172,8 +150,14 @@ class HomeView extends GetView<HomeController> {
                     },
                     child: Icon(Icons.add_location_alt_rounded)),
                 PopupMenuButton(onSelected: (v) {
+                  if (v == '/account') {
+                    Get.to(() => AccountView(),
+                        binding: AccountBinding(), arguments: true);
+                  } else {
+                    Get.toNamed(v);
+                  }
                   // Get.snackbar(v, v);
-                  Get.toNamed(v);
+                  //
                 }, itemBuilder: (context) {
                   return List.generate(menuItem.length, (i) {
                     return menuItem[i];
@@ -248,7 +232,6 @@ class RequestsHome extends StatelessWidget {
     return Obx(
       () => !homeController.loading.value
           ? ListView.builder(
-              reverse: true,
               physics: BouncingScrollPhysics(),
               itemCount: homeController.requestData.length,
               itemBuilder: (BuildContext context, int index) {
