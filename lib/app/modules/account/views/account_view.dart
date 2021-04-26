@@ -19,7 +19,7 @@ class AccountView extends GetView<AccountController> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('AccountView'),
+        title: Text('Account View'),
       ),
       body: SingleChildScrollView(
         child: Container(

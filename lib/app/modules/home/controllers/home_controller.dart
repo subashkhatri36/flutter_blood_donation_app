@@ -41,6 +41,9 @@ class HomeController extends GetxController {
     userlist = users.obs;
   }
 
+  requestlikeCount() {}
+  insertComment() {}
+
   getPosition() async {
     await Geolocator.getCurrentPosition().then((location) {
       mylatitude.value = location.latitude;

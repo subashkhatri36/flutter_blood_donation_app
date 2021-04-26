@@ -147,7 +147,10 @@ class UserRequest extends StatelessWidget {
               Row(
                 children: [
                   Icon(Icons.comment, color: grey),
-                  Text('COMMENT', style: mediumText.copyWith(color: grey)),
+                  InkWell(
+                      onTap: () {},
+                      child: Text('COMMENT',
+                          style: mediumText.copyWith(color: grey))),
                 ],
               ),
               Spacer(),

@@ -207,19 +207,6 @@ class HomeView extends GetView<HomeController> {
   }
 }
 
-// DateTime currentBackPressTime;
-
-// Future<bool> onWillPop() {
-//   DateTime now = DateTime.now();
-//   if (currentBackPressTime == null ||
-//       now.difference(currentBackPressTime) > Duration(seconds: 2)) {
-//     currentBackPressTime = now;
-//     //Fluttertoast.showToast(msg: exit_warning);
-//     return Future.value(false);
-//   }
-//   return Future.value(true);
-// }
-
 class RequestsHome extends StatelessWidget {
   const RequestsHome({
     Key key,
@@ -237,15 +224,6 @@ class RequestsHome extends StatelessWidget {
               itemBuilder: (BuildContext context, int index) {
                 RequestModel rm = homeController.requestData[index];
                 return UserRequest(user: rm);
-
-                // Container(
-                //   height: 100,
-                //   color: Colors.red,
-                //   child: Image.memory(
-                //     base64Decode(homeController.requestData[index].photoUrl),
-                //     fit: BoxFit.fill,
-                //   ),
-                // );
               },
             )
           : CircularProgressIndicator(),

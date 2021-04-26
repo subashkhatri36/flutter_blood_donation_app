@@ -13,6 +13,7 @@ class RequestModel {
   bool active;
   String photoUrl;
   String userphotoUrl;
+  int like;
   RequestModel(
       {this.id,
       this.name,
@@ -23,6 +24,7 @@ class RequestModel {
       this.timestamp,
       this.photoUrl,
       this.userphotoUrl,
+      this.like,
       this.city = 'Kathmandu'});
 
   @override
@@ -39,6 +41,7 @@ class RequestModel {
         other.detail == detail &&
         other.active == active &&
         other.photoUrl == photoUrl &&
+        other.like == like &&
         other.userphotoUrl == userphotoUrl;
   }
 
@@ -53,6 +56,7 @@ class RequestModel {
         detail.hashCode ^
         active.hashCode ^
         photoUrl.hashCode ^
+        like.hashCode ^
         userphotoUrl.hashCode;
   }
 
@@ -67,6 +71,7 @@ class RequestModel {
       'detail': detail,
       'active': active,
       'photoUrl': photoUrl,
+      'like': like,
       'userphotoUrl': userphotoUrl,
     };
   }
@@ -82,6 +87,7 @@ class RequestModel {
       detail: map['detail'],
       active: map['active'],
       photoUrl: map['photoUrl'],
+      like: map['like'],
       userphotoUrl: map['userphotoUrl'],
     );
   }

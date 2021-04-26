@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:flutter_blood_donation_app/app/constant/const.dart';
 import 'package:flutter_blood_donation_app/app/core/model/user_models.dart';
-import 'package:flutter_blood_donation_app/app/modules/home/controllers/home_controller.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
@@ -25,11 +24,7 @@ class DonorDetailsController extends GetxController {
   }
 
   getuser() async {
-    var data = await firebaseFirestore
-        .collection('User')
-        // .where('username', isNotEqualTo: userController.myinfo.value.username)
-        //  .where('userId', isNotEqualTo: auth.currentUser.uid)
-        .get();
+    var data = await firebaseFirestore.collection('User').get();
     data.docs.forEach((element) async {
       //print(element.id);
       if (element.data()['userAddress'] == '' ||
