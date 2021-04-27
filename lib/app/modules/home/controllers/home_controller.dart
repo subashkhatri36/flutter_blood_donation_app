@@ -15,6 +15,7 @@ class HomeController extends GetxController {
   var myinfo = UserModel().obs;
   var userlist = List<UserModel>.empty(growable: true).obs;
   var requestData = List<RequestModel>.empty(growable: true).obs;
+  var userlistshown = false.obs;
   @override
   void onInit() {
     super.onInit();
@@ -43,12 +44,15 @@ class HomeController extends GetxController {
   }
 
   getUserByUserid(String userid) {
+    List<UserModel> user = [];
     userlist.toList().forEach((element) {
       // print(element);
       print(userid);
       if (element.userId == userid) print(element.username);
+      user.add(element);
       // element.toString();
     });
+    return user[0];
   }
 
   getPosition() async {

@@ -30,7 +30,7 @@ List<RequestModel> request = [
       timestamp: Timestamp.now()),
   RequestModel(
       id: '1',
-      name: 'Ram',
+      name: 'ram',
       bloodgroup: 'B+',
       detail: 'Detail',
       address: 'Ranibari',
@@ -68,7 +68,7 @@ List<UserModel> users = [
   UserModel(
       userId: 'sfs',
       phoneNo: '12323',
-      username: 'Ram',
+      username: 'ram',
       active: null,
       bloodgroup: 'B +',
       email: '',
@@ -132,18 +132,21 @@ class HomeView extends GetView<HomeController> {
       case 2:
         return AccountView();
 
-        // ListView.builder(
-        //     //padding: EdgeInsets.symmetric(horizontal:5,vertical:10),
-        //     shrinkWrap: true,
-        //     itemCount: 5,
-        //     itemBuilder: (_, int i) {
-        //       return ListTile(
-        //           contentPadding: EdgeInsets.only(left: 5, right: 5),
-        //           title: MemberInfo(users[i]));
-        //     });
         break;
       case 1:
-        return CustomMap();
+        return Obx(() => userController.userlistshown.value
+            ? ListView.builder(
+                //padding: EdgeInsets.symmetric(horizontal:5,vertical:10),
+                shrinkWrap: true,
+                itemCount: 5,
+                itemBuilder: (_, int i) {
+                  return ListTile(
+                      contentPadding: EdgeInsets.only(left: 5, right: 5),
+                      title: MemberInfo(users[i]));
+                })
+            // : Container());
+            : CustomMap());
+
         break;
       case 0:
         return RequestsHome();
@@ -191,7 +194,10 @@ class HomeView extends GetView<HomeController> {
             clipBehavior: Clip.antiAliasWithSaveLayer,
             child: BottomNavigationBar(
               onTap: (v) {
+                print(v);
                 controller.selectedIndex.value = v;
+                // if (controller.selectedIndex.value == 1)
+                //   controller.userlistshown.toggle();
               },
               selectedItemColor: Theme.of(context).primaryColor,
               currentIndex: controller.selectedIndex.value,
@@ -205,18 +211,24 @@ class HomeView extends GetView<HomeController> {
           ),
           floatingActionButton: FloatingActionButton(
             backgroundColor: controller.selectedIndex.value == 1
-                ? Theme.of(context).scaffoldBackgroundColor
+                ? controller.userlistshown.value
+                    ? Theme.of(context).primaryColor
+                    : Colors.grey[300]
                 : Colors.grey[300],
             onPressed: () {
               controller.selectedIndex.value = 1;
+              if (controller.selectedIndex.value == 1)
+                controller.userlistshown.toggle();
             },
             child: CircleAvatar(
               backgroundColor: controller.selectedIndex.value == 1
-                  ? Theme.of(context).primaryColor
+                  ? !controller.userlistshown.value
+                      ? Theme.of(context).primaryColor
+                      : Theme.of(context).scaffoldBackgroundColor
                   : Colors.grey,
               child: Icon(Icons.map_sharp,
-                  color: controller.selectedIndex.value == 1
-                      ? Colors.white
+                  color: controller.userlistshown.value
+                      ? Colors.grey
                       : Colors.white),
             ),
           ),
@@ -295,7 +307,7 @@ class MemberInfo extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(user.username),
+                Text(user.username.capitalize),
                 Text(user.userAddress),
                 Text(
                   user.bloodgroup,

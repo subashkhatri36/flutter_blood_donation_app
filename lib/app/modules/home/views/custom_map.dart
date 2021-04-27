@@ -89,21 +89,21 @@ class _CustomMapState extends State<CustomMap> {
   addMarker() {
     users.forEach((element) {
       //print(bloodgroup.indexOf(element.bloodgroup));
-
-      markers.add(Marker(
-        icon: mapicons[bloodgroup.indexOf(element.bloodgroup)],
-        markerId: MarkerId('${element.userId}'),
-        position: LatLng(element.latitude, element.longitude),
-        consumeTapEvents: true,
-        infoWindow: InfoWindow(
-            title: '${element.username}', snippet: "${element.userAddress}"),
-        onTap: () {
-          setState(() {
-            pinPillPosition = 0;
-            selectedUser = element;
-          });
-        },
-      ));
+      if (element.userId != userController.myinfo.value.userId)
+        markers.add(Marker(
+          icon: mapicons[bloodgroup.indexOf(element.bloodgroup)],
+          markerId: MarkerId('${element.userId}'),
+          position: LatLng(element.latitude, element.longitude),
+          consumeTapEvents: true,
+          infoWindow: InfoWindow(
+              title: '${element.username}', snippet: "${element.userAddress}"),
+          onTap: () {
+            setState(() {
+              pinPillPosition = 0;
+              selectedUser = element;
+            });
+          },
+        ));
     });
   }
 
@@ -225,66 +225,72 @@ class TappedUser extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        margin: const EdgeInsets.only(bottom: 30, left: 20, right: 60),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          color: Colors.white.withOpacity(.9),
-        ),
-        width: SizeConfig.screenWidth,
-        height: 90,
-        child: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-          SizedBox(width: 5),
-          Container(
-            decoration: BoxDecoration(
-                image: DecorationImage(
-                    image: NetworkImage(
-                        user.photoUrl == '' ? noimage : user.photoUrl),
-                    fit: BoxFit.cover),
-                color: Colors.grey[600],
-                borderRadius: BorderRadius.circular(5)),
-            height: 80,
-            width: 80,
+    return FittedBox(
+      child: Container(
+          margin: const EdgeInsets.only(bottom: 30, left: 20, right: 70),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            color: Colors.white.withOpacity(.9),
           ),
-          SizedBox(width: 10),
-          Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  user.username,
-                  overflow: TextOverflow.ellipsis,
-                  style: largeText,
-                ),
-                Text(
-                  user.userAddress,
-                ),
-                Text(
-                  user.bloodgroup,
-                  style:
-                      TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
-                )
-              ]),
-          Spacer(),
-          Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-            // CircleAvatar(
-            //   backgroundColor: Colors.grey,
-            //   child: CircleAvatar(
-            //       backgroundColor: Colors.grey[300],
-            //       radius: 10,
-            //       child: Icon(Icons.more_horiz,
-            //           color: Colors.grey[700], size: 18)),
-            // ),
-            InkWell(
-              onTap: () {
-                _launchCaller();
-              },
-              child: CircleAvatar(
-                  backgroundColor: Colors.green[200],
-                  child: Icon(Icons.phone, color: Colors.green[700], size: 15)),
-            )
-          ]),
-          SizedBox(width: Defaults.paddingnormal),
-        ]));
+          width: SizeConfig.screenWidth,
+          height: 90,
+          child: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+            SizedBox(width: 5),
+            Container(
+              decoration: BoxDecoration(
+                  image: DecorationImage(
+                      image: NetworkImage(
+                          user.photoUrl == '' ? noimage : user.photoUrl),
+                      fit: BoxFit.cover),
+                  color: Colors.grey[600],
+                  borderRadius: BorderRadius.circular(5)),
+              height: 80,
+              width: 80,
+            ),
+            SizedBox(width: 10),
+            Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: 140,
+                    child: Text(
+                      user.username,
+                      overflow: TextOverflow.clip,
+                      style: smallText,
+                    ),
+                  ),
+                  Text(
+                    user.userAddress,
+                  ),
+                  Text(
+                    user.bloodgroup,
+                    style: TextStyle(
+                        color: Colors.red, fontWeight: FontWeight.bold),
+                  )
+                ]),
+            Spacer(),
+            Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+              // CircleAvatar(
+              //   backgroundColor: Colors.grey,
+              //   child: CircleAvatar(
+              //       backgroundColor: Colors.grey[300],
+              //       radius: 10,
+              //       child: Icon(Icons.more_horiz,
+              //           color: Colors.grey[700], size: 18)),
+              // ),
+              InkWell(
+                onTap: () {
+                  _launchCaller();
+                },
+                child: CircleAvatar(
+                    backgroundColor: Colors.green[200],
+                    child:
+                        Icon(Icons.phone, color: Colors.green[700], size: 15)),
+              )
+            ]),
+            SizedBox(width: Defaults.paddingnormal),
+          ])),
+    );
   }
 }

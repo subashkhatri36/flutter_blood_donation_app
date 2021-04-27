@@ -30,13 +30,14 @@ class PostComment extends StatelessWidget {
           Expanded(
             child: Container(),
           ),
-          Divider(),
+
           Padding(
             padding: const EdgeInsets.only(left: 8.0, right: 8, bottom: 7),
             child: Container(
-              padding: EdgeInsets.all(6),
+              height: 40,
+              padding: EdgeInsets.zero,
               decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(10),
                   border: Border.all(width: 1, color: Colors.transparent)),
               child: Row(
                 children: [
@@ -51,13 +52,19 @@ class PostComment extends StatelessWidget {
                     child: Container(
                       //color: Colors.grey,
 
-                      child: TextFormField(
+                      child: TextField(
                         decoration: InputDecoration(
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide(color: Colors.grey),
+                          ),
                           prefix: null,
                           prefixIcon: null,
                           hintText: 'Comment here',
+                          fillColor: Colors.grey,
+                          hintStyle: smallText.copyWith(),
                           border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(20)),
+                              borderRadius: BorderRadius.circular(10)),
                         ),
                       ),
                     ),
