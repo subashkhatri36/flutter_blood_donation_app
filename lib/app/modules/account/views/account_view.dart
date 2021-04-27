@@ -16,9 +16,6 @@ class AccountView extends GetView<AccountController> {
     final accountController = Get.find<AccountController>();
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text('AccountView'),
-      ),
       body: SingleChildScrollView(
         child: Container(
           height: MediaQuery.of(context).size.height * 2,

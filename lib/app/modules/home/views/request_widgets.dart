@@ -156,6 +156,7 @@ class _LikeButtonState extends State<LikeButton> {
   Widget build(BuildContext context) {
     return Container(
       height: 50,
+      width: MediaQuery.of(context).size.width,
       padding: EdgeInsets.only(right: 10),
       child: Row(children: [
         TextButton(
@@ -187,16 +188,16 @@ class _LikeButtonState extends State<LikeButton> {
             },
             child: Row(
               children: [
-                CircleAvatar(
-                    radius: 10,
-                    child: Icon(
-                      Icons.thumb_up_rounded,
-                      size: 12,
-                    )),
-                Text(widget.request.likes.length.toString()),
-                SizedBox(
-                  width: 4,
-                ),
+                // CircleAvatar(
+                //     radius: 10,
+                //     child: Icon(
+                //       Icons.thumb_up_rounded,
+                //       size: 12,
+                //     )),
+                // Text(widget.request.likes.length.toString()),
+                // SizedBox(
+                //   width: 4,
+                // ),
                 Icon(Icons.thumb_up,
                     color: widget.request.likes.contains(widget.request.userid)
                         ? Colors.blue

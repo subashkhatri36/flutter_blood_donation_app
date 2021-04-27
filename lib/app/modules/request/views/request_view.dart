@@ -121,36 +121,39 @@ class RequestView extends GetView<RequestController> {
                   Obx(() {
                     if (controller.isSwitched.value)
                       return Container(
-                          height: 200,
-                          child: GridView(
-                            // padding:
-                            //     EdgeInsets.only(top: 10, left: 20, right: 20),
-                            gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 4,
-                                    crossAxisSpacing: 30,
-                                    mainAxisSpacing: 30),
-                            children: [
-                              for (int i = 0; i < 8; i++)
-                                InkWell(
-                                  onTap: () {
-                                    controller.bloodgroup.value = bloodgroup[i];
-                                  },
-                                  child: CircleAvatar(
-                                      backgroundColor:
-                                          controller.bloodgroup.value ==
-                                                  bloodgroup[i]
-                                              ? Colors.red
-                                              : Colors.grey,
-                                      child: Text(
-                                        bloodgroup[i],
-                                        style: mediumText.copyWith(
-                                            color: Theme.of(context)
-                                                .scaffoldBackgroundColor),
-                                      )),
-                                ),
-                            ],
-                          ));
+                        height: 150,
+                        // child: Text('hello'),
+                        child: GridView(
+                          // padding:
+                          //     EdgeInsets.only(top: 10, left: 20, right: 20),
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 5,
+                                  crossAxisSpacing: 30,
+                                  mainAxisSpacing: 30),
+                          children: [
+                            for (int i = 0; i < 8; i++)
+                              InkWell(
+                                onTap: () {
+                                  controller.bloodgroup.value = bloodgroup[i];
+                                },
+                                child: CircleAvatar(
+                                    radius: 40,
+                                    backgroundColor:
+                                        controller.bloodgroup.value ==
+                                                bloodgroup[i]
+                                            ? Colors.red
+                                            : Colors.grey,
+                                    child: Text(
+                                      bloodgroup[i],
+                                      style: mediumText.copyWith(
+                                          color: Theme.of(context)
+                                              .scaffoldBackgroundColor),
+                                    )),
+                              ),
+                          ],
+                        ),
+                      );
                     return Container();
                   }),
                   Container(
