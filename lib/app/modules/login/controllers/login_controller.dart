@@ -12,7 +12,8 @@ class LoginController extends GetxController {
   ScrollController pageviewScroll = new PageController();
   RxInt currentpage = 0.obs;
   final loginformKey = GlobalKey<FormState>();
-
+  var longitude=27.0.obs;
+  var latitude=85.0.obs;
   AuthenticationRepo _authenticationRepo = new Authentication();
 
   //for Login
@@ -75,8 +76,8 @@ class LoginController extends GetxController {
         userId: '',
         username: nameController.text,
         userAddress: addressController.text,
-        latitude: 0.0,
-        longitude: 0.0,
+        latitude: latitude.value,
+        longitude: longitude.value,
         bloodgroup: bloodgroup.value,
         photoUrl: '',
         phoneNo: phoneController.text,

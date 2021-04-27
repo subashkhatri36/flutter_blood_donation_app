@@ -123,8 +123,8 @@ class RequestView extends GetView<RequestController> {
                       return Container(
                           height: 200,
                           child: GridView(
-                            padding:
-                                EdgeInsets.only(top: 10, left: 20, right: 20),
+                            // padding:
+                            //     EdgeInsets.only(top: 10, left: 20, right: 20),
                             gridDelegate:
                                 SliverGridDelegateWithFixedCrossAxisCount(
                                     crossAxisCount: 4,
@@ -137,7 +137,6 @@ class RequestView extends GetView<RequestController> {
                                     controller.bloodgroup.value = bloodgroup[i];
                                   },
                                   child: CircleAvatar(
-                                      radius: 40,
                                       backgroundColor:
                                           controller.bloodgroup.value ==
                                                   bloodgroup[i]
@@ -161,6 +160,7 @@ class RequestView extends GetView<RequestController> {
                       onPressed: () {
                         if (controller.requestformKey.currentState.validate()) {
                           controller.sendrequest();
+                          //Get.off("/home");
                         }
                       },
                       child: Text('Continue'),

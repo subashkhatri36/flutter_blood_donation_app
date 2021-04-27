@@ -1,8 +1,8 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blood_donation_app/app/constant/defaults.dart';
 import 'package:flutter_blood_donation_app/app/core/model/request_model.dart';
+import 'package:flutter_blood_donation_app/app/modules/account/views/account_view.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -129,17 +129,18 @@ class HomeView extends GetView<HomeController> {
   Widget buildBody(context) {
     //double height = MediaQuery.of(context).size.height;
     switch (controller.selectedIndex.value) {
-    
       case 2:
-        return ListView.builder(
-            //padding: EdgeInsets.symmetric(horizontal:5,vertical:10),
-            shrinkWrap: true,
-            itemCount: 5,
-            itemBuilder: (_, int i) {
-              return ListTile(
-                  contentPadding: EdgeInsets.only(left: 5, right: 5),
-                  title: MemberInfo(users[i]));
-            });
+        return AccountView();
+
+        // ListView.builder(
+        //     //padding: EdgeInsets.symmetric(horizontal:5,vertical:10),
+        //     shrinkWrap: true,
+        //     itemCount: 5,
+        //     itemBuilder: (_, int i) {
+        //       return ListTile(
+        //           contentPadding: EdgeInsets.only(left: 5, right: 5),
+        //           title: MemberInfo(users[i]));
+        //     });
         break;
       case 1:
         return CustomMap();
@@ -240,7 +241,7 @@ class RequestsHome extends StatelessWidget {
               physics: BouncingScrollPhysics(),
               itemCount: homeController.requestData.length,
               itemBuilder: (BuildContext context, int index) {
-                return UserRequest(user: homeController.requestData[index]);
+                return UserRequest(request: homeController.requestData[index]);
 
                 // Container(
                 //   height: 100,

@@ -1,17 +1,18 @@
 import 'dart:convert';
 
-import 'package:flutter/foundation.dart';
 
 class CommentModel {
-  final String id;
-  final String name;
-  final String photo;
-  final String comment;
+  String id;
+  String name;
+  String photo;
+  String comment;
+
+  String timestamp;
   CommentModel({
-    @required this.id,
-    @required this.name,
-    @required this.photo,
-    @required this.comment,
+    this.id,
+    this.name,
+    this.photo,
+    this.comment,
   });
 
   Map<String, dynamic> toMap() {

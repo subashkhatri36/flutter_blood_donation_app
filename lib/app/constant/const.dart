@@ -20,3 +20,4 @@ const grey = Colors.grey;
 //noimage
 String noimage =
     'https://upload.wikimedia.org/wikipedia/commons/0/0a/No-image-available.png';
+List bloodgroup = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];

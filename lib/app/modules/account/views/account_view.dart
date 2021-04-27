@@ -7,6 +7,7 @@ import 'package:flutter_blood_donation_app/app/modules/updateaccount/views/updat
 import 'package:get/get.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
+import '../../../utlis/size_config.dart';
 import '../controllers/account_controller.dart';
 
 class AccountView extends GetView<AccountController> {
@@ -441,8 +442,8 @@ class RatingWidget extends StatelessWidget {
                             child:
                                 Text(i.toString(), textAlign: TextAlign.right)),
                         Expanded(flex: 2, child: Icon(Icons.star)),
-                        Expanded(
-                          flex: 7,
+                        Container(
+                          width: SizeConfig.screenWidth / 2,
                           child: LinearPercentIndicator(
                             lineHeight: 5.0,
                             percent: accountController.showpercentage(i),

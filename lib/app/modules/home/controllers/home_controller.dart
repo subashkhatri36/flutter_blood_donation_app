@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 class HomeController extends GetxController {
   var selectedIndex = 0.obs;
   var loading = false.obs;
+  var mapview = false.obs;
   final count = 0.obs;
   var mylatitude = 0.0.obs;
   var mylongitude = 0.0.obs;
@@ -41,6 +42,15 @@ class HomeController extends GetxController {
     userlist = users.obs;
   }
 
+  getUserByUserid(String userid) {
+    userlist.toList().forEach((element) {
+      // print(element);
+      print(userid);
+      if (element.userId == userid) print(element.username);
+      // element.toString();
+    });
+  }
+
   getPosition() async {
     await Geolocator.getCurrentPosition().then((location) {
       mylatitude.value = location.latitude;
@@ -50,7 +60,7 @@ class HomeController extends GetxController {
 
   streamRequest() async {
     loading.value = true;
-    // print('streaming request');
+
     requestData.bindStream(postRepo.getRequest());
     loading.value = false;
   }

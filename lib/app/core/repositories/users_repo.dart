@@ -1,5 +1,7 @@
+import 'package:dartz/dartz_unsafe.dart';
 import 'package:flutter_blood_donation_app/app/constant/const.dart';
 import 'package:flutter_blood_donation_app/app/core/model/user_models.dart';
+import 'package:flutter_blood_donation_app/app/modules/home/views/home_view.dart';
 import 'package:geocoding/geocoding.dart';
 
 class UserReop {
@@ -16,7 +18,7 @@ class UserReop {
       //   print(data.data()[
       //       'bloodgroud']); // if (data.data()['username'] == null || data.data()['username'])
       {
-        print(false);
+        // print(false);
         UserModel user = UserModel(
             userId: auth.currentUser.uid,
             userAddress: 'Balaju',
@@ -39,6 +41,26 @@ class UserReop {
     }
   }
 
+  getcoordinatefromAddress(String address) async {
+    print(address);
+    List<Location> locations = await locationFromAddress("$address,kathmandu");
+
+    return locations;
+  }
+
+// get user from photo
+  getUserwithPhotoUrl(String photo) async {
+    List<UserModel> users = [];
+    var data = await firebaseFirestore
+        .collection('User')
+        .where('photoUrl', isEqualTo: photo)
+        .get();
+    data.docs.forEach((element) {
+      users.add(UserModel.fromDocumentSnapshot(element));
+    });
+    if (users.length != 0) return users[0];
+  }
+
   getuser() async {
     List<UserModel> userlist = [];
     var data = await firebaseFirestore
@@ -46,18 +68,34 @@ class UserReop {
         //  .where('userId', isNotEqualTo: auth.currentUser.uid)
         .get();
     data.docs.forEach((element) async {
-      //  print(element.id);
       try {
         // print(element.data()['userAddress']);
-        String str = element.data()['userAddress'];
-        List arr = str.split('\\s');
-        String word = arr[0];
-        if (element.data()['latitude'] == 0.0 ||
+        // String str = element.data()['userAddress'];
+        // List arr = str.split('\\s');
+        // String word = arr[0];
+        //
+        if (element.data()['userAddress'] == null ||
+            element.data()['userAddress'] == '')
+          firebaseFirestore
+              .collection('User')
+              .doc(element.id)
+              .update({'userAddress': 'Gongabu'});
+        else if (element.data()['latitude'] == 0.0 ||
             element.data()['latitude'] == null) {
-          List<Location> data = await getcoordinatefromAddress(word);
+          try {
+            firebaseFirestore
+                .collection('User')
+                .doc(element.id)
+                .update({'userAddress': 'Gongabu'});
+            List<Location> data =
+                await getcoordinatefromAddress(element.data()['userAddress']);
+            firebaseFirestore.collection('User').doc(element.id).update(
+                {'latitude': data[0].latitude, 'longitude': data[0].longitude});
+          } catch (e) {
+            print(e.toString());
+          }
           //print(data[0].latitude);
-          firebaseFirestore.collection('User').doc(element.id).update(
-              {'latitude': data[0].latitude, 'longitude': data[0].longitude});
+
         } else {
           userlist.add(UserModel.fromDocumentSnapshot(element));
         }
@@ -66,12 +104,6 @@ class UserReop {
       }
     });
     return userlist;
-  }
-
-  getcoordinatefromAddress(String address) async {
-    List<Location> locations = await locationFromAddress("$address,kathmandu");
-
-    return locations;
   }
 }
 

@@ -86,7 +86,7 @@ class UserModel {
       username: map.data()['username'],
       userAddress: map.data()['userAddress'],
       latitude: map.data()['latitude'],
-      longitude: map.data()['longitute'],
+      longitude: map.data()['longitude'],
       bloodgroup: map.data()['bloodgroup'],
       phoneNo: map.data()['phoneNo'],
       email: map.data()['email'],

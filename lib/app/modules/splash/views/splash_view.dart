@@ -3,6 +3,7 @@ import 'package:flutter_blood_donation_app/app/constant/defaults.dart';
 
 import 'package:get/get.dart';
 
+import '../../../utlis/size_config.dart';
 import '../controllers/splash_controller.dart';
 
 //multiDexEnabled true
@@ -17,6 +18,7 @@ class SplashView extends GetView {
   final splashController = Get.put(SplashController());
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
     return Material(
       color: Theme.of(context).backgroundColor,
       child: Column(

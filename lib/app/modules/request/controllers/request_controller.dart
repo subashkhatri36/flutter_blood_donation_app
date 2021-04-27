@@ -10,6 +10,8 @@ import 'package:flutter_blood_donation_app/app/modules/home/controllers/home_con
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+import '../../home/controllers/home_controller.dart';
+
 class RequestController extends GetxController {
   var loading = false.obs;
   var isSwitched = false.obs;
@@ -33,17 +35,20 @@ class RequestController extends GetxController {
   final detailController = TextEditingController();
   final locationController = TextEditingController()
     ..text = userController.myinfo.value.userAddress;
-  final requestformKey = GlobalKey<FormState>();
+  GlobalKey<FormState> requestformKey = GlobalKey<FormState>();
   Future<void> sendrequest() async {
     loading.value = true;
-
+    print(userController.myinfo.value.photoUrl);
     RequestModel req = RequestModel(
         name: userController.myinfo.value.username,
+        userid: userController.myinfo.value.userId,
+        contactno: userController.myinfo.value.phoneNo,
+        userphotoUrl: userController.myinfo.value.photoUrl,
         address: mylocation.value
             ? locationController.text
             : userController.myinfo.value.userAddress,
         detail: detailController.text,
-        bloodgroup: formyself.value
+        bloodgroup: isSwitched.value
             ? bloodgroup.value
             : userController.myinfo.value.bloodgroup,
         photoUrl: base64Encode(data.value));
@@ -51,8 +56,10 @@ class RequestController extends GetxController {
     //sending request
     try {
       await PostsRepo().sendRequest(req);
+
       clearController();
-      Get.offNamed("/home");
+
+     
       loading = false.obs;
     } on PlatformException catch (err) {
       Get.snackbar(err.code, err.message);

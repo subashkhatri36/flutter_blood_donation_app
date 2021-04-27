@@ -1,4 +1,4 @@
-extension StringExtension on String {
+extension TimeFormatting on String {
   static String displayTimeAgoFromTimestamp(timestamp) {
     final year = int.parse(timestamp.substring(0, 4));
     final month = int.parse(timestamp.substring(5, 7));
