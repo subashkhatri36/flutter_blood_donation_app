@@ -199,7 +199,7 @@ class HomeView extends GetView<HomeController> {
                 BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
                 BottomNavigationBarItem(icon: Icon(Icons.clear), label: 'Map'),
                 BottomNavigationBarItem(
-                    icon: Icon(Icons.card_membership), label: 'Members'),
+                    icon: Icon(Icons.person), label: 'Account'),
               ],
             ),
           ),
