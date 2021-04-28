@@ -126,7 +126,7 @@ class RequestView extends GetView<RequestController> {
                     Obx(() {
                       if (controller.isSwitched.value)
             return Container(
-                height: 200,
+                height: 170,
                 child: GridView(
                   padding:
                       EdgeInsets.only(top: 10, left: 20, right: 20),

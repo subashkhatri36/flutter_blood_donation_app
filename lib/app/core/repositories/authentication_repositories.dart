@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_blood_donation_app/app/core/model/user_models.dart';
-import 'package:geolocator/geolocator.dart';
 
 abstract class AuthenticationRepo {
   Future<Either<String, String>> userLogin(String email, String password);
@@ -10,7 +9,6 @@ abstract class AuthenticationRepo {
 }
 
 class Authentication implements AuthenticationRepo {
-  Position _currentPosition;
 
   @override
   Future<Either<String, String>> userLogin(

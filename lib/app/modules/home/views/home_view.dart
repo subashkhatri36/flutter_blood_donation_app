@@ -1,7 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_blood_donation_app/app/constant/const.dart';
 import 'package:flutter_blood_donation_app/app/constant/defaults.dart';
-import 'package:flutter_blood_donation_app/app/core/model/request_model.dart';
 import 'package:flutter_blood_donation_app/app/modules/account/views/account_view.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -12,30 +11,30 @@ import '../controllers/home_controller.dart';
 import 'custom_map.dart';
 import 'request_widgets.dart';
 
-List<RequestModel> request = [
-  RequestModel(
-      id: '1',
-      name: 'Ram',
-      bloodgroup: 'B+',
-      detail: 'Detail',
-      address: 'Ranibari',
-      photoUrl: '',
-      timestamp: Timestamp.now()),
-  RequestModel(
-      id: '1',
-      name: 'Ram',
-      bloodgroup: 'B+',
-      detail: 'Detail',
-      address: 'Ranibari',
-      timestamp: Timestamp.now()),
-  RequestModel(
-      id: '1',
-      name: 'ram',
-      bloodgroup: 'B+',
-      detail: 'Detail',
-      address: 'Ranibari',
-      timestamp: Timestamp.now()),
-];
+// List<RequestModel> request = [
+//   RequestModel(
+//       id: '1',
+//       name: 'Ram',
+//       bloodgroup: 'B+',
+//       detail: 'Detail',
+//       address: 'Ranibari',
+//       photoUrl: '',
+//       timestamp: Timestamp.now()),
+//   RequestModel(
+//       id: '1',
+//       name: 'Ram',
+//       bloodgroup: 'B+',
+//       detail: 'Detail',
+//       address: 'Ranibari',
+//       timestamp: Timestamp.now()),
+//   RequestModel(
+//       id: '1',
+//       name: 'ram',
+//       bloodgroup: 'B+',
+//       detail: 'Detail',
+//       address: 'Ranibari',
+//       timestamp: Timestamp.now()),
+// ];
 List<PopupMenuItem> menuItem = [
   // PopupMenuItem(
   //   child: Text('Request Blood'),
@@ -64,66 +63,66 @@ List<PopupMenuItem> menuItem = [
   ),
 ];
 
-List<UserModel> users = [
-  UserModel(
-      userId: 'sfs',
-      phoneNo: '12323',
-      username: 'ram',
-      active: null,
-      bloodgroup: 'B +',
-      email: '',
-      latitude: 22,
-      longitude: 32,
-      userAddress: '',
-      photoUrl: 'https://wallpaperaccess.com/full/2213424.jpg'),
-  UserModel(
-      userId: 'sfas',
-      phoneNo: '12323',
-      username: 'Sita',
-      active: false,
-      bloodgroup: 'A -',
-      email: '',
-      latitude: 23,
-      longitude: 77,
-      userAddress: 'B',
-      photoUrl:
-          'https://images.unsplash.com/photo-1457449940276-e8deed18bfff?ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8cHJvZmlsZXxlbnwwfHwwfHw%3D&ixlib=rb-1.2.1&w=1000&q=80'),
-  UserModel(
-      userId: 'sf',
-      phoneNo: '12323',
-      username: 'Hari',
-      active: null,
-      bloodgroup: 'A +',
-      email: '',
-      latitude: 22,
-      longitude: 22,
-      userAddress: '',
-      photoUrl:
-          'https://images.unsplash.com/photo-1532074205216-d0e1f4b87368?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MjJ8fHByb2ZpbGV8ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80'),
-  UserModel(
-      userId: 'sf',
-      phoneNo: '12323',
-      username: 'Ramesh',
-      active: null,
-      bloodgroup: 'AB +',
-      email: '',
-      latitude: 32,
-      longitude: 32,
-      userAddress: '',
-      photoUrl:
-          'https://expertphotography.com/wp-content/uploads/2018/10/cool-profile-pictures-retouching-1.jpg'),
-  UserModel(
-      userId: 'sf',
-      phoneNo: '12323',
-      username: 'Shyam',
-      active: null,
-      bloodgroup: 'AB -',
-      email: '',
-      latitude: 33,
-      longitude: 22,
-      userAddress: '',
-      photoUrl: 'https://i.stack.imgur.com/HILmr.png'),
-];
+// List<UserModel> users = [
+//   UserModel(
+//       userId: 'sfs',
+//       phoneNo: '12323',
+//       username: 'ram',
+//       active: null,
+//       bloodgroup: 'B +',
+//       email: '',
+//       latitude: 22,
+//       longitude: 32,
+//       userAddress: '',
+//       photoUrl: 'https://wallpaperaccess.com/full/2213424.jpg'),
+//   UserModel(
+//       userId: 'sfas',
+//       phoneNo: '12323',
+//       username: 'Sita',
+//       active: false,
+//       bloodgroup: 'A -',
+//       email: '',
+//       latitude: 23,
+//       longitude: 77,
+//       userAddress: 'B',
+//       photoUrl:
+//           'https://images.unsplash.com/photo-1457449940276-e8deed18bfff?ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8cHJvZmlsZXxlbnwwfHwwfHw%3D&ixlib=rb-1.2.1&w=1000&q=80'),
+//   UserModel(
+//       userId: 'sf',
+//       phoneNo: '12323',
+//       username: 'Hari',
+//       active: null,
+//       bloodgroup: 'A +',
+//       email: '',
+//       latitude: 22,
+//       longitude: 22,
+//       userAddress: '',
+//       photoUrl:
+//           'https://images.unsplash.com/photo-1532074205216-d0e1f4b87368?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MjJ8fHByb2ZpbGV8ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80'),
+//   UserModel(
+//       userId: 'sf',
+//       phoneNo: '12323',
+//       username: 'Ramesh',
+//       active: null,
+//       bloodgroup: 'AB +',
+//       email: '',
+//       latitude: 32,
+//       longitude: 32,
+//       userAddress: '',
+//       photoUrl:
+//           'https://expertphotography.com/wp-content/uploads/2018/10/cool-profile-pictures-retouching-1.jpg'),
+//   UserModel(
+//       userId: 'sf',
+//       phoneNo: '12323',
+//       username: 'Shyam',
+//       active: null,
+//       bloodgroup: 'AB -',
+//       email: '',
+//       latitude: 33,
+//       longitude: 22,
+//       userAddress: '',
+//       photoUrl: 'https://i.stack.imgur.com/HILmr.png'),
+// ];
 
 class HomeView extends GetView<HomeController> {
   Widget buildBody(context) {
@@ -141,8 +140,11 @@ class HomeView extends GetView<HomeController> {
                 itemCount: 5,
                 itemBuilder: (_, int i) {
                   return ListTile(
+                      onTap: () {
+                        Get.to(Scaffold());
+                      },
                       contentPadding: EdgeInsets.only(left: 5, right: 5),
-                      title: MemberInfo(users[i]));
+                      title: MemberInfo(userController.userlist.toList()[i]));
                 })
             // : Container());
             : CustomMap());
@@ -174,15 +176,13 @@ class HomeView extends GetView<HomeController> {
               actions: [
                 InkWell(
                     onTap: () {
-
                       Get.offNamed('/request');
                     },
                     child: Icon(Icons.add_location_alt_rounded)),
                 PopupMenuButton(onSelected: (v) {
                   // Get.snackbar(v, v);
-                  if(v=='/login')
-                  {
-                  userController.signout();
+                  if (v == '/login') {
+                    userController.signout();
                   }
                   Get.toNamed(v);
                 }, itemBuilder: (context) {
@@ -202,12 +202,13 @@ class HomeView extends GetView<HomeController> {
                 print(v);
                 controller.selectedIndex.value = v;
                 // if (controller.selectedIndex.value == 1)
-                  controller.userlistshown.value=true;
+                controller.userlistshown.value = true;
               },
               selectedItemColor: Theme.of(context).primaryColor,
               currentIndex: controller.selectedIndex.value,
               items: [
-                BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.home), label: 'Requests'),
                 BottomNavigationBarItem(icon: Icon(Icons.clear), label: 'Map'),
                 BottomNavigationBarItem(
                     icon: Icon(Icons.person), label: 'Account'),
@@ -215,22 +216,24 @@ class HomeView extends GetView<HomeController> {
             ),
           ),
           floatingActionButton: FloatingActionButton(
-            backgroundColor: controller.selectedIndex.value == 1?
+            backgroundColor: controller.selectedIndex.value == 1
+                ?
                 // ? controller.userlistshown.value
                 //     ?
-                     Theme.of(context).scaffoldBackgroundColor
-                    : Colors.grey[300],
-                // : Colors.grey[300],
+                Theme.of(context).scaffoldBackgroundColor
+                : Colors.grey[300],
+            // : Colors.grey[300],
             onPressed: () {
               controller.selectedIndex.value = 1;
               if (controller.selectedIndex.value == 1)
                 controller.userlistshown.toggle();
             },
             child: CircleAvatar(
-              backgroundColor: controller.selectedIndex.value == 1?
+              backgroundColor: controller.selectedIndex.value == 1
+                  ?
                   // ? !controller.userlistshown.value
                   //     ? Theme.of(context).primaryColor
-                     Theme.of(context).primaryColor
+                  Theme.of(context).primaryColor
                   : Colors.white,
               child: Icon(Icons.map_sharp,
                   color: controller.userlistshown.value
@@ -304,52 +307,42 @@ class MemberInfo extends StatelessWidget {
                 image: DecorationImage(
                     image: NetworkImage(user.photoUrl), fit: BoxFit.cover),
                 color: Colors.grey[600],
-                borderRadius: BorderRadius.circular(5)),
-            height: 80,
+                borderRadius: BorderRadius.circular(1)),
+            height: 60,
             width: 80,
           ),
-          SizedBox(width: 10),
+          SizedBox(width: 20),
           Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(user.username.capitalize),
-                Text(user.userAddress),
+                Text(
+                  user.username.capitalize,
+                  style: largeText.copyWith(
+                      color: Colors.grey[600], fontWeight: FontWeight.w700),
+                ),
+                SizedBox(height: 5),
+                Text(
+                  user.userAddress,
+                  style: mediumText.copyWith(color: Colors.grey),
+                ),
                 Text(
                   user.bloodgroup,
-                  style:
-                      TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
-                )
+                  style: largeText.copyWith(
+                      fontSize: 24,
+                      color: Colors.red.shade900,
+                      fontWeight: FontWeight.bold),
+                ),
               ]),
           Spacer(),
-          Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-            InkWell(
-              onTap: () {
-                Get.to(LoginView());
-              },
-              child: CircleAvatar(
-                radius: 11,
-                backgroundColor: Colors.grey,
-                child: CircleAvatar(
-                    backgroundColor: Colors.grey[300],
-                    radius: 10,
-                    child: Icon(Icons.more_horiz,
-                        color: Colors.grey[700], size: 18)),
-              ),
-            ),
-            InkWell(
+          InkWell(
               onTap: () {
                 _launchCaller();
               },
               child: CircleAvatar(
-                  backgroundColor: Colors.green[200],
-                  radius: 11,
-                  child: RotatedBox(
-                      quarterTurns: 35,
-                      child: Icon(Icons.phone,
-                          color: Colors.green[700], size: 15))),
-            )
-          ]),
+                backgroundColor: Colors.green[200],
+                child: Icon(Icons.phone, color: Colors.green[700], size: 15),
+              )),
           SizedBox(width: Defaults.paddingnormal),
         ]));
   }

@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 class PostsRepo {
   final repo = firebaseFirestore.collection('request');
   sendRequest(req) async {
+
     await repo
         .add(req.toJson())
         .then((value) => {print(value.id), Get.snackbar('Request', 'sent')})

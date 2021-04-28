@@ -1,7 +1,5 @@
-import 'package:dartz/dartz_unsafe.dart';
 import 'package:flutter_blood_donation_app/app/constant/const.dart';
 import 'package:flutter_blood_donation_app/app/core/model/user_models.dart';
-import 'package:flutter_blood_donation_app/app/modules/home/views/home_view.dart';
 import 'package:geocoding/geocoding.dart';
 
 class UserReop {

@@ -1,56 +1,91 @@
-import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+
+// class CommentModel {
+//   String postid;
+//   String userid;
+ 
+//   String comment;
+// Timestamp timestamp;
+  
+//   CommentModel({
+//     this.postid,
+//    this.userid,
+//     this.comment,
+//     this.timestamp
+//   });
+
+//   Map<String, dynamic> toMap() {
+//     return {
+//       'postid': postid,
+//       'userid': userid,
+//     'timestamp':timestamp,
+//       'comment': comment,
+//     };
+//   }
+
+//   factory CommentModel.fromMap(Map<String, dynamic> map) {
+//     return CommentModel(
+//    postid: map['postid'],
+//    userid: map['userid'],
+//    timestamp: map['timestamp'],
+//       comment: map['comment'],
+//     );
+//   }
+
+//   String toJson() => json.encode(toMap());
+
+//   factory CommentModel.fromJson(String source) =>
+//       CommentModel.fromMap(json.decode(source));
+
+//   @override
+//   bool operator ==(Object other) {
+//     if (identical(this, other)) return true;
+
+//     return other is CommentModel &&
+//         other.postid == postid &&
+//         other.userid == userid &&
+//         other.timestamp == timestamp &&
+//         other.comment == comment;
+//   }
+
+//   @override
+//   int get hashCode {
+//     return postid.hashCode ^ userid.hashCode ^ timestamp.hashCode ^ comment.hashCode;
+//   }
+// }
 
 class CommentModel {
-  String id;
-  String name;
-  String photo;
-  String comment;
 
-  String timestamp;
+  String postid;
+  String userid;
+ 
+  String comment;
+Timestamp timestamp;
+  
+
   CommentModel({
-    this.id,
-    this.name,
-    this.photo,
+    this.postid,
+   this.userid,
     this.comment,
+    this.timestamp
   });
 
-  Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'name': name,
-      'photo': photo,
-      'comment': comment,
-    };
+
+  CommentModel.fromJson(Map<String, dynamic> json){
+      this.postid = json['postid'];
+      this.userid = json['userid'];
+      this.comment=json['comment'];
+      this.timestamp=json['timestamp'];
   }
 
-  factory CommentModel.fromMap(Map<String, dynamic> map) {
-    return CommentModel(
-      id: map['id'],
-      name: map['name'],
-      photo: map['photo'],
-      comment: map['comment'],
-    );
-  }
-
-  String toJson() => json.encode(toMap());
-
-  factory CommentModel.fromJson(String source) =>
-      CommentModel.fromMap(json.decode(source));
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-
-    return other is CommentModel &&
-        other.id == id &&
-        other.name == name &&
-        other.photo == photo &&
-        other.comment == comment;
-  }
-
-  @override
-  int get hashCode {
-    return id.hashCode ^ name.hashCode ^ photo.hashCode ^ comment.hashCode;
+  Map<String, dynamic> toJson(){
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['postid'] = this.postid;
+    data['userid']=this.userid;
+    data['comment']=this.comment;
+    data['timestamp']=this.timestamp;
+    return data;
   }
 }
