@@ -3,6 +3,7 @@ import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_blood_donation_app/app/core/model/user_models.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:get/get.dart';
 
 abstract class AuthenticationRepo {
   Future<Either<String, String>> userLogin(String email, String password);
@@ -40,12 +41,14 @@ class Authentication implements AuthenticationRepo {
       _getCurrentLocation();
       double lat = 0.0;
       double logi = 0.0;
-      print(_currentPosition.latitude);
-      print(_currentPosition.longitude);
+
       if (_currentPosition.latitude != null) lat = _currentPosition.latitude;
       if (_currentPosition.longitude != null) logi = _currentPosition.longitude;
 
-     // String id = '';
+      model.latitude = lat;
+      model.longitude = logi;
+
+      // String id = '';
       bool complete = false;
       UserCredential userreg = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(
@@ -79,7 +82,8 @@ class Authentication implements AuthenticationRepo {
         print(e);
       });
     } catch (error) {
-      print('error on location');
+      Get.snackbar('Info', 'Please Trun On Your Location',
+          snackPosition: SnackPosition.BOTTOM);
     }
   }
 }
