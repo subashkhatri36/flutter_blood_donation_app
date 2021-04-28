@@ -7,6 +7,7 @@ import 'package:flutter_blood_donation_app/app/constant/timeformatting.dart';
 import 'package:flutter_blood_donation_app/app/core/model/request_model.dart';
 import 'package:flutter_blood_donation_app/app/core/model/user_models.dart';
 import 'package:flutter_blood_donation_app/app/modules/home/views/post_comments/post_comment.dart';
+import 'package:flutter_blood_donation_app/app/utlis/size_config.dart';
 import 'package:get/get.dart';
 
 import '../../../Widgets/CustomButton.dart';
@@ -111,10 +112,14 @@ class UserRequest extends StatelessWidget {
                         Text('Blood Donors Needed'),
                         Row(children: [
                           Icon(Icons.location_on, size: 16, color: Colors.grey),
-                          Text('${request.detail} Hospital',
-                              style: smallText.copyWith(
-                                  color: Colors.grey,
-                                  fontWeight: FontWeight.w400)),
+                          Container(
+                            width: SizeConfig.screenWidth-150,
+                            child: Text('${request.detail} Hospital',
+                            overflow: TextOverflow.ellipsis,
+                                style: smallText.copyWith(
+                                    color: Colors.grey,
+                                    fontWeight: FontWeight.w400)),
+                          ),
                         ]),
                         Text('${request.address} ,Kathmandu',
                             style: smallText.copyWith(color: Colors.grey)),
@@ -133,21 +138,21 @@ class UserRequest extends StatelessWidget {
                           borderRadius: 5)),
                 ]),
           ),
-          Row(
-            children: [
-              CircleAvatar(
-                  radius: 10,
-                  child: Icon(
-                    Icons.thumb_up_alt_rounded,
-                    size: 10,
-                  )),
-              Text(
-                'Sudarshan and 4 other',
-                textAlign: TextAlign.start,
-                style: smallText.copyWith(color: Colors.grey),
-              ),
-            ],
-          ),
+          // Row(
+          //   children: [
+          //     CircleAvatar(
+          //         radius: 10,
+          //         child: Icon(
+          //           Icons.thumb_up_alt_rounded,
+          //           size: 10,
+          //         )),
+          //     Text(
+          //       'Sudarshan and 4 other',
+          //       textAlign: TextAlign.start,
+          //       style: smallText.copyWith(color: Colors.grey),
+          //     ),
+          //   ],
+          // ),
           SizedBox(width: 5),
           LikeButton(request: request),
         ]),

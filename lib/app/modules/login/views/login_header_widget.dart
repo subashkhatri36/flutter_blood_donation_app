@@ -22,11 +22,12 @@ class LoginHeaderWidget extends StatelessWidget {
         child: Stack(
           children: [
             Container(
+              height: MediaQuery.of(context).size.height * .4,
               width: double.infinity,
               child: ClipRRect(
                   borderRadius: BorderRadius.only(
                       bottomRight: Radius.circular(Defaults.borderRadius * 6)),
-                  child: Image.asset('assets/images/bannerImage.jpeg',fit: BoxFit.cover,)),
+                  child: Image.asset('assets/images/bannerImage.jpeg',fit: BoxFit.fill,)),
             ),
             Positioned(
               bottom: 5,

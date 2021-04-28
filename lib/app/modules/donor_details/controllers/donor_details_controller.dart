@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter_blood_donation_app/app/constant/const.dart';
 import 'package:flutter_blood_donation_app/app/core/model/user_models.dart';
+import 'package:flutter_blood_donation_app/app/modules/home/controllers/home_controller.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
@@ -9,12 +10,12 @@ import 'package:get/get.dart';
 class DonorDetailsController extends GetxController {
   var loading = false.obs;
   var count = 0.obs;
-  var mylatitude = 27.0.obs;
-  var mylongitude = 85.0.obs;
+  // var mylatitude = 27.0.obs;
+  // var mylongitude = 85.0.obs;
   var favourite = 0.obs;
   var donorlist =
       List<UsermodelSortedtoMyLocationModel>.empty(growable: true).obs;
-  var userlist = List<UserModel>.empty(growable: true);
+  var userlist = List<UserModel>.empty(growable: true).obs;
 
   //geocoding
   getcoordinatefromAddress(String address) async {
@@ -24,21 +25,22 @@ class DonorDetailsController extends GetxController {
   }
 
   getuser() async {
-    var data = await firebaseFirestore.collection('User').get();
-    data.docs.forEach((element) async {
-      //print(element.id);
-      if (element.data()['userAddress'] == '' ||
-          element.data()['userAddress'] == null) {
-        bool updated = false;
-        await firebaseFirestore.collection('User').doc(element.id).update(
-            {'userAddress': 'Basundhara'}).then((value) => updated == true);
-        if (true) {
-          Get.snackbar('updated', 'Completed');
-        }
-      } else {
-        userlist.add(UserModel.fromDocumentSnapshot(element));
-      }
-    });
+  userlist=  userController.userlist;
+    // var data = await firebaseFirestore.collection('User').get();
+    // data.docs.forEach((element) async {
+    //   //print(element.id);
+    //   if (element.data()['userAddress'] == '' ||
+    //       element.data()['userAddress'] == null) {
+    //     bool updated = false;
+    //     await firebaseFirestore.collection('User').doc(element.id).update(
+    //         {'userAddress': 'Basundhara'}).then((value) => updated == true);
+    //     if (true) {
+    //       Get.snackbar('updated', 'Completed');
+    //     }
+    //   } else {
+    //     userlist.add(UserModel.fromDocumentSnapshot(element));
+    //   }
+    // });
     getDonors();
 
     //print(userlist.length);
@@ -47,8 +49,8 @@ class DonorDetailsController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    getPosition();
-
+   // getPosition();
+//getDonors();
     //getcoordinatefromAddress();
   }
 
@@ -61,44 +63,51 @@ class DonorDetailsController extends GetxController {
   void onClose() {}
   void increment() => count.value++;
 
-  getPosition() async {
-    loading.value = true;
-    await Geolocator.getCurrentPosition().then((location) {
-      mylatitude.value = location.latitude;
-      mylongitude.value = location.longitude;
-    });
+  // getPosition() async {
+  //   loading.value = true;
+  //   await Geolocator.getCurrentPosition().then((location) {
+  //     mylatitude.value = location.latitude;
+  //     mylongitude.value = location.longitude;
+  //   });
 
-    getuser();
-  }
+  //   getuser();
+  // }
 
-  getDonors() async {
-    //  List<UsermodelSortedtoMyLocationModel> mylist = [];
-    userlist.forEach((element) async {
-      if (element.userAddress == null) {
-        firebaseFirestore
-            .collection('User')
-            .doc(element.userId)
-            .update({'userAddress': 'Basundhara'});
-      }
+  getDonors()  {List distance=[];
+     List<UsermodelSortedtoMyLocationModel> mylist = [];
+     List<UserModel> users=userController.userlist.toList();
+    users.forEach((element)  {
+      // if (element.userAddress == null) {
+      //   firebaseFirestore
+      //       .collection('User')
+      //       .doc(element.userId)
+      //       .update({'userAddress': 'Basundhara'});
+      // }
 
-      var loc = await getcoordinatefromAddress(element.userAddress);
+      // var loc = await getcoordinatefromAddress(element.userAddress);
       //print(loc.latitude);
 
       UsermodelSortedtoMyLocationModel mod = UsermodelSortedtoMyLocationModel()
-        ..distance = Geolocator.distanceBetween(mylatitude.value,
-                mylongitude.value, loc.latitude, loc.longitude)
+        ..distance = Geolocator.distanceBetween(userController.mylatitude.value,
+                userController.mylongitude.value, element.latitude, element.longitude)
             .truncate()
-            .toInt()
+           
         ..name = element.username
-        ..donorindex = userlist.indexOf(element);
-      //  print(donorlist.length);
-      donorlist.add(mod);
+        ..donorindex = users.indexOf(element);
+     
+      // distance.add(mod.distance);
+     
+      mylist.add(mod);
     });
-
-    donorlist.toList().sort((a, b) => a.distance.compareTo(b.distance));
-
-    loading.value = false;
-  }
+  // distance.sort();
+  // distance.forEach((element) {print(distance);});
+  mylist.sort((a,b)=>a.distance.compareTo(b.distance));
+  // mylist.forEach((element) {print(element.donorindex);});
+ // donorlist=mylist.obs;
+  //  donorlist.toList().sort((a, b) => a.distance.compareTo(b.distance));
+    //donorlist.forEach((element) {print(element.distance);});
+    //loading.value = false;
+return mylist;}
 
   //vincinety
   double getVincentyDistance(

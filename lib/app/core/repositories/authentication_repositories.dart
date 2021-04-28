@@ -37,13 +37,13 @@ class Authentication implements AuthenticationRepo {
   Future<Either<String, String>> userRegister(
       UserModel model, String password) async {
     try {
-      _getCurrentLocation();
-      double lat = 0.0;
-      double logi = 0.0;
-      print(_currentPosition.latitude);
-      print(_currentPosition.longitude);
-      if (_currentPosition.latitude != null) lat = _currentPosition.latitude;
-      if (_currentPosition.longitude != null) logi = _currentPosition.longitude;
+      // _getCurrentLocation();
+      // double lat = 0.0;
+      // double logi = 0.0;
+      // print(_currentPosition.latitude);
+      // print(_currentPosition.longitude);
+      // if (_currentPosition.latitude != null) lat = _currentPosition.latitude;
+      // if (_currentPosition.longitude != null) logi = _currentPosition.longitude;
 
      // String id = '';
       bool complete = false;
@@ -69,17 +69,17 @@ class Authentication implements AuthenticationRepo {
     }
   }
 
-  _getCurrentLocation() {
-    try {
-      Geolocator.getCurrentPosition(
-              desiredAccuracy: LocationAccuracy.best,
-              forceAndroidLocationManager: true)
-          .then((Position position) => _currentPosition = position)
-          .catchError((e) {
-        print(e);
-      });
-    } catch (error) {
-      print('error on location');
-    }
-  }
+  // _getCurrentLocation() {
+  //   try {
+  //     Geolocator.getCurrentPosition(
+  //             desiredAccuracy: LocationAccuracy.best,
+  //             forceAndroidLocationManager: true)
+  //         .then((Position position) => _currentPosition = position)
+  //         .catchError((e) {
+  //       print(e);
+  //     });
+  //   } catch (error) {
+  //     print('error on location');
+  //   }
+  // }
 }

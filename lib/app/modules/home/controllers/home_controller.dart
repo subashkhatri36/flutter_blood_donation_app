@@ -1,3 +1,4 @@
+import 'package:flutter_blood_donation_app/app/constant/const.dart';
 import 'package:flutter_blood_donation_app/app/core/model/request_model.dart';
 import 'package:flutter_blood_donation_app/app/core/model/user_models.dart';
 import 'package:flutter_blood_donation_app/app/core/repositories/post_repo.dart';
@@ -19,6 +20,7 @@ class HomeController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    userlistshown=true.obs;
     getPosition();
     getUsers();
 
@@ -67,6 +69,12 @@ class HomeController extends GetxController {
 
     requestData.bindStream(postRepo.getRequest());
     loading.value = false;
+  }
+
+  //signout
+  signout()async{
+   await auth.signOut();
+    Get.offNamed('/login');
   }
 }
 
