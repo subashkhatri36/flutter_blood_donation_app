@@ -50,14 +50,14 @@ List<PopupMenuItem> menuItem = [
     child: Text('Donors available'),
     value: '/donor-details',
   ),
-  PopupMenuItem(
-    child: Text('Account'),
-    value: '/account',
-  ),
-  PopupMenuItem(
-    child: Text('Settings'),
-    value: '/settings',
-  ),
+  // PopupMenuItem(
+  //   child: Text('Account'),
+  //   value: '/account',
+  // ),
+  // PopupMenuItem(
+  //   child: Text('Settings'),
+  //   value: '/settings',
+  // ),
   PopupMenuItem(
     child: Text('Signout'),
     value: '/login',
