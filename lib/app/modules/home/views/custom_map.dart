@@ -87,23 +87,52 @@ class _CustomMapState extends State<CustomMap> {
   }
 
   addMarker() {
+    // markers.add(Marker(
+    //       icon: userIcon,
+    //       markerId: MarkerId('${userController.myinfo.value.userId}'),
+    //       position: LatLng(userController.mylatitude.value, userController.mylongitude.value),
+    //       consumeTapEvents: true,
+    //       infoWindow: InfoWindow(
+    //           title: '${userController.myinfo.value.username}', snippet: "${userController.myinfo.value.userAddress}"),
+    //       onTap: () {
+    //         setState(() {
+    //           pinPillPosition = 0;
+    //           selectedUser = userController.myinfo.value;
+    //         });
+    //       },
+    //     ));
     users.forEach((element) {
       //print(bloodgroup.indexOf(element.bloodgroup));
-
-      markers.add(Marker(
-        icon: mapicons[bloodgroup.indexOf(element.bloodgroup)],
-        markerId: MarkerId('${element.userId}'),
-        position: LatLng(element.latitude, element.longitude),
-        consumeTapEvents: true,
-        infoWindow: InfoWindow(
-            title: '${element.username}', snippet: "${element.userAddress}"),
-        onTap: () {
-          setState(() {
-            pinPillPosition = 0;
-            selectedUser = element;
-          });
-        },
-      ));
+      if (element.userId != userController.myinfo.value.userId)
+        markers.add(Marker(
+          icon: mapicons[bloodgroup.indexOf(element.bloodgroup)],
+          markerId: MarkerId('${element.userId}'),
+          position: LatLng(element.latitude, element.longitude),
+          consumeTapEvents: true,
+          infoWindow: InfoWindow(
+              title: '${element.username}', snippet: "${element.userAddress}"),
+          onTap: () {
+            setState(() {
+              pinPillPosition = 0;
+              selectedUser = element;
+            });
+          },
+        ));
+      else
+        markers.add(Marker(
+          icon: userIcon,
+          markerId: MarkerId('${element.userId}'),
+          position: LatLng(element.latitude, element.longitude),
+          consumeTapEvents: true,
+          infoWindow: InfoWindow(
+              title: '${element.username}', snippet: "${element.userAddress}"),
+          onTap: () {
+            setState(() {
+              pinPillPosition = 0;
+              selectedUser = element;
+            });
+          },
+        ));
     });
   }
 
@@ -140,7 +169,7 @@ class _CustomMapState extends State<CustomMap> {
   @override
   Widget build(BuildContext context) {
     //  createMarker(context, 'assets/images/request.png');
-    // userMarker(context, 'assets/images/defaultuser.png');
+    userMarker(context, 'assets/images/defaultuser.png');
     createmarker(context);
     return Stack(
       children: [
@@ -252,10 +281,13 @@ class TappedUser extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    user.username,
-                    overflow: TextOverflow.ellipsis,
-                    style: largeText,
+                  Container(
+                    width: 140,
+                    child: Text(
+                      user.username,
+                      overflow: TextOverflow.clip,
+                      style: smallText,
+                    ),
                   ),
                   Text(
                     user.userAddress,

@@ -1,3 +1,4 @@
+import 'package:flutter_blood_donation_app/app/constant/const.dart';
 import 'package:flutter_blood_donation_app/app/core/model/request_model.dart';
 import 'package:flutter_blood_donation_app/app/core/model/user_models.dart';
 import 'package:flutter_blood_donation_app/app/core/repositories/post_repo.dart';
@@ -15,9 +16,11 @@ class HomeController extends GetxController {
   var myinfo = UserModel().obs;
   var userlist = List<UserModel>.empty(growable: true).obs;
   var requestData = List<RequestModel>.empty(growable: true).obs;
+  var userlistshown = false.obs;
   @override
   void onInit() {
     super.onInit();
+    userlistshown=true.obs;
     getPosition();
     getUsers();
 
@@ -43,12 +46,15 @@ class HomeController extends GetxController {
   }
 
   getUserByUserid(String userid) {
+    List<UserModel> user = [];
     userlist.toList().forEach((element) {
       // print(element);
       print(userid);
       if (element.userId == userid) print(element.username);
+      user.add(element);
       // element.toString();
     });
+    return user[0];
   }
 
   getPosition() async {
@@ -63,6 +69,12 @@ class HomeController extends GetxController {
 
     requestData.bindStream(postRepo.getRequest());
     loading.value = false;
+  }
+
+  //signout
+  signout()async{
+   await auth.signOut();
+    Get.offNamed('/login');
   }
 }
 

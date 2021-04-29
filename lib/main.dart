@@ -6,7 +6,6 @@ import 'package:flutter_blood_donation_app/app/constant/themes/app_theme.dart';
 import 'package:get/get.dart';
 
 import 'app/routes/app_pages.dart';
-import 'app/utlis/size_config.dart';
 
 //AIzaSyAYYYAaAm5p6UXOv0vyKElcarUaWMgQvzI
 void main() async {

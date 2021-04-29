@@ -19,82 +19,89 @@ class AccountView extends GetView<AccountController> {
     final accountController = Get.find<AccountController>();
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text('AccountView'),
-      ),
-      body: SingleChildScrollView(
-        child: Container(
-          height: MediaQuery.of(context).size.height * 2,
-          child: Column(
-            children: [
-              Obx(() => controller.backfromupdate.value
-                  ? AccountHeaderWidget()
-                  : AccountHeaderWidget()),
-              Expanded(
-                child: Container(
-                  width: MediaQuery.of(context).size.width,
-                  child: Column(
-                    children: [
-                      SizedBox(
-                        height: Defaults.paddingnormal,
-                      ),
-                      Obx(() => controller.requestSendOn.value
-                          ? RequestViewWidget()
-                          : Container(
-                              alignment: Alignment.center,
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: Defaults.paddingsmall),
-                              width: MediaQuery.of(context).size.width,
-                              height: Defaults.paddinglarge * 11,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    'Send Blood Request',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: Defaults.fontheading),
-                                    textAlign: TextAlign.left,
-                                  ),
-                                  Container(
+        // appBar: AppBar(
+        //   title: Text('AccountView'),
+        // ),
+        body: Obx(
+      () => accountController.loadigUserData.isTrue
+          ? Container(
+              child: CircularProgressIndicator(),
+            )
+          : SingleChildScrollView(
+              child: Container(
+                height: MediaQuery.of(context).size.height * 2,
+                child: Column(
+                  children: [
+                    Obx(() => controller.backfromupdate.value
+                        ? AccountHeaderWidget()
+                        : AccountHeaderWidget()),
+                    Expanded(
+                      child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        child: Column(
+                          children: [
+                            SizedBox(
+                              height: Defaults.paddingnormal,
+                            ),
+                            Obx(() => controller.requestSendOn.value
+                                ? RequestViewWidget()
+                                : Container(
+                                    alignment: Alignment.center,
                                     padding: EdgeInsets.symmetric(
-                                        horizontal: Defaults.paddingbig),
-                                    child: CustomButton(
-                                      btnColor:
-                                          Theme.of(context).backgroundColor,
-                                      label: 'Send',
-                                      labelColor: Colors.white,
-                                      onPressed: () {
-                                        Get.to(() => RequestView(),
-                                            binding: RequestBinding());
-                                      },
-                                      borderRadius: 10,
+                                        horizontal: Defaults.paddingsmall),
+                                    width: MediaQuery.of(context).size.width,
+                                    height: Defaults.paddinglarge * 11,
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          'Send Blood Request',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: Defaults.fontheading),
+                                          textAlign: TextAlign.left,
+                                        ),
+                                        Container(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: Defaults.paddingbig),
+                                          child: CustomButton(
+                                            btnColor: Theme.of(context)
+                                                .backgroundColor,
+                                            label: 'Send',
+                                            labelColor: Colors.white,
+                                            onPressed: () {
+                                              Get.to(() => RequestView(),
+                                                  binding: RequestBinding());
+                                            },
+                                            borderRadius: 10,
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                  ),
-                                ],
-                              ),
-                            )),
-                      RatingWidget(),
-                      CommentWidget(),
-                      CustomButton(
-                        borderRadius: 15,
-                        btnColor: Theme.of(context).backgroundColor,
-                        label: 'Log Out',
-                        labelColor: Colors.white,
-                        onPressed: () {
-                          accountController.signout();
-                        },
+                                  )),
+                            RatingWidget(),
+                            CommentWidget(),
+                            CustomButton(
+                              borderRadius: 15,
+                              btnColor: Theme.of(context).backgroundColor,
+                              label: 'Log Out',
+                              labelColor: Colors.white,
+                              onPressed: () {
+                                accountController.signout();
+                              },
+                            ),
+                          ],
+                        ),
                       ),
-                    ],
-                  ),
+                    )
+                  ],
                 ),
-              )
-            ],
-          ),
-        ),
-      ),
-    );
+              ),
+            ),
+    ));
   }
 }
 
@@ -252,9 +259,9 @@ class CommentWidget extends StatelessWidget {
             Divider(),
             Obx(() => accountController.loadComment.value
                 ? CircularProgressIndicator()
-                : accountController.commentList.length < 1
+                : (accountController.commentList?.length ?? 0) < 1
                     ? Container(
-                        child: Text('NO COMMENTS'),
+                        child: Center(child: Text('NO COMMENTS')),
                       )
                     : ListView.separated(
                         physics: NeverScrollableScrollPhysics(),
@@ -319,97 +326,91 @@ class AccountHeaderWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final accountController = Get.find<AccountController>();
-    print(accountController.model.toString());
-    print(accountController.loadigUserData.value);
-    return Obx(() => accountController.loadigUserData.isTrue
-        ? Container(
-            child: CircularProgressIndicator(),
-          )
-        : Container(
-            width: MediaQuery.of(context).size.width,
-            height: Defaults.paddinglarge * 10,
-            color: Theme.of(context).backgroundColor,
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Stack(children: [
-                    CircleAvatar(
-                      radius: 70,
+
+    return Container(
+        width: MediaQuery.of(context).size.width,
+        height: Defaults.paddinglarge * 10,
+        color: Theme.of(context).backgroundColor,
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Stack(children: [
+                CircleAvatar(
+                  radius: 70,
+                  backgroundColor: Colors.white,
+                  child: CircleAvatar(
+                      radius: 68,
+                      child: accountController.isImageUploading.isTrue
+                          ? Center(child: CircularProgressIndicator())
+                          : Text(''),
+                      backgroundImage: accountController.isImageNetwork.value
+                          ? NetworkImage(accountController.userImage.value)
+                          : accountController.image != null
+                              ? FileImage(
+                                  accountController.image,
+                                )
+                              : AssetImage(
+                                  'assets/images/blooddonation.png',
+                                )),
+                ),
+                CircleAvatar(
+                  radius: 25,
+                  backgroundColor: Colors.white,
+                  child: CircleAvatar(
+                      backgroundColor: Theme.of(context).backgroundColor,
+                      radius: 22,
+                      child: Text(accountController.model.bloodgroup)),
+                ),
+                Positioned(
+                  bottom: 4,
+                  right: 2,
+                  child: CircleAvatar(
+                      radius: 18,
                       backgroundColor: Colors.white,
                       child: CircleAvatar(
-                          radius: 68,
-                          child: accountController.isImageUploading.isTrue
-                              ? Center(child: CircularProgressIndicator())
-                              : Text(''),
-                          backgroundImage: accountController
-                                  .isImageNetwork.value
-                              ? NetworkImage(accountController.userImage.value)
-                              : accountController.image != null
-                                  ? FileImage(
-                                      accountController.image,
-                                    )
-                                  : AssetImage(
-                                      'assets/images/logo.PNG',
-                                    )),
-                    ),
-                    CircleAvatar(
-                      radius: 25,
-                      backgroundColor: Colors.white,
-                      child: CircleAvatar(
-                          backgroundColor: Theme.of(context).backgroundColor,
-                          radius: 22,
-                          child: Text(accountController.model.bloodgroup)),
-                    ),
-                    Positioned(
-                      bottom: 4,
-                      right: 2,
-                      child: CircleAvatar(
-                          radius: 18,
-                          backgroundColor: Colors.white,
-                          child: CircleAvatar(
-                            backgroundColor: Theme.of(context).backgroundColor,
-                            radius: 16,
-                            child: IconButton(
-                              icon: Icon(
-                                Icons.camera,
-                                color: Colors.white,
-                                size: 20,
-                              ),
-                              onPressed: () {
-                                accountController.getImage(true);
-                              },
-                            ),
-                          )),
-                    ),
-                  ]),
-                  SizedBox(height: Defaults.paddingsmall),
-                  Text(
-                    accountController.model.username,
-                    style: TextStyle(
-                        color: Colors.white, fontWeight: FontWeight.bold),
-                  ),
-                  Text(
-                    accountController.model.phoneNo,
-                    style: TextStyle(
-                        color: Colors.white, fontWeight: FontWeight.bold),
-                  ),
-                  Text(
-                    accountController.model.email,
-                    style: TextStyle(
-                        color: Colors.white, fontWeight: FontWeight.bold),
-                  ),
-                  IconButton(
-                      icon: Icon(Icons.edit, color: Colors.white),
-                      onPressed: () {
-                        Get.to(() => UpdateaccountView(),
-                            binding: UpdateaccountBinding(),
-                            arguments: accountController.model);
-                      })
-                ],
+                        backgroundColor: Theme.of(context).backgroundColor,
+                        radius: 16,
+                        child: IconButton(
+                          icon: Icon(
+                            Icons.camera,
+                            color: Colors.white,
+                            size: 20,
+                          ),
+                          onPressed: () {
+                            accountController.getImage(true);
+                          },
+                        ),
+                      )),
+                ),
+              ]),
+              SizedBox(height: Defaults.paddingsmall),
+              Text(
+                accountController.model.username,
+                style:
+                    TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
               ),
-            )));
+              Text(
+                accountController.model.phoneNo,
+                style:
+                    TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+              ),
+              Text(
+                accountController.model.email,
+                style:
+                    TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+              ),
+              IconButton(
+                  icon: Icon(Icons.edit, color: Colors.white),
+                  onPressed: () {
+                    Get.to(() => UpdateaccountView(),
+                        binding: UpdateaccountBinding(),
+                        arguments: accountController.model);
+                  })
+            ],
+          ),
+        ));
   }
 }
 

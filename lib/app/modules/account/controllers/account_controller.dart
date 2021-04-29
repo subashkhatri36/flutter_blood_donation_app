@@ -68,7 +68,7 @@ class AccountController extends GetxController {
       Either<String, UserModel> data = await _accountRepo.getUserData(id);
       data.fold((l) => print(l), (r) {
         model = r;
-        if (r.phoneNo.isNotEmpty) {
+        if (r.photoUrl.isNotEmpty) {
           isImageNetwork.value = true;
           userImage.value = r.photoUrl;
           loadingComment();
@@ -104,7 +104,10 @@ class AccountController extends GetxController {
   }
 
   double calculate(int value) {
-    return value / total.value;
+    if (total.value > 0)
+      return value / total.value;
+    else
+      return 0.0;
   }
 
   double showpercentage(int i) {

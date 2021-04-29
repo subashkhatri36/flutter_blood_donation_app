@@ -7,28 +7,33 @@ import 'package:flutter_blood_donation_app/app/modules/request/controllers/reque
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-List bloodgroup = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
-
 class RequestView extends GetView<RequestController> {
   @override
   Widget build(BuildContext context) {
     //  var scr = new GlobalKey();
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Container(
-          height: MediaQuery.of(context).size.height,
+      body: Container(
+        height: MediaQuery.of(context).size.height,
+        child: SingleChildScrollView(
           child: Form(
             key: controller.requestformKey,
             child: Column(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                // crossAxisAlignment: CrossAxisAlignment.center,
                 // padding: EdgeInsets.only(left: 20, right: 10, top: 20),
                 children: [
                   AppBar(
+                    leading: InkWell(
+                        onTap: () {
+                          Get.offNamed('/home');
+                        },
+                        child: Icon(Icons.arrow_back)),
                     title: Text('RequestBlood'),
-                    centerTitle: true,
+                    //centerTitle: true,
                   ),
                   Text(
                     'Our donors help when you need them the most',
-                    style: mediumText.copyWith(color: grey[800]),
+                    textAlign: TextAlign.center,
+                    style: smallText.copyWith(color: grey),
                   ),
                   Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                     Text(' Request on behalf of friend'),
@@ -109,8 +114,7 @@ class RequestView extends GetView<RequestController> {
                             return null;
                         },
                         decoration: InputDecoration(
-                            hintMaxLines: 3,
-                            hintText: 'Tell use about hospital detail')),
+                            hintMaxLines: 3, hintText: 'Hospital detail')),
                   ),
                   SizedBox(height: 10),
                   Obx(() => controller.isSwitched.value
@@ -121,56 +125,61 @@ class RequestView extends GetView<RequestController> {
                   Obx(() {
                     if (controller.isSwitched.value)
                       return Container(
-                        height: 150,
-                        // child: Text('hello'),
-                        child: GridView(
-                          // padding:
-                          //     EdgeInsets.only(top: 10, left: 20, right: 20),
-                          gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 5,
-                                  crossAxisSpacing: 30,
-                                  mainAxisSpacing: 30),
-                          children: [
-                            for (int i = 0; i < 8; i++)
-                              InkWell(
-                                onTap: () {
-                                  controller.bloodgroup.value = bloodgroup[i];
-                                },
-                                child: CircleAvatar(
-                                    radius: 40,
-                                    backgroundColor:
-                                        controller.bloodgroup.value ==
-                                                bloodgroup[i]
-                                            ? Colors.red
-                                            : Colors.grey,
-                                    child: Text(
-                                      bloodgroup[i],
-                                      style: mediumText.copyWith(
-                                          color: Theme.of(context)
-                                              .scaffoldBackgroundColor),
-                                    )),
-                              ),
-                          ],
-                        ),
-                      );
+                          height: 170,
+                          child: GridView(
+                            padding:
+                                EdgeInsets.only(top: 10, left: 20, right: 20),
+                            gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 4,
+                                    crossAxisSpacing: 30,
+                                    mainAxisSpacing: 30),
+                            children: [
+                              for (int i = 0; i < 8; i++)
+                                InkWell(
+                                  onTap: () {
+                                    controller.bloodgroup.value = bloodgroup[i];
+                                  },
+                                  child: CircleAvatar(
+                                      backgroundColor:
+                                          controller.bloodgroup.value ==
+                                                  bloodgroup[i]
+                                              ? Colors.red
+                                              : Colors.grey,
+                                      child: Text(
+                                        bloodgroup[i],
+                                        style: mediumText.copyWith(
+                                            color: Theme.of(context)
+                                                .scaffoldBackgroundColor),
+                                      )),
+                                ),
+                            ],
+                          ));
                     return Container();
                   }),
-                  Container(
-                    padding: EdgeInsets.only(left: 20, right: 20),
-                    width: double.infinity,
-                    child: TextButton(
-                      onPressed: () {
-                        if (controller.requestformKey.currentState.validate()) {
-                          controller.sendrequest();
-                          //Get.off("/home");
-                        }
-                      },
-                      child: Text('Continue'),
-                      style: TextButton.styleFrom(
-                          primary: Colors.white,
-                          backgroundColor: Colors.deepOrange),
-                    ),
+                  Obx(() => SizedBox(
+                        height: controller.isSwitched.value ? 20 : 170,
+                      )),
+                  Obx(
+                    () => !userController.loading.value
+                        ? Container(
+                            padding: EdgeInsets.only(left: 20, right: 20),
+                            width: double.infinity,
+                            child: TextButton(
+                              onPressed: () {
+                                if (controller.requestformKey.currentState
+                                    .validate()) {
+                                  controller.sendrequest();
+                                  Get.offNamed("/home");
+                                }
+                              },
+                              child: Text('Continue'),
+                              style: TextButton.styleFrom(
+                                  primary: Colors.white,
+                                  backgroundColor: Colors.deepOrange),
+                            ),
+                          )
+                        : Text('Loading'),
                   ),
                   SizedBox(
                     height: 10,
@@ -238,6 +247,7 @@ class _CustomGoogleMapState extends State<CustomGoogleMap> {
                       print('onCameraMove: $cameraUpdate'),
                   compassEnabled: true,
                   onMapCreated: (controller) {
+                    reqController.loading.value = true;
                     Future.delayed(Duration(seconds: 2)).then(
                       (_) {
                         controller
@@ -254,14 +264,16 @@ class _CustomGoogleMapState extends State<CustomGoogleMap> {
                               ),
                             )
                             .then((value) =>
-                                Future.delayed(Duration(seconds: 6))
+                                Future.delayed(Duration(seconds: 2))
                                     .then((_) async {
-                                  Uint8List image =
-                                      await controller.takeSnapshot();
-                                  setState(() {
-                                    _imageBytes = image;
+                                  await controller.takeSnapshot().then((value) {
+                                    setState(() {
+                                      _imageBytes = value;
+                                    });
+                                    reqController.data.value = value;
+                                    reqController.loading.value = false;
                                   });
-                                  reqController.data.value = _imageBytes;
+
                                   //  print(reqController.data.value);
                                 }));
                         //   controller.getVisibleRegion().then(

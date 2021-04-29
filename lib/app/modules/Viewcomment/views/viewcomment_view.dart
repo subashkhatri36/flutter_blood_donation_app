@@ -77,6 +77,6 @@ class ViewcommentView extends GetView<ViewcommentController> {
             separatorBuilder: (context, index) {
               return Divider();
             },
-            itemCount: datalist.commentList.length));
+            itemCount: datalist.commentList?.length ?? 0));
   }
 }

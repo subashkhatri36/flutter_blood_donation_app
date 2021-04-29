@@ -11,7 +11,7 @@ import 'package:get/get.dart';
 class LoginController extends GetxController {
   ScrollController pageviewScroll = new PageController();
   RxInt currentpage = 0.obs;
-  final loginformKey = GlobalKey<FormState>();
+  GlobalKey<FormState> loginformKey = GlobalKey<FormState>();
   var longitude=27.0.obs;
   var latitude=85.0.obs;
   AuthenticationRepo _authenticationRepo = new Authentication();
@@ -66,7 +66,7 @@ class LoginController extends GetxController {
     userLogin.fold(
         (l) => Get.snackbar('Error !', l, snackPosition: SnackPosition.BOTTOM),
         (r) {
-      Get.to(HomeView(), binding: HomeBinding());
+      Get.off(HomeView(), binding: HomeBinding());
     });
     loginProcess.value = false;
   }
