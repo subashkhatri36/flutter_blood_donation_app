@@ -2,7 +2,10 @@ import 'dart:io';
 
 import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_blood_donation_app/app/core/model/comment_model.dart';
+import 'package:flutter_blood_donation_app/app/core/model/request_model.dart';
+import 'package:flutter_blood_donation_app/app/core/model/review_model.dart';
 import 'package:get/get.dart';
 
 import 'package:flutter_blood_donation_app/app/core/model/user_models.dart';
@@ -25,32 +28,66 @@ class AccountController extends GetxController {
   RxString userImage = 'assets/images/blooddonation.png'.obs;
   File image;
   RxList commentList;
+  RxList<ReviewModel> reviewList;
   RxBool loadComment = false.obs;
 
   RxDouble average = 0.0.obs;
   RxDouble total = 0.0.obs;
 
-  RxBool requestSendOn = true.obs;
+  RxBool requestSendOn = false.obs;
+
+  RequestModel currentRequest;
 
   @override
   void onInit() {
     getUserData();
+    getCurrentRequest();
     super.onInit();
   }
 
   loadingComment() async {
     loadComment.toggle();
-    List<CommentModel> model = [];
+    List<ReviewModel> model = [];
     var id = FirebaseAuth.instance.currentUser.uid;
     if (id != null) {
-      Either<String, List<CommentModel>> data =
+      Either<String, List<ReviewModel>> data =
           await _accountRepo.getUserComment(id);
       data.fold((l) => print(l), (r) {
         model = r.toList();
-        commentList = model.obs;
+        reviewList = model.obs;
       });
     }
     loadComment.toggle();
+  }
+
+  deleteRequest() async {
+    if (requestSendOn.value && currentRequest != null) {
+      Either<String, String> val =
+          await _accountRepo.deleteuserRequest(currentRequest.id);
+      val.fold((l) => Get.snackbar('Error', l.toString()), (r) {
+        Get.snackbar('Info', r.toString());
+        requestSendOn.value = false;
+        currentRequest = null;
+        getCurrentRequest();
+      });
+    }
+  }
+
+  getCurrentRequest() async {
+    var id = FirebaseAuth.instance.currentUser.uid;
+    if (id != null) {
+      print('data is not null');
+      Either<String, RequestModel> userRequest =
+          await _accountRepo.getCurrentRequest(id);
+
+      userRequest.fold((l) => Get.snackbar('Error', l.toString()), (r) {
+        print(r.bloodgroup);
+        currentRequest = r;
+        requestSendOn.value = true;
+      });
+    } else {
+      print('uid is null');
+    }
   }
 
   Future<bool> getDelete(String docId) async {

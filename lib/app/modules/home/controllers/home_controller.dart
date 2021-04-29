@@ -1,3 +1,7 @@
+import 'dart:async';
+
+import 'package:connectivity/connectivity.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_blood_donation_app/app/constant/const.dart';
 import 'package:flutter_blood_donation_app/app/core/model/request_model.dart';
 import 'package:flutter_blood_donation_app/app/core/model/user_models.dart';
@@ -7,6 +11,8 @@ import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 
 class HomeController extends GetxController {
+  var connectionStatus = 0.obs;
+  final Connectivity _connectivity = Connectivity();
   var selectedIndex = 0.obs;
   var loading = false.obs;
   var mapview = false.obs;
@@ -17,10 +23,41 @@ class HomeController extends GetxController {
   var userlist = List<UserModel>.empty(growable: true).obs;
   var requestData = List<RequestModel>.empty(growable: true).obs;
   var userlistshown = false.obs;
+
+  Future<void> initConnectivity() async {
+    ConnectivityResult result;
+    try {
+      result = await _connectivity.checkConnectivity();
+    } on PlatformException catch (e) {
+      Get.snackbar(e.code, e.message);
+    } catch (e) {
+      print(e.toString());
+    }
+    return _updateConnectionState(result);
+  }
+
+  void _updateConnectionState(ConnectivityResult result) {
+    switch (result) {
+      case ConnectivityResult.wifi:
+        connectionStatus.value = 1;
+
+        break;
+      case ConnectivityResult.mobile:
+        connectionStatus.value = 2;
+        break;
+      case ConnectivityResult.none:
+        connectionStatus.value = 0;
+        break;
+      default:
+        Get.snackbar("Network Error", "Failed to connect ot network");
+    }
+  }
+
   @override
   void onInit() {
     super.onInit();
-    userlistshown=true.obs;
+    userlistshown = true.obs;
+
     getPosition();
     getUsers();
 
@@ -48,11 +85,8 @@ class HomeController extends GetxController {
   getUserByUserid(String userid) {
     List<UserModel> user = [];
     userlist.toList().forEach((element) {
-      // print(element);
-      print(userid);
-      if (element.userId == userid) print(element.username);
+      if (element.userId == userid) ;
       user.add(element);
-      // element.toString();
     });
     return user[0];
   }
@@ -72,8 +106,8 @@ class HomeController extends GetxController {
   }
 
   //signout
-  signout()async{
-   await auth.signOut();
+  signout() async {
+    await auth.signOut();
     Get.offNamed('/login');
   }
 }

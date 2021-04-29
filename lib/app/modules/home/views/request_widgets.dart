@@ -14,6 +14,34 @@ import '../../../Widgets/CustomButton.dart';
 import '../controllers/home_controller.dart';
 import 'donor_profile/donor_profile.dart';
 
+List<PopupMenuItem> menuItem = [
+  // PopupMenuItem(
+  //   child: Text('Request Blood'),
+  //   value: '/request',
+  // ),
+  // PopupMenuItem(
+  //   child: Text('Home'),
+  //   value: '/home',
+  // ),
+  //
+  PopupMenuItem(
+    child: Text('Accept Request'),
+    value: '/accept',
+  ),
+  // PopupMenuItem(
+  //   child: Text('Account'),
+  //   value: '/account',
+  // ),
+  // PopupMenuItem(
+  //   child: Text('Settings'),
+  //   value: '/settings',
+  // ),
+  // PopupMenuItem(
+  //   child: Text('Refer'),
+  //   value: '/refer',
+  // ),
+];
+
 class UserRequest extends StatelessWidget {
   final RequestModel request;
 
@@ -54,9 +82,10 @@ class UserRequest extends StatelessWidget {
                 SizedBox(width: 15),
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                   Text(
-                    request.name.capitalize,
+                    '${request.name.capitalize}',
                     //capitalize(),
-                    style: mediumText.copyWith(fontWeight: FontWeight.w400),
+                    style: mediumText.copyWith(
+                        fontWeight: FontWeight.w600, color: Colors.grey[600]),
                   ),
                   Text(
                       'looking for ${request.bloodgroup}  in ${request.address}',
@@ -98,7 +127,7 @@ class UserRequest extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         Text(
-                          request.bloodgroup,
+                          '${request.bloodgroup}',
                           style: mediumText.copyWith(color: Colors.grey[900]),
                         ),
                       ]),
@@ -126,16 +155,46 @@ class UserRequest extends StatelessWidget {
                         //
                       ]),
                   Spacer(),
-                  Container(
-                      width: 60,
-                      padding: EdgeInsets.only(right: 10),
-                      //   color: Colors.purple,
+                  Padding(
+                    padding: const EdgeInsets.only(right: 10.0),
+                    child: Container(
+                      width: 50,
+                      alignment: Alignment.center,
+                      //padding: EdgeInsets.only(),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        color: Colors.purple,
+                      ),
+
                       height: 30,
-                      child: CustomButton(
-                          label: 'Help',
-                          labelColor: Colors.white,
-                          btnColor: Colors.purple,
-                          borderRadius: 5)),
+                      child: PopupMenuButton(
+                        onSelected: (v) {
+                          //print('request accept');
+                          //print(v.toString());
+                          // Get.snackbar(v, v);
+                          // if (v == '/login') {
+                          //   userController.signout();
+                          // }
+                          // Get.toNamed(v);
+                        },
+                        itemBuilder: (context) {
+                          return List.generate(menuItem.length, (i) {
+                            return menuItem[i];
+                          });
+                        },
+                        child: Text(
+                          'Help',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+
+                      // CustomButton(
+                      //     label: 'Help',
+                      //     labelColor: Colors.white,
+                      //     btnColor: Colors.purple,
+                      //     borderRadius: 5)
+                    ),
+                  ),
                 ]),
           ),
           // Row(
@@ -149,7 +208,7 @@ class UserRequest extends StatelessWidget {
           //     Text(
           //       'Sudarshan and 4 other',
           //       textAlign: TextAlign.start,
-          //       style: smallText.copyWith(color: Colors.grey),
+          //       style: sm allText.copyWith(color: Colors.grey),
           //     ),
           //   ],
           // ),
@@ -233,7 +292,9 @@ class _LikeButtonState extends State<LikeButton> {
         Spacer(),
         TextButton(
           onPressed: () {
-            Get.to(PostComment());
+            Get.to(
+              PostComment(request: widget.request),
+            );
           },
           child: Row(
             children: [
@@ -241,7 +302,7 @@ class _LikeButtonState extends State<LikeButton> {
               SizedBox(
                 width: 5,
               ),
-              Text('COMMENTS(3)', style: smallText.copyWith(color: grey)),
+              Text('COMMENTS', style: smallText.copyWith(color: grey)),
             ],
           ),
         ),

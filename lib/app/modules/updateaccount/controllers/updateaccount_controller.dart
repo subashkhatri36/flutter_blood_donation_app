@@ -3,8 +3,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_blood_donation_app/app/core/model/user_models.dart';
 import 'package:flutter_blood_donation_app/app/core/repositories/account_repository.dart';
+import 'package:flutter_blood_donation_app/app/modules/home/controllers/home_controller.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:get/get.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class UpdateaccountController extends GetxController {
   GlobalKey<FormState> formKey = new GlobalKey();
@@ -14,7 +16,7 @@ class UpdateaccountController extends GetxController {
   var mylatitude = 0.0.obs;
   var mylongitude = 0.0.obs;
   AccountRepo accountRepo = new AccountRepositories();
-
+ GoogleMapController mapController;
   RxString bloodgroup = ''.obs;
   String selectedData = '';
   bool selectedstate = false;
@@ -51,8 +53,14 @@ class UpdateaccountController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    getcoordinateAddress(userController.myinfo.value.userAddress);
   }
 
+  getcoordinateAddress(String address) async {
+    List<Location> locations = await locationFromAddress("$address,kathmandu");
+  mylatitude.value=locations[0].latitude;
+   mylongitude.value=locations[0].longitude;
+  }
   //geocoding
   getcoordinatefromAddress(String address) async {
     List<Location> locations = await locationFromAddress("$address,kathmandu");

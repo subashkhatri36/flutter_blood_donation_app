@@ -12,19 +12,19 @@ class ViewcommentView extends GetView<ViewcommentController> {
     final datalist = Get.find<AccountController>();
     return Scaffold(
         appBar: AppBar(
-          title: Text('Comments'),
+          title: Text('Reviews'),
         ),
         body: ListView.separated(
             physics: NeverScrollableScrollPhysics(),
             reverse: true,
             shrinkWrap: true,
             itemBuilder: (context, index) {
-              final data = datalist.commentList[index];
+              final data = datalist.reviewList[index];
               return Dismissible(
                 key: Key(data.id),
                 onDismissed: (DismissDirection direction) async {
                   bool val = await controller.deletingComment(data.id);
-                  if (val) datalist.commentList.removeAt(index);
+                  if (val) datalist.reviewList.removeAt(index);
                   return val;
                 },
                 secondaryBackground: Container(
@@ -77,6 +77,6 @@ class ViewcommentView extends GetView<ViewcommentController> {
             separatorBuilder: (context, index) {
               return Divider();
             },
-            itemCount: datalist.commentList?.length ?? 0));
+            itemCount: datalist.reviewList?.length ?? 0));
   }
 }

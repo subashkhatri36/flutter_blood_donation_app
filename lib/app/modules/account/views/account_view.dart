@@ -25,7 +25,7 @@ class AccountView extends GetView<AccountController> {
         body: Obx(
       () => accountController.loadigUserData.isTrue
           ? Container(
-              child: CircularProgressIndicator(),
+              child: Center(child: CircularProgressIndicator()),
             )
           : SingleChildScrollView(
               child: Container(
@@ -82,6 +82,7 @@ class AccountView extends GetView<AccountController> {
                                       ],
                                     ),
                                   )),
+                            Donation(),
                             RatingWidget(),
                             CommentWidget(),
                             CustomButton(
@@ -105,6 +106,39 @@ class AccountView extends GetView<AccountController> {
   }
 }
 
+class Donation extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.all(Defaults.paddingmiddle),
+      decoration: BoxDecoration(border: Border.all(color: Colors.grey)),
+      height: 200,
+      child: Column(
+        children: [
+          Container(
+            color: Colors.grey,
+            padding: EdgeInsets.all(Defaults.paddingmiddle),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Donation',
+                  style: TextStyle(fontSize: Defaults.fontheading),
+                ),
+                Text(
+                  'View All',
+                  style: TextStyle(fontSize: Defaults.fontheading),
+                ),
+              ],
+            ),
+          ),
+          Text('No Donation Yet.')
+        ],
+      ),
+    );
+  }
+}
+
 class RequestViewWidget extends StatelessWidget {
   const RequestViewWidget({
     Key key,
@@ -112,6 +146,7 @@ class RequestViewWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final userRequest = Get.find<AccountController>();
     return Container(
       padding: EdgeInsets.symmetric(horizontal: Defaults.paddingsmall),
       width: MediaQuery.of(context).size.width,
@@ -168,14 +203,18 @@ class RequestViewWidget extends StatelessWidget {
                       child: CircleAvatar(
                         radius: Defaults.paddingbig * 2 - 4,
                         backgroundColor: Theme.of(context).backgroundColor,
-                        child: Text('A+'),
+                        child: Text(userRequest.currentRequest != null
+                            ? userRequest.currentRequest.bloodgroup
+                            : 'Na'),
                       ),
                     ),
                     Container(
                       padding:
                           EdgeInsets.symmetric(horizontal: Defaults.paddingbig),
                       child: Text(
-                        'Near abcd Near abcdNear abcdNear abcdNear abcdNear abcdNear abcd',
+                        userRequest.currentRequest != null
+                            ? userRequest.currentRequest.address
+                            : 'No address',
                         maxLines: 2,
                       ),
                     ),
@@ -189,7 +228,40 @@ class RequestViewWidget extends StatelessWidget {
                         btnColor: Theme.of(context).backgroundColor,
                         label: 'Close',
                         labelColor: Colors.white,
-                        onPressed: () {},
+                        onPressed: () {
+                          return showDialog(
+                            context: context,
+                            barrierDismissible: false, // user must tap button!
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text('Delete Dialog'),
+                                content: SingleChildScrollView(
+                                  child: ListBody(
+                                    children: <Widget>[
+                                      Text(
+                                          'Are you Sure to delete your Request.'),
+                                    ],
+                                  ),
+                                ),
+                                actions: <Widget>[
+                                  TextButton(
+                                    child: Text('Cancel'),
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+                                  TextButton(
+                                    child: Text('Delete'),
+                                    onPressed: () {
+                                      userRequest.deleteRequest();
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        },
                         borderRadius: 10,
                       ),
                     ),
@@ -232,7 +304,7 @@ class CommentWidget extends StatelessWidget {
                   Expanded(
                     flex: 8,
                     child: Text(
-                      'Comments',
+                      'Reviews',
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: Defaults.fontheading),
@@ -259,16 +331,16 @@ class CommentWidget extends StatelessWidget {
             Divider(),
             Obx(() => accountController.loadComment.value
                 ? CircularProgressIndicator()
-                : (accountController.commentList?.length ?? 0) < 1
+                : (accountController.reviewList?.length ?? 0) < 1
                     ? Container(
-                        child: Center(child: Text('NO COMMENTS')),
+                        child: Center(child: Text('No Reviews')),
                       )
                     : ListView.separated(
                         physics: NeverScrollableScrollPhysics(),
                         reverse: true,
                         shrinkWrap: true,
                         itemBuilder: (context, index) {
-                          final data = accountController.commentList[index];
+                          final data = accountController.reviewList[index];
                           return InkWell(
                             onTap: () {},
                             child: Container(
@@ -308,9 +380,9 @@ class CommentWidget extends StatelessWidget {
                         separatorBuilder: (context, index) {
                           return Divider();
                         },
-                        itemCount: accountController.commentList.length > 4
+                        itemCount: accountController.reviewList.length > 4
                             ? 4
-                            : accountController.commentList.length))
+                            : accountController.reviewList.length))
           ],
         ),
       ),

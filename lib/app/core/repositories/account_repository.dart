@@ -4,7 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter_blood_donation_app/app/core/model/comment_model.dart';
+import 'package:flutter_blood_donation_app/app/core/model/request_model.dart';
+import 'package:flutter_blood_donation_app/app/core/model/review_model.dart';
 
 import 'package:flutter_blood_donation_app/app/core/model/user_models.dart';
 
@@ -13,26 +14,28 @@ abstract class AccountRepo {
   Future<Either<String, String>> updateUser(String userId, UserModel userModel);
   Future<Either<String, String>> uploadImage(File path, String userId);
   Future<Either<bool, bool>> deleteComment(String docId);
-  Future<Either<String, List<CommentModel>>> getUserComment(String userId);
+  Future<Either<String, List<ReviewModel>>> getUserComment(String userId);
+  Future<Either<String, RequestModel>> getCurrentRequest(String userId);
+  Future<Either<String, String>> deleteuserRequest(String docId);
 }
 
 class AccountRepositories implements AccountRepo {
   final _firebaseStorage = FirebaseStorage.instance;
 
   @override
-  Future<Either<String, List<CommentModel>>> getUserComment(
+  Future<Either<String, List<ReviewModel>>> getUserComment(
       String userId) async {
     try {
       bool complete = false;
-      List<CommentModel> modelList = [];
+      List<ReviewModel> modelList = [];
       await FirebaseFirestore.instance
           .collection('User')
           .doc(userId)
-          .collection('comment')
+          .collection('Review')
           .get()
           .then((value) {
         value.docs.forEach((element) {
-          modelList.add(CommentModel(
+          modelList.add(ReviewModel(
             id: element.id,
             name: element['name'],
             photo: element['photo'],
@@ -57,7 +60,7 @@ class AccountRepositories implements AccountRepo {
       await FirebaseFirestore.instance
           .collection('User')
           .doc(FirebaseAuth.instance.currentUser.uid)
-          .collection('comment')
+          .collection('Review')
           .doc(docId)
           .delete()
           .whenComplete(() => complete = true);
@@ -163,6 +166,51 @@ class AccountRepositories implements AccountRepo {
       }
     } catch (error) {
       return left('Error while updating User Info');
+    }
+  }
+
+  @override
+  Future<Either<String, RequestModel>> getCurrentRequest(String userId) async {
+    try {
+      RequestModel requestModel;
+      bool complete = false;
+
+      await FirebaseFirestore.instance
+          .collection('request')
+          .where('userid', isEqualTo: userId)
+          .get()
+          .then((value) {
+        value.docs.forEach((element) {
+          if (element.exists)
+            requestModel = RequestModel.fromDocumentSnapshot(element);
+        });
+      }).whenComplete(() => complete = true);
+
+      if (requestModel != null && complete) {
+        return right(requestModel);
+      } else {
+        return left('Something went Wrong while fetching request');
+      }
+    } catch (error) {
+      return left(error.toString());
+    }
+  }
+
+  @override
+  Future<Either<String, String>> deleteuserRequest(String docId) async {
+    try {
+      bool complete = false;
+      await FirebaseFirestore.instance
+          .collection('request')
+          .doc(docId)
+          .delete()
+          .whenComplete(() => complete = true);
+      if (complete) {
+        return right('Delete Successfully');
+      } else
+        return left('Something went Wrong while deleting request');
+    } catch (error) {
+      return left(error.toString());
     }
   }
 }

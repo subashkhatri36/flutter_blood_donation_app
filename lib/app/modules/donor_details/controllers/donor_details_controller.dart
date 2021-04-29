@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:flutter_blood_donation_app/app/constant/const.dart';
 import 'package:flutter_blood_donation_app/app/core/model/user_models.dart';
 import 'package:flutter_blood_donation_app/app/modules/home/controllers/home_controller.dart';
 import 'package:geocoding/geocoding.dart';
@@ -73,7 +72,7 @@ class DonorDetailsController extends GetxController {
   //   getuser();
   // }
 
-  getDonors()  {List distance=[];
+  getDonors()  {
      List<UsermodelSortedtoMyLocationModel> mylist = [];
      List<UserModel> users=userController.userlist.toList();
     users.forEach((element)  {

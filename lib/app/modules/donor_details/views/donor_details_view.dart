@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_blood_donation_app/app/constant/const.dart';
-import 'package:flutter_blood_donation_app/app/core/model/user_models.dart';
 import 'package:flutter_blood_donation_app/app/modules/home/controllers/home_controller.dart';
 
 import 'package:get/get.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../controllers/donor_details_controller.dart';
 
@@ -51,14 +49,6 @@ class DonorDetailsView extends GetView<DonorDetailsController> {
 class SortedItem extends StatelessWidget {
   SortedItem(this.u, );
   final UsermodelSortedtoMyLocationModel u;
-  _launchCaller() async {
-    String url = "tel:${userController.userlist.toList()[u.donorindex].phoneNo}";
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
-      throw 'Could not launch $url';
-    }
-  }
 
   @override
   Widget build(BuildContext context) {

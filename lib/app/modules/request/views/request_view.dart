@@ -158,7 +158,7 @@ class RequestView extends GetView<RequestController> {
                     return Container();
                   }),
                   Obx(() => SizedBox(
-                        height: controller.isSwitched.value ? 20 : 170,
+                        height: controller.isSwitched.value ? 20 : 220,
                       )),
                   Obx(
                     () => !userController.loading.value
