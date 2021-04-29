@@ -9,7 +9,7 @@ FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
 FirebaseAuth auth = FirebaseAuth.instance;
 
 final largeText = TextStyle(
-  fontSize: 20,
+  fontSize: 16,
 );
 final mediumText = TextStyle(fontSize: 16);
 final smallText = TextStyle(fontSize: 14);

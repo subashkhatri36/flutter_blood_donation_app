@@ -49,11 +49,11 @@ class AppPages {
       page: () => MyhistoryView(),
       binding: MyhistoryBinding(),
     ),
-    GetPage(
-      name: _Paths.DONOR_DETAILS,
-      page: () => DonorDetailsView(),
-      binding: DonorDetailsBinding(),
-    ),
+    // GetPage(
+    //   name: _Paths.DONOR_DETAILS,
+    //   page: () => DonorDetailsView(),
+    //   binding: DonorDetailsBinding(),
+    // ),
     GetPage(
       name: _Paths.ACCOUNT,
       page: () => AccountView(),

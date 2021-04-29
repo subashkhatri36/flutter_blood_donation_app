@@ -3,6 +3,7 @@ import 'package:flutter_blood_donation_app/app/constant/const.dart';
 import 'package:flutter_blood_donation_app/app/constant/defaults.dart';
 import 'package:flutter_blood_donation_app/app/modules/account/views/account_view.dart';
 import 'package:get/get.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/model/user_models.dart';
@@ -44,10 +45,10 @@ List<PopupMenuItem> menuItem = [
   //   value: '/home',
   // ),
   //
-  PopupMenuItem(
-    child: Text('Donors available'),
-    value: '/donor-details',
-  ),
+  // PopupMenuItem(
+  //   child: Text('Donors available'),
+  //   value: '/donor-details',
+  // ),
   // PopupMenuItem(
   //   child: Text('Account'),
   //   value: '/account',
@@ -122,6 +123,23 @@ List<PopupMenuItem> menuItem = [
 //       userAddress: '',
 //       photoUrl: 'https://i.stack.imgur.com/HILmr.png'),
 // ];
+final List<Widget> _children = [
+  RequestsHome(),
+  CustomMapMap(),
+  // GoogleMap(
+  //     mapType: MapType.normal,
+  //     // initialCameraPosition: _kGooglePlex,
+  //     onMapCreated: (GoogleMapController controller) {
+  //       // controller.animateCamera(CameraUpdate)
+  //       //  _controller.complete(controller);
+  //     },
+  //     initialCameraPosition: CameraPosition(
+  //         bearing: 192.8334901395799,
+  //         target: LatLng(37.43296265331129, -122.08832357078792),
+  //         tilt: 59.440717697143555,
+  //         zoom: 19.151926040649414)),
+  AccountView(),
+];
 
 class HomeView extends GetView<HomeController> {
   Widget buildBody(context) {
@@ -148,7 +166,7 @@ class HomeView extends GetView<HomeController> {
             //               title: MemberInfo(userController.userlist.toList()[i]));
             //         })
             // : Container());
-            CustomMap();
+            CustomMapMap();
 
         break;
       case 0:
@@ -163,7 +181,7 @@ class HomeView extends GetView<HomeController> {
   @override
   Widget build(BuildContext context) {
     return Obx(() => Scaffold(
-          backgroundColor: Colors.grey[300],
+          // backgroundColor: Colors.grey[300],
           appBar: AppBar(
               title: Row(
                 children: [

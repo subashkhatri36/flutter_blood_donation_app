@@ -7,41 +7,46 @@ import 'package:get/get.dart';
 import '../controllers/donor_details_controller.dart';
 
 class DonorDetailsView extends GetView<DonorDetailsController> {
+  final String bloodgroup;
+
+  DonorDetailsView(this.bloodgroup);
   @override
   Widget build(BuildContext context) {
-    List<UsermodelSortedtoMyLocationModel> user = controller.getDonors();
-    return Scaffold(
-        appBar: AppBar(
-          title: Text(
-            'DonorList',
-            style: largeText,
-          ),
-          actions: [
-            IconButton(
-                icon: Text(
-                  'AB -',
-                  style: mediumText.copyWith(
-                      color: Colors.white, fontWeight: FontWeight.w600),
-                ),
-                onPressed: () {})
-          ],
-        ),
-        body: //Obx(() => Text(controller.mylongitude.toString()))
-
-            ListView.builder(
-                itemCount: user.length,
-                itemBuilder: (_, int i) {
-                  //  return Text(userController.userlist.toList()[user[i].donorindex].username);})
-                  return ListTile(
-                      contentPadding: EdgeInsets.only(left: 5, right: 5),
-                      title: SortedItem(user[i]));
-                })
-        // : Center(
-        //     child: CircularProgressIndicator(
-        //         backgroundColor: Theme.of(context).primaryColor),
+    List<UsermodelSortedtoMyLocationModel> user =
+        controller.getDonors(bloodgroup);
+    return
+        //Scaffold(
+        // appBar: AppBar(
+        //   title: Text(
+        //     'DonorList',
+        //     style: largeText,
         //   ),
+        //   actions: [
+        //     IconButton(
+        //         icon: Text(
+        //           'AB -',
+        //           style: mediumText.copyWith(
+        //               color: Colors.white, fontWeight: FontWeight.w600),
+        //         ),
+        //         onPressed: () {})
+        //   ],
         // ),
-        );
+        // body: //Obx(() => Text(controller.mylongitude.toString()))
+
+        ListView.builder(
+            itemCount: user.length,
+            itemBuilder: (_, int i) {
+              //  return Text(userController.userlist.toList()[user[i].donorindex].username);})
+              return ListTile(
+                  contentPadding: EdgeInsets.only(left: 5, right: 5),
+                  title: SortedItem(user[i]));
+            } //)
+            // : Center(
+            //     child: CircularProgressIndicator(
+            //         backgroundColor: Theme.of(context).primaryColor),
+            //   ),
+            // ),
+            );
   }
 }
 

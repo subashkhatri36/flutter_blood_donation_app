@@ -24,7 +24,7 @@ class DonorDetailsController extends GetxController {
   }
 
   getuser() async {
-  userlist=  userController.userlist;
+    userlist = userController.userlist;
     // var data = await firebaseFirestore.collection('User').get();
     // data.docs.forEach((element) async {
     //   //print(element.id);
@@ -40,7 +40,7 @@ class DonorDetailsController extends GetxController {
     //     userlist.add(UserModel.fromDocumentSnapshot(element));
     //   }
     // });
-    getDonors();
+   // getDonors();
 
     //print(userlist.length);
   }
@@ -48,7 +48,7 @@ class DonorDetailsController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-   // getPosition();
+    // getPosition();
 //getDonors();
     //getcoordinatefromAddress();
   }
@@ -72,10 +72,10 @@ class DonorDetailsController extends GetxController {
   //   getuser();
   // }
 
-  getDonors()  {
-     List<UsermodelSortedtoMyLocationModel> mylist = [];
-     List<UserModel> users=userController.userlist.toList();
-    users.forEach((element)  {
+  getDonors(String bloodgroup) {
+    List<UsermodelSortedtoMyLocationModel> mylist = [];
+    List<UserModel> users = userController.userlist.toList();
+    users.forEach((element) {
       // if (element.userAddress == null) {
       //   firebaseFirestore
       //       .collection('User')
@@ -85,28 +85,33 @@ class DonorDetailsController extends GetxController {
 
       // var loc = await getcoordinatefromAddress(element.userAddress);
       //print(loc.latitude);
+      if (element.bloodgroup == bloodgroup) {
+        UsermodelSortedtoMyLocationModel mod =
+            UsermodelSortedtoMyLocationModel()
+              ..distance = Geolocator.distanceBetween(
+                      userController.mylatitude.value,
+                      userController.mylongitude.value,
+                      element.latitude,
+                      element.longitude)
+                  .truncate()
+              ..name = element.username
+              ..donorindex = users.indexOf(element);
 
-      UsermodelSortedtoMyLocationModel mod = UsermodelSortedtoMyLocationModel()
-        ..distance = Geolocator.distanceBetween(userController.mylatitude.value,
-                userController.mylongitude.value, element.latitude, element.longitude)
-            .truncate()
-           
-        ..name = element.username
-        ..donorindex = users.indexOf(element);
-     
-      // distance.add(mod.distance);
-     
-      mylist.add(mod);
+        // distance.add(mod.distance);
+
+        mylist.add(mod);
+      }
     });
-  // distance.sort();
-  // distance.forEach((element) {print(distance);});
-  mylist.sort((a,b)=>a.distance.compareTo(b.distance));
-  // mylist.forEach((element) {print(element.donorindex);});
- // donorlist=mylist.obs;
-  //  donorlist.toList().sort((a, b) => a.distance.compareTo(b.distance));
+    // distance.sort();
+    // distance.forEach((element) {print(distance);});
+    mylist.sort((a, b) => a.distance.compareTo(b.distance));
+    // mylist.forEach((element) {print(element.donorindex);});
+    // donorlist=mylist.obs;
+    //  donorlist.toList().sort((a, b) => a.distance.compareTo(b.distance));
     //donorlist.forEach((element) {print(element.distance);});
     //loading.value = false;
-return mylist;}
+    return mylist;
+  }
 
   //vincinety
   double getVincentyDistance(

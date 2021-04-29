@@ -1,19 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_blood_donation_app/app/constant/const.dart';
 import 'package:flutter_blood_donation_app/app/constant/defaults.dart';
+import 'package:flutter_blood_donation_app/app/modules/donor_details/controllers/donor_details_controller.dart';
 import 'package:flutter_blood_donation_app/app/modules/home/controllers/home_controller.dart';
+import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/model/user_models.dart';
 import '../../../utlis/size_config.dart';
+import 'donor_profile/donor_profile.dart';
 
-class CustomMap extends StatefulWidget {
+class CustomMapMap extends StatefulWidget {
   @override
-  _CustomMapState createState() => _CustomMapState();
+  _CustomMapMapState createState() => _CustomMapMapState();
 }
 
-class _CustomMapState extends State<CustomMap> {
+class _CustomMapMapState extends State<CustomMapMap> {
+  final donorController = Get.find<DonorDetailsController>();
   // Completer<GoogleMapController> _controller = Completer();
   static final CameraPosition _kGooglePlex = CameraPosition(
     target: LatLng(37.42796133580664, -122.085749655962),
@@ -36,6 +40,7 @@ class _CustomMapState extends State<CustomMap> {
   List<DropdownMenuItem> items = [];
   double pinPillPosition = -100;
   List<UserModel> users = [];
+  String selelctedbloodgruop;
   List bloodicons = [
     'assets/images/apositive.png',
     'assets/images/anegative.png',
@@ -127,6 +132,7 @@ class _CustomMapState extends State<CustomMap> {
 
     markers = Set.from([]);
     setUser();
+    selelctedbloodgruop = userController.myinfo.value.bloodgroup;
     selectedUser = userController.myinfo.value;
   }
 
@@ -136,9 +142,6 @@ class _CustomMapState extends State<CustomMap> {
   }
 
   setUser() {
-    bloodgroup.forEach((element) {items.add(DropdownMenuItem(
-      child: Text(element),
-    ));});
     setState(() {
       users = userController.userlist;
     });
@@ -153,42 +156,115 @@ class _CustomMapState extends State<CustomMap> {
   @override
   Widget build(BuildContext context) {
     userMarker(context, 'assets/images/defaultuser.png');
+    List<UsermodelSortedtoMyLocationModel> users =
+        donorController.getDonors(selelctedbloodgruop);
     createmarker(context);
     return Stack(
       children: [
         !userController.userlistshown.value
-            ? GoogleMap(
-                mapType: MapType.normal,
-                initialCameraPosition: _kGooglePlex,
-                myLocationEnabled: true,
-                onTap: (pos) {
-                  setState(() {
-                    pinPillPosition = -100;
-                  });
-                },
-                // myLocationButtonEnabled: true,
-                markers: markers,
-                onMapCreated: (GoogleMapController controller) {
-                  addMarker();
+            ? Container()
 
-                  controller.animateCamera(CameraUpdate.newCameraPosition(
-                      CameraPosition(
-                          zoom: 16.0,
-                          target: LatLng(userController.mylatitude.value,
-                              userController.mylongitude.value))));
-                  // _controller.complete(controller);
-                },
-              )
+            //  GoogleMap(
+            //     mapType: MapType.normal,
+            //     initialCameraPosition: CameraPosition(
+            //         zoom: 16.0,
+            //         target: LatLng(userController.mylatitude.value,
+            //             userController.mylongitude.value)),
+            //     myLocationEnabled: true,
+            //     onTap: (pos) {
+            //       setState(() {
+            //         pinPillPosition = -100;
+            //       });
+            //     },
+            //     // myLocationButtonEnabled: true,
+            //     markers: markers,
+            //     onMapCreated: (GoogleMapController controller) {
+            //       addMarker();
+
+            //       // controller.animateCamera(CameraUpdate.newCameraPosition(
+            //       //     CameraPosition(
+            //       //         zoom: 16.0,
+            //       //         target: LatLng(userController.mylatitude.value,
+            //       //             userController.mylongitude.value))));
+            //     },
+            //   )
             : ListView(
                 children: [
-                  Row(
-                    children: [
-                      Text('Users all'),
-                      Spacer(),
-                      Text('SortBy'),
-                      DropdownButton(items: items)
-                    ],
-                  )
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Row(
+                      children: [
+                        Text(
+                          'Donors Available',
+                          style: largeText.copyWith(
+                              color: Colors.grey[600],
+                              fontWeight: FontWeight.bold),
+                        ),
+                        Spacer(),
+                        // Text(
+                        //   'SortBy:',
+                        //   style: TextStyle(
+                        //       color: Colors.grey, fontWeight: FontWeight.bold),
+                        // ),
+                        DropdownButton(
+                            onChanged: (v) {
+                              setState(() {
+                                selelctedbloodgruop = v;
+                              });
+                            },
+                            value: selelctedbloodgruop,
+                            items: [
+                              ...bloodgroup.map((e) => DropdownMenuItem(
+                                    value: e,
+                                    child: Text(e),
+                                  ))
+                            ]),
+                      ],
+                    ),
+                  ),
+                  ...users.map((e) => ListTile(
+                        onTap: () {
+                          Get.to(DonorProfile(
+                              user: userController.userlist[e.donorindex]));
+                        },
+                        // isThreeLine: true,
+                        leading: Container(
+                          width: 50,
+                          child: Stack(
+                            children: [
+                              Positioned(
+                                left: 10,
+                                child: CircleAvatar(
+                                  backgroundImage: NetworkImage(userController
+                                      .userlist[e.donorindex].photoUrl),
+                                ),
+                              ),
+                              Positioned(
+                                top: 0,
+                                left: 0,
+                                child: CircleAvatar(
+                                  backgroundColor: Colors.white,
+                                  radius: 12,
+                                  child: CircleAvatar(
+                                      backgroundColor: Colors.red,
+                                      radius: 10,
+                                      child: Text(
+                                        'AB+',
+                                        style: TextStyle(
+                                            color: Colors.white, fontSize: 10),
+                                      )),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                        title: Text(e.name),
+                        subtitle: Text(
+                            userController.userlist[e.donorindex].userAddress),
+                        trailing:
+                            Text("${(e.distance / 1000).toStringAsFixed(2)}Km"),
+                      ))
+                  //DonorDetailsView(selelctedbloodgruop)
                 ],
               ),
         AnimatedPositioned(
@@ -197,7 +273,15 @@ class _CustomMapState extends State<CustomMap> {
             left: 0,
             duration: Duration(milliseconds: 200),
             child:
-                pinPillPosition != -100 ? TappedUser(selectedUser) : Text(''))
+                pinPillPosition != -100 ? TappedUser(selectedUser) : Text('')),
+        // Obx(
+        //   () => InkWell(
+        //     onTap: () {
+        //       userController.userlistshown.toggle();
+        //     },
+        //     child: Text(userController.userlistshown.value.toString()),
+        //   ),
+        // )
       ],
     );
   }
@@ -318,3 +402,90 @@ class TappedUser extends StatelessWidget {
     );
   }
 }
+
+// class CustomMap extends StatelessWidget {
+//   final controller = Get.find<HomeController>();
+//   final List<Widget> _children = [
+//     Container(),
+//     GoogleMap(
+//         mapType: MapType.hybrid,
+//         // initialCameraPosition: _kGooglePlex,
+//         onMapCreated: (GoogleMapController controller) {
+//           // controller.animateCamera(CameraUpdate)
+//           //  _controller.complete(controller);
+//         },
+//         initialCameraPosition: CameraPosition(
+//             bearing: 192.8334901395799,
+//             target: LatLng(37.43296265331129, -122.08832357078792),
+//             tilt: 59.440717697143555,
+//             zoom: 19.151926040649414)),
+//     Container(),
+//     Container(),
+//   ];
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Obx(
+//       () => Scaffold(
+//         body: IndexedStack(
+//           index: controller.selectedIndex.value,
+//           children: _children,
+//         ),
+//         // bottomNavigationBar: BottomNavigationBar(
+//         //   elevation: 0,
+//         //   currentIndex: controller.count.value,
+//         //   onTap: (v) {
+//         //     controller.count.value = v;
+//         //     if (v == 1) controller.ismap.toggle();
+//         //   },
+//         //   items: [
+//         //     BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Request'),
+//         //     controller.ismap.value
+//         //         ? BottomNavigationBarItem(
+//         //             icon: CircleAvatar(
+//         //                 backgroundColor: controller.count.value == 1
+//         //                     ? Colors.blue
+//         //                     : Colors.grey,
+//         //                 child: Icon(Icons.map)),
+//         //             label: 'Map')
+//         //         : BottomNavigationBarItem(
+//         //             icon: CircleAvatar(
+//         //                 backgroundColor: controller.count.value == 1
+//         //                     ? Colors.blue
+//         //                     : Colors.grey,
+//         //                 child: Icon(Icons.list)),
+//         //             label: 'List'),
+//         //     BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Account')
+//         //   ],
+//         // ),
+//       ),
+//     );
+//   }
+// }
+
+// class KeepAlivePage extends StatefulWidget {
+//   KeepAlivePage({
+//     Key key,
+//     @required this.child,
+//   }) : super(key: key);
+
+//   final Widget child;
+
+//   @override
+//   _KeepAlivePageState createState() => _KeepAlivePageState();
+// }
+
+// class _KeepAlivePageState extends State<KeepAlivePage>
+//     with AutomaticKeepAliveClientMixin {
+//   @override
+//   Widget build(BuildContext context) {
+//     /// Dont't forget this
+//     super.build(context);
+
+//     return widget.child;
+//   }
+
+//   @override
+//   // TODO: implement wantKeepAlive
+//   bool get wantKeepAlive => true;
+// }

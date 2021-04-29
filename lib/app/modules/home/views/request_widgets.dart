@@ -9,38 +9,10 @@ import 'package:flutter_blood_donation_app/app/core/model/user_models.dart';
 import 'package:flutter_blood_donation_app/app/modules/home/views/post_comments/post_comment.dart';
 import 'package:flutter_blood_donation_app/app/utlis/size_config.dart';
 import 'package:get/get.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-import '../../../Widgets/CustomButton.dart';
 import '../controllers/home_controller.dart';
 import 'donor_profile/donor_profile.dart';
-
-List<PopupMenuItem> menuItem = [
-  // PopupMenuItem(
-  //   child: Text('Request Blood'),
-  //   value: '/request',
-  // ),
-  // PopupMenuItem(
-  //   child: Text('Home'),
-  //   value: '/home',
-  // ),
-  //
-  PopupMenuItem(
-    child: Text('Accept Request'),
-    value: '/accept',
-  ),
-  // PopupMenuItem(
-  //   child: Text('Account'),
-  //   value: '/account',
-  // ),
-  // PopupMenuItem(
-  //   child: Text('Settings'),
-  //   value: '/settings',
-  // ),
-  // PopupMenuItem(
-  //   child: Text('Refer'),
-  //   value: '/refer',
-  // ),
-];
 
 class UserRequest extends StatelessWidget {
   final RequestModel request;
@@ -152,7 +124,6 @@ class UserRequest extends StatelessWidget {
                         ]),
                         Text('${request.address} ,Kathmandu',
                             style: smallText.copyWith(color: Colors.grey)),
-                      
                       ]),
                   Spacer(),
                   Padding(
@@ -167,33 +138,28 @@ class UserRequest extends StatelessWidget {
                       ),
 
                       height: 30,
-                      child: PopupMenuButton(
-                        onSelected: (v) {
-                          //print('request accept');
-                          //print(v.toString());
-                          // Get.snackbar(v, v);
-                          // if (v == '/login') {
-                          //   userController.signout();
-                          // }
-                          // Get.toNamed(v);
-                        },
-                        itemBuilder: (context) {
-                          return List.generate(menuItem.length, (i) {
-                            return menuItem[i];
-                          });
+                      child: InkWell(
+                        onTap: () async {
+                          String url =
+                              "tel:${userController.userlist[userController.getUserByUserid(request.userid)].phoneNo}";
+                          if (await canLaunch(url)) {
+                            await launch(url);
+                          } else {
+                            print(canLaunch(url));
+                          }
                         },
                         child: Text(
-                          'Help',
+                          'Call',
                           style: TextStyle(color: Colors.white),
                         ),
                       ),
-
-                      // CustomButton(
-                      //     label: 'Help',
-                      //     labelColor: Colors.white,
-                      //     btnColor: Colors.purple,
-                      //     borderRadius: 5)
                     ),
+
+                    // CustomButton(
+                    //     label: 'Help',
+                    //     labelColor: Colors.white,
+                    //     btnColor: Colors.purple,
+                    //     borderRadius: 5)
                   ),
                 ]),
           ),
