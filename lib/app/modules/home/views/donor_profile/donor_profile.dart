@@ -11,23 +11,23 @@ class DonorProfile extends StatelessWidget {
       body: ListView(
         children: [
           DonorProfileHeader(user: user),
-          Container(
-            color: Colors.grey[300],
-            child: Column(
-              children: [
-                ListTile(
-                  leading: CircleAvatar(),
-                  title: Text('Schedule New Appoinment'),
-                  subtitle: Text('Choose time and location and donation type'),
-                ),
-                ListTile(
-                    leading: CircleAvatar(),
-                    title: Text('Schedule New Appoinment'),
-                    subtitle:
-                        Text('Choose time and location and donation type')),
-              ],
-            ),
-          ),
+          // Container(
+          //   color: Colors.grey[300],
+          //   child: Column(
+          //     children: [
+          //       ListTile(
+          //         leading: CircleAvatar(),
+          //         title: Text('Schedule New Appoinment'),
+          //         subtitle: Text('Choose time and location and donation type'),
+          //       ),
+          //       ListTile(
+          //           leading: CircleAvatar(),
+          //           title: Text('Schedule New Appoinment'),
+          //           subtitle:
+          //               Text('Choose time and location and donation type')),
+          //     ],
+          //   ),
+          // ),
           Container(
             padding: EdgeInsets.only(left: 10),
             color: Colors.grey[300].withOpacity(.3),
@@ -90,13 +90,13 @@ class DonorProfile extends StatelessWidget {
                         title: Text('2 Dontations(Year to Date)'),
                         subtitle: Text('Blood'),
                       ),
-                      ListTile(
-                        leading: Card(
-                          child: Icon(Icons.water_damage),
-                        ),
-                        title: Text('2 Dontations(Year to Date)'),
-                        subtitle: Text('Blood'),
-                      ),
+                      // ListTile(
+                      //   leading: Card(
+                      //     child: Icon(Icons.water_damage),
+                      //   ),
+                      //   title: Text('2 Dontations(Year to Date)'),
+                      //   subtitle: Text('Blood'),
+                      // ),
                     ],
                   ),
                 ),
@@ -118,20 +118,20 @@ class DonorProfile extends StatelessWidget {
                   color: Colors.grey[400].withOpacity(.5),
                   child: Column(
                     children: [
-                      ListTile(
-                        leading: Card(
-                          child: Icon(Icons.water_damage),
-                        ),
-                        title: Text('2 Dontations(Year to Date)'),
-                        subtitle: Text('Blood'),
-                      ),
-                      ListTile(
-                        leading: Card(
-                          child: Icon(Icons.water_damage),
-                        ),
-                        title: Text('2 Dontations(Year to Date)'),
-                        subtitle: Text('Blood'),
-                      ),
+                      // ListTile(
+                      //   leading: Card(
+                      //     child: Icon(Icons.water_damage),
+                      //   ),
+                      //   title: Text('2 Dontations(Year to Date)'),
+                      //   subtitle: Text('Blood'),
+                      // ),
+                      // ListTile(
+                      //   leading: Card(
+                      //     child: Icon(Icons.water_damage),
+                      //   ),
+                      //   title: Text('2 Dontations(Year to Date)'),
+                      //   subtitle: Text('Blood'),
+                      // ),
                     ],
                   ),
                 ),

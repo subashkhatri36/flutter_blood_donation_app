@@ -152,7 +152,7 @@ class UserRequest extends StatelessWidget {
                         ]),
                         Text('${request.address} ,Kathmandu',
                             style: smallText.copyWith(color: Colors.grey)),
-                        //
+                      
                       ]),
                   Spacer(),
                   Padding(

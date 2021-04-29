@@ -6,7 +6,6 @@ import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/model/user_models.dart';
-import '../../login/views/login_view.dart';
 import '../controllers/home_controller.dart';
 import 'custom_map.dart';
 import 'request_widgets.dart';
@@ -133,21 +132,23 @@ class HomeView extends GetView<HomeController> {
 
         break;
       case 1:
-        return Obx(() => userController.userlistshown.value
-            ? ListView.builder(
-                //padding: EdgeInsets.symmetric(horizontal:5,vertical:10),
-                shrinkWrap: true,
-                itemCount: 5,
-                itemBuilder: (_, int i) {
-                  return ListTile(
-                      onTap: () {
-                        Get.to(Scaffold());
-                      },
-                      contentPadding: EdgeInsets.only(left: 5, right: 5),
-                      title: MemberInfo(userController.userlist.toList()[i]));
-                })
+        return
+
+            // Obx(() => userController.userlistshown.value
+            //     ? ListView.builder(
+            //         //padding: EdgeInsets.symmetric(horizontal:5,vertical:10),
+            //         shrinkWrap: true,
+            //         itemCount: 5,
+            //         itemBuilder: (_, int i) {
+            //           return ListTile(
+            //               onTap: () {
+            //                 Get.to(Scaffold());
+            //               },
+            //               contentPadding: EdgeInsets.only(left: 5, right: 5),
+            //               title: MemberInfo(userController.userlist.toList()[i]));
+            //         })
             // : Container());
-            : CustomMap());
+            CustomMap();
 
         break;
       case 0:
@@ -201,7 +202,7 @@ class HomeView extends GetView<HomeController> {
               onTap: (v) {
                 print(v);
                 controller.selectedIndex.value = v;
-                // if (controller.selectedIndex.value == 1)
+
                 controller.userlistshown.value = true;
               },
               selectedItemColor: Theme.of(context).primaryColor,
@@ -209,7 +210,9 @@ class HomeView extends GetView<HomeController> {
               items: [
                 BottomNavigationBarItem(
                     icon: Icon(Icons.home), label: 'Requests'),
-                BottomNavigationBarItem(icon: Icon(Icons.clear), label: 'Map'),
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.clear),
+                    label: controller.userlistshown.value ? 'Map' : 'Users'),
                 BottomNavigationBarItem(
                     icon: Icon(Icons.person), label: 'Account'),
               ],
@@ -235,14 +238,15 @@ class HomeView extends GetView<HomeController> {
                   //     ? Theme.of(context).primaryColor
                   Theme.of(context).primaryColor
                   : Colors.white,
-              child: Icon(Icons.map_sharp,
+              child: Icon(
+                  controller.userlistshown.value ? Icons.list : Icons.map_sharp,
                   color: controller.userlistshown.value
                       ? Colors.grey
                       : Colors.white),
             ),
           ),
           floatingActionButtonLocation:
-              FloatingActionButtonLocation.miniCenterDocked,
+              FloatingActionButtonLocation.centerDocked,
         ));
   }
 }
@@ -255,7 +259,8 @@ class RequestsHome extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final homeController = Get.find<HomeController>();
-
+//map fix blood group sort
+//user blood group
     return Obx(
       () => !homeController.loading.value
           ? ListView.builder(

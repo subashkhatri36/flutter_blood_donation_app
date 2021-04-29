@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_blood_donation_app/app/core/model/comment_model.dart';
 
 class RequestModel {
   String id;

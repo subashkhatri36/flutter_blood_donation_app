@@ -33,7 +33,7 @@ class _CustomMapState extends State<CustomMap> {
   double mylatitude;
   double mylongitude;
   UserModel selectedUser;
-
+  List<DropdownMenuItem> items = [];
   double pinPillPosition = -100;
   List<UserModel> users = [];
   List bloodicons = [
@@ -87,22 +87,7 @@ class _CustomMapState extends State<CustomMap> {
   }
 
   addMarker() {
-    // markers.add(Marker(
-    //       icon: userIcon,
-    //       markerId: MarkerId('${userController.myinfo.value.userId}'),
-    //       position: LatLng(userController.mylatitude.value, userController.mylongitude.value),
-    //       consumeTapEvents: true,
-    //       infoWindow: InfoWindow(
-    //           title: '${userController.myinfo.value.username}', snippet: "${userController.myinfo.value.userAddress}"),
-    //       onTap: () {
-    //         setState(() {
-    //           pinPillPosition = 0;
-    //           selectedUser = userController.myinfo.value;
-    //         });
-    //       },
-    //     ));
     users.forEach((element) {
-      //print(bloodgroup.indexOf(element.bloodgroup));
       if (element.userId != userController.myinfo.value.userId)
         markers.add(Marker(
           icon: mapicons[bloodgroup.indexOf(element.bloodgroup)],
@@ -118,9 +103,8 @@ class _CustomMapState extends State<CustomMap> {
             });
           },
         ));
-
-        else
-         markers.add(Marker(
+      else
+        markers.add(Marker(
           icon: userIcon,
           markerId: MarkerId('${element.userId}'),
           position: LatLng(element.latitude, element.longitude),
@@ -152,6 +136,9 @@ class _CustomMapState extends State<CustomMap> {
   }
 
   setUser() {
+    bloodgroup.forEach((element) {items.add(DropdownMenuItem(
+      child: Text(element),
+    ));});
     setState(() {
       users = userController.userlist;
     });
@@ -159,44 +146,51 @@ class _CustomMapState extends State<CustomMap> {
 
   createmarker(context) {
     bloodicons.forEach((element) {
-      // print(element);
-      //
       createIcon(context, element);
-
-      //createMarker(context, element);
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    //  createMarker(context, 'assets/images/request.png');
-     userMarker(context, 'assets/images/defaultuser.png');
+    userMarker(context, 'assets/images/defaultuser.png');
     createmarker(context);
     return Stack(
       children: [
-        GoogleMap(
-          mapType: MapType.normal,
-          initialCameraPosition: _kGooglePlex,
-          myLocationEnabled: true,
-          onTap: (pos) {
-            setState(() {
-              pinPillPosition = -100;
-            });
-          },
-          // myLocationButtonEnabled: true,
-          markers: markers,
-          onMapCreated: (GoogleMapController controller) {
-            addMarker();
-            //userMarker(context, 'assets/images/defaultuser.png');
+        !userController.userlistshown.value
+            ? GoogleMap(
+                mapType: MapType.normal,
+                initialCameraPosition: _kGooglePlex,
+                myLocationEnabled: true,
+                onTap: (pos) {
+                  setState(() {
+                    pinPillPosition = -100;
+                  });
+                },
+                // myLocationButtonEnabled: true,
+                markers: markers,
+                onMapCreated: (GoogleMapController controller) {
+                  addMarker();
 
-            controller.animateCamera(CameraUpdate.newCameraPosition(
-                CameraPosition(
-                    zoom: 16.0,
-                    target: LatLng(userController.mylatitude.value,
-                        userController.mylongitude.value))));
-            // _controller.complete(controller);
-          },
-        ),
+                  controller.animateCamera(CameraUpdate.newCameraPosition(
+                      CameraPosition(
+                          zoom: 16.0,
+                          target: LatLng(userController.mylatitude.value,
+                              userController.mylongitude.value))));
+                  // _controller.complete(controller);
+                },
+              )
+            : ListView(
+                children: [
+                  Row(
+                    children: [
+                      Text('Users all'),
+                      Spacer(),
+                      Text('SortBy'),
+                      DropdownButton(items: items)
+                    ],
+                  )
+                ],
+              ),
         AnimatedPositioned(
             bottom: pinPillPosition,
             right: 0,
