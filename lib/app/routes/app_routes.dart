@@ -1,5 +1,4 @@
 part of 'app_pages.dart';
-// DO NOT EDIT. This is code generated via package:get_cli/get_cli.dart
 
 abstract class Routes {
   static const HOME = _Paths.HOME;
@@ -12,6 +11,7 @@ abstract class Routes {
   static const DONOR_DETAILS = _Paths.DONOR_DETAILS;
   static const ACCOUNT = _Paths.ACCOUNT;
   static const UPDATEACCOUNT = _Paths.UPDATEACCOUNT;
+  static const CUSTOMMAP = _Paths.CUSTOMMAP;
 }
 
 abstract class _Paths {
@@ -25,4 +25,5 @@ abstract class _Paths {
   static const DONOR_DETAILS = '/donor-details';
   static const ACCOUNT = '/account';
   static const UPDATEACCOUNT = '/updateaccount';
+  static const CUSTOMMAP = '/custommap';
 }

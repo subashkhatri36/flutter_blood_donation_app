@@ -211,12 +211,26 @@ class _LikeButtonState extends State<LikeButton> {
               // LikeModel like =
               //     LikeModel(userid: request.userid, liked: true);
               if (widget.request.likes.contains(widget.request.userid)) {
-                setState(() {
-                  widget.request.likes.remove(widget.request.userid);
+                //setState(() {
+                widget.request.likes.remove(widget.request.userid);
+                print(widget.request.likes.toString());
+                //
+                firebaseFirestore
+                    .collection('request')
+                    .doc(widget.request.id)
+                    .update({
+                  'likes': jsonEncode(widget.request.likes),
                 });
               } else {
-                setState(() {
-                  widget.request.likes.add(widget.request.userid);
+                // setState(() {
+                widget.request.likes.add(widget.request.userid);
+                print(widget.request.likes);
+                // });
+                firebaseFirestore
+                    .collection('request')
+                    .doc(widget.request.id)
+                    .update({
+                  'likes': jsonEncode(widget.request.likes),
                 });
               }
               // request.likes.forEach((element) {

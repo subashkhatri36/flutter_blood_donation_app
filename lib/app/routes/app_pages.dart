@@ -2,6 +2,10 @@ import 'package:get/get.dart';
 
 import 'package:flutter_blood_donation_app/app/modules/account/bindings/account_binding.dart';
 import 'package:flutter_blood_donation_app/app/modules/account/views/account_view.dart';
+import 'package:flutter_blood_donation_app/app/modules/custommap/bindings/custommap_binding.dart';
+import 'package:flutter_blood_donation_app/app/modules/custommap/bindings/custommap_binding.dart';
+import 'package:flutter_blood_donation_app/app/modules/custommap/views/custommap_view.dart';
+import 'package:flutter_blood_donation_app/app/modules/custommap/views/custommap_view.dart';
 import 'package:flutter_blood_donation_app/app/modules/donor_details/bindings/donor_details_binding.dart';
 import 'package:flutter_blood_donation_app/app/modules/donor_details/views/donor_details_view.dart';
 import 'package:flutter_blood_donation_app/app/modules/home/bindings/home_binding.dart';
@@ -33,7 +37,7 @@ class AppPages {
       page: () => LoginView(),
       binding: LoginBinding(),
     ),
- 
+
     GetPage(
       name: _Paths.SPLASH,
       page: () => SplashView(),
@@ -63,6 +67,18 @@ class AppPages {
       name: _Paths.UPDATEACCOUNT,
       page: () => UpdateaccountView(),
       binding: UpdateaccountBinding(),
+    ),
+    GetPage(
+      name: _Paths.CUSTOMMAP,
+      page: () => CustommapView(),
+      binding: CustommapBinding(),
+      children: [
+        GetPage(
+          name: _Paths.CUSTOMMAP,
+          page: () => CustommapView(),
+          binding: CustommapBinding(),
+        ),
+      ],
     ),
   ];
 }

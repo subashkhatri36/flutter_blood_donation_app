@@ -2,39 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_blood_donation_app/app/constant/const.dart';
 import 'package:flutter_blood_donation_app/app/constant/defaults.dart';
 import 'package:flutter_blood_donation_app/app/modules/account/views/account_view.dart';
+import 'package:flutter_blood_donation_app/app/modules/custommap/views/custommap_view.dart';
+import 'package:flutter_blood_donation_app/app/modules/home/views/custom_map.dart';
 import 'package:get/get.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/model/user_models.dart';
 import '../controllers/home_controller.dart';
-import 'custom_map.dart';
+
 import 'request_widgets.dart';
 
-// List<RequestModel> request = [
-//   RequestModel(
-//       id: '1',
-//       name: 'Ram',
-//       bloodgroup: 'B+',
-//       detail: 'Detail',
-//       address: 'Ranibari',
-//       photoUrl: '',
-//       timestamp: Timestamp.now()),
-//   RequestModel(
-//       id: '1',
-//       name: 'Ram',
-//       bloodgroup: 'B+',
-//       detail: 'Detail',
-//       address: 'Ranibari',
-//       timestamp: Timestamp.now()),
-//   RequestModel(
-//       id: '1',
-//       name: 'ram',
-//       bloodgroup: 'B+',
-//       detail: 'Detail',
-//       address: 'Ranibari',
-//       timestamp: Timestamp.now()),
-// ];
 List<PopupMenuItem> menuItem = [
   // PopupMenuItem(
   //   child: Text('Request Blood'),
@@ -63,110 +40,21 @@ List<PopupMenuItem> menuItem = [
   ),
 ];
 
-// List<UserModel> users = [
-//   UserModel(
-//       userId: 'sfs',
-//       phoneNo: '12323',
-//       username: 'ram',
-//       active: null,
-//       bloodgroup: 'B +',
-//       email: '',
-//       latitude: 22,
-//       longitude: 32,
-//       userAddress: '',
-//       photoUrl: 'https://wallpaperaccess.com/full/2213424.jpg'),
-//   UserModel(
-//       userId: 'sfas',
-//       phoneNo: '12323',
-//       username: 'Sita',
-//       active: false,
-//       bloodgroup: 'A -',
-//       email: '',
-//       latitude: 23,
-//       longitude: 77,
-//       userAddress: 'B',
-//       photoUrl:
-//           'https://images.unsplash.com/photo-1457449940276-e8deed18bfff?ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8cHJvZmlsZXxlbnwwfHwwfHw%3D&ixlib=rb-1.2.1&w=1000&q=80'),
-//   UserModel(
-//       userId: 'sf',
-//       phoneNo: '12323',
-//       username: 'Hari',
-//       active: null,
-//       bloodgroup: 'A +',
-//       email: '',
-//       latitude: 22,
-//       longitude: 22,
-//       userAddress: '',
-//       photoUrl:
-//           'https://images.unsplash.com/photo-1532074205216-d0e1f4b87368?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MjJ8fHByb2ZpbGV8ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80'),
-//   UserModel(
-//       userId: 'sf',
-//       phoneNo: '12323',
-//       username: 'Ramesh',
-//       active: null,
-//       bloodgroup: 'AB +',
-//       email: '',
-//       latitude: 32,
-//       longitude: 32,
-//       userAddress: '',
-//       photoUrl:
-//           'https://expertphotography.com/wp-content/uploads/2018/10/cool-profile-pictures-retouching-1.jpg'),
-//   UserModel(
-//       userId: 'sf',
-//       phoneNo: '12323',
-//       username: 'Shyam',
-//       active: null,
-//       bloodgroup: 'AB -',
-//       email: '',
-//       latitude: 33,
-//       longitude: 22,
-//       userAddress: '',
-//       photoUrl: 'https://i.stack.imgur.com/HILmr.png'),
+// final List<Widget> _children = [
+//   RequestsHome(),
+//   CustomMapMap(),
+//   AccountView(),
 // ];
-final List<Widget> _children = [
-  RequestsHome(),
-  CustomMapMap(),
-  // GoogleMap(
-  //     mapType: MapType.normal,
-  //     // initialCameraPosition: _kGooglePlex,
-  //     onMapCreated: (GoogleMapController controller) {
-  //       // controller.animateCamera(CameraUpdate)
-  //       //  _controller.complete(controller);
-  //     },
-  //     initialCameraPosition: CameraPosition(
-  //         bearing: 192.8334901395799,
-  //         target: LatLng(37.43296265331129, -122.08832357078792),
-  //         tilt: 59.440717697143555,
-  //         zoom: 19.151926040649414)),
-  AccountView(),
-];
 
 class HomeView extends GetView<HomeController> {
   Widget buildBody(context) {
-    //double height = MediaQuery.of(context).size.height;
     switch (controller.selectedIndex.value) {
       case 2:
         return AccountView();
 
         break;
       case 1:
-        return
-
-            // Obx(() => userController.userlistshown.value
-            //     ? ListView.builder(
-            //         //padding: EdgeInsets.symmetric(horizontal:5,vertical:10),
-            //         shrinkWrap: true,
-            //         itemCount: 5,
-            //         itemBuilder: (_, int i) {
-            //           return ListTile(
-            //               onTap: () {
-            //                 Get.to(Scaffold());
-            //               },
-            //               contentPadding: EdgeInsets.only(left: 5, right: 5),
-            //               title: MemberInfo(userController.userlist.toList()[i]));
-            //         })
-            // : Container());
-            CustomMapMap();
+        return CustomMap();
 
         break;
       case 0:
@@ -181,7 +69,7 @@ class HomeView extends GetView<HomeController> {
   @override
   Widget build(BuildContext context) {
     return Obx(() => Scaffold(
-          // backgroundColor: Colors.grey[300],
+          backgroundColor: Colors.grey[300],
           appBar: AppBar(
               title: Row(
                 children: [

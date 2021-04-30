@@ -247,6 +247,7 @@ class PostComment extends StatelessWidget {
                           comment: commentText.text,
                         );
                         commentRepo.sendComment(comment);
+                        firebaseFirestore.collection('request').doc(request.id).update({'comment':request.comment+1});
                         commentText.clear();
                       }
                     },

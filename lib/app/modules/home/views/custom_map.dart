@@ -6,17 +6,16 @@ import 'package:flutter_blood_donation_app/app/modules/home/controllers/home_con
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
-
 import '../../../core/model/user_models.dart';
 import '../../../utlis/size_config.dart';
 import 'donor_profile/donor_profile.dart';
 
-class CustomMapMap extends StatefulWidget {
+class CustomMap extends StatefulWidget {
   @override
-  _CustomMapMapState createState() => _CustomMapMapState();
+  _CustomMapState createState() => _CustomMapState();
 }
 
-class _CustomMapMapState extends State<CustomMapMap> {
+class _CustomMapState extends State<CustomMap> {
   final donorController = Get.find<DonorDetailsController>();
   // Completer<GoogleMapController> _controller = Completer();
   static final CameraPosition _kGooglePlex = CameraPosition(
@@ -39,7 +38,7 @@ class _CustomMapMapState extends State<CustomMapMap> {
   UserModel selectedUser;
   List<DropdownMenuItem> items = [];
   double pinPillPosition = -100;
-  List<UserModel> users = [];
+  List<UserModel> allusers = [];
   String selelctedbloodgruop;
   List bloodicons = [
     'assets/images/apositive.png',
@@ -92,7 +91,8 @@ class _CustomMapMapState extends State<CustomMapMap> {
   }
 
   addMarker() {
-    users.forEach((element) {
+    //  print(selelctedbloodgruop);
+    allusers.forEach((element) {
       if (element.userId != userController.myinfo.value.userId)
         markers.add(Marker(
           icon: mapicons[bloodgroup.indexOf(element.bloodgroup)],
@@ -108,7 +108,7 @@ class _CustomMapMapState extends State<CustomMapMap> {
             });
           },
         ));
-      else
+      else {
         markers.add(Marker(
           icon: userIcon,
           markerId: MarkerId('${element.userId}'),
@@ -123,6 +123,7 @@ class _CustomMapMapState extends State<CustomMapMap> {
             });
           },
         ));
+      }
     });
   }
 
@@ -143,7 +144,7 @@ class _CustomMapMapState extends State<CustomMapMap> {
 
   setUser() {
     setState(() {
-      users = userController.userlist;
+      allusers = userController.userlist;
     });
   }
 
@@ -151,6 +152,15 @@ class _CustomMapMapState extends State<CustomMapMap> {
     bloodicons.forEach((element) {
       createIcon(context, element);
     });
+  }
+
+  _launchCaller(e) async {
+    String url = "tel:${userController.userlist[e.donorindex].phoneNo}";
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 
   @override
@@ -162,32 +172,33 @@ class _CustomMapMapState extends State<CustomMapMap> {
     return Stack(
       children: [
         !userController.userlistshown.value
-            ? Container()
-
-            //  GoogleMap(
-            //     mapType: MapType.normal,
-            //     initialCameraPosition: CameraPosition(
-            //         zoom: 16.0,
-            //         target: LatLng(userController.mylatitude.value,
-            //             userController.mylongitude.value)),
-            //     myLocationEnabled: true,
-            //     onTap: (pos) {
-            //       setState(() {
-            //         pinPillPosition = -100;
-            //       });
-            //     },
-            //     // myLocationButtonEnabled: true,
-            //     markers: markers,
-            //     onMapCreated: (GoogleMapController controller) {
-            //       addMarker();
-
-            //       // controller.animateCamera(CameraUpdate.newCameraPosition(
-            //       //     CameraPosition(
-            //       //         zoom: 16.0,
-            //       //         target: LatLng(userController.mylatitude.value,
-            //       //             userController.mylongitude.value))));
-            //     },
+            // ? Container(
+            //     child: Text(selelctedbloodgruop),
             //   )
+            ? GoogleMap(
+                mapType: MapType.normal,
+                initialCameraPosition: CameraPosition(
+                    zoom: 16.0,
+                    target: LatLng(userController.mylatitude.value,
+                        userController.mylongitude.value)),
+                myLocationEnabled: true,
+                onTap: (pos) {
+                  setState(() {
+                    pinPillPosition = -100;
+                  });
+                },
+                // myLocationButtonEnabled: true,
+                markers: markers,
+                onMapCreated: (GoogleMapController controller) {
+                  addMarker();
+
+                  // controller.animateCamera(CameraUpdate.newCameraPosition(
+                  //     CameraPosition(
+                  //         zoom: 16.0,
+                  //         target: LatLng(userController.mylatitude.value,
+                  //             userController.mylongitude.value))));
+                },
+              )
             : ListView(
                 children: [
                   Padding(
@@ -222,47 +233,94 @@ class _CustomMapMapState extends State<CustomMapMap> {
                       ],
                     ),
                   ),
-                  ...users.map((e) => ListTile(
-                        onTap: () {
-                          Get.to(DonorProfile(
-                              user: userController.userlist[e.donorindex]));
-                        },
-                        // isThreeLine: true,
-                        leading: Container(
-                          width: 50,
-                          child: Stack(
-                            children: [
-                              Positioned(
-                                left: 10,
+                  ...users.map((e) => Container(
+                        decoration: BoxDecoration(
+                            //    borderRadius: BorderRadius.circular(30),
+                            //   color: Colors.white,
+                            ),
+                        padding: const EdgeInsets.all(8.0),
+                        child: ListTile(
+                            onTap: () {
+                              Get.to(DonorProfile(
+                                  user: userController.userlist[e.donorindex]));
+                            },
+                            // isThreeLine: true,
+                            leading: Container(
+                              width: 60,
+                              child: Stack(
+                                children: [
+                                  Positioned(
+                                    left: 10,
+                                    child: CircleAvatar(
+                                      radius: 25,
+                                      backgroundImage: NetworkImage(
+                                          userController
+                                              .userlist[e.donorindex].photoUrl),
+                                    ),
+                                  ),
+                                  Positioned(
+                                    top: 0,
+                                    left: 0,
+                                    child: CircleAvatar(
+                                      backgroundColor: Colors.white,
+                                      radius: 12,
+                                      child: CircleAvatar(
+                                          backgroundColor: Colors.red,
+                                          radius: 10,
+                                          child: Text(
+                                            'AB+',
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 10),
+                                          )),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                            title: Text(e.name),
+                            subtitle: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(userController
+                                      .userlist[e.donorindex].userAddress),
+                                  Text(
+                                      "${(e.distance / 1000).toStringAsFixed(2)}Km"),
+                                ]),
+                            trailing: Column(children: [
+                              InkWell(
+                                onTap: () {
+                                  _launchCaller(e);
+                                },
                                 child: CircleAvatar(
-                                  backgroundImage: NetworkImage(userController
-                                      .userlist[e.donorindex].photoUrl),
+                                  backgroundColor: Colors.green,
+                                  radius: 10,
+                                  child: Icon(
+                                    Icons.phone,
+                                    size: 15,
+                                  ),
                                 ),
                               ),
-                              Positioned(
-                                top: 0,
-                                left: 0,
+                              SizedBox(
+                                height: 5,
+                              ),
+                              InkWell(
+                                onTap: () {},
                                 child: CircleAvatar(
-                                  backgroundColor: Colors.white,
-                                  radius: 12,
+                                  backgroundColor: Colors.grey,
+                                  radius: 11,
                                   child: CircleAvatar(
-                                      backgroundColor: Colors.red,
-                                      radius: 10,
-                                      child: Text(
-                                        'AB+',
-                                        style: TextStyle(
-                                            color: Colors.white, fontSize: 10),
-                                      )),
+                                    backgroundColor: Colors.white,
+                                    radius: 9,
+                                    child: Icon(
+                                      Icons.message,
+                                      size: 12,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
                                 ),
-                              )
-                            ],
-                          ),
-                        ),
-                        title: Text(e.name),
-                        subtitle: Text(
-                            userController.userlist[e.donorindex].userAddress),
-                        trailing:
-                            Text("${(e.distance / 1000).toStringAsFixed(2)}Km"),
+                              ),
+                            ])),
                       ))
                   //DonorDetailsView(selelctedbloodgruop)
                 ],
@@ -273,7 +331,7 @@ class _CustomMapMapState extends State<CustomMapMap> {
             left: 0,
             duration: Duration(milliseconds: 200),
             child:
-                pinPillPosition != -100 ? TappedUser(selectedUser) : Text('')),
+                pinPillPosition != -100 ? OntapUser(selectedUser) : Text('')),
         // Obx(
         //   () => InkWell(
         //     onTap: () {
@@ -319,8 +377,8 @@ class PinInformation {
       this.labelColor});
 }
 
-class TappedUser extends StatelessWidget {
-  TappedUser(this.user);
+class OntapUser extends StatelessWidget {
+  OntapUser(this.user);
   final UserModel user;
   _launchCaller() async {
     String url = "tel:${user.phoneNo}";
@@ -333,72 +391,75 @@ class TappedUser extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FittedBox(
-      child: Container(
-          margin: const EdgeInsets.only(bottom: 30, left: 20, right: 70),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            color: Colors.white.withOpacity(.9),
-          ),
-          width: SizeConfig.screenWidth,
-          height: 90,
-          child: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-            SizedBox(width: 5),
-            Container(
-              decoration: BoxDecoration(
-                  image: DecorationImage(
-                      image: NetworkImage(
-                          user.photoUrl == '' ? noimage : user.photoUrl),
-                      fit: BoxFit.cover),
-                  color: Colors.grey[600],
-                  borderRadius: BorderRadius.circular(5)),
-              height: 80,
-              width: 80,
+    return InkWell(
+      onTap: () {
+        Get.to(DonorProfile(user: user));
+      },
+      child: FittedBox(
+        child: Container(
+            margin: const EdgeInsets.only(bottom: 30, left: 20, right: 70),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(30),
+              color: Colors.white.withOpacity(.9),
             ),
-            SizedBox(width: 10),
-            Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    width: 140,
-                    child: Text(
-                      user.username,
-                      overflow: TextOverflow.clip,
-                      style: smallText,
+            width: SizeConfig.screenWidth,
+            height: 90,
+            child: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+              SizedBox(width: 5),
+              CircleAvatar(
+                radius: 39,
+                backgroundImage:
+                    NetworkImage(user.photoUrl == '' ? noimage : user.photoUrl),
+              ),
+              SizedBox(width: 10),
+              Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      width: 140,
+                      child: Text(
+                        user.username,
+                        overflow: TextOverflow.clip,
+                        style: smallText,
+                      ),
                     ),
-                  ),
-                  Text(
-                    user.userAddress,
-                  ),
-                  Text(
-                    user.bloodgroup,
-                    style: TextStyle(
-                        color: Colors.red, fontWeight: FontWeight.bold),
-                  )
-                ]),
-            Spacer(),
-            Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-              // CircleAvatar(
-              //   backgroundColor: Colors.grey,
-              //   child: CircleAvatar(
-              //       backgroundColor: Colors.grey[300],
-              //       radius: 10,
-              //       child: Icon(Icons.more_horiz,
-              //           color: Colors.grey[700], size: 18)),
-              // ),
-              InkWell(
-                onTap: () {
-                  _launchCaller();
-                },
-                child: CircleAvatar(
-                    backgroundColor: Colors.green[200],
-                    child:
-                        Icon(Icons.phone, color: Colors.green[700], size: 15)),
-              )
-            ]),
-            SizedBox(width: Defaults.paddingnormal),
-          ])),
+                    Text(
+                      user.userAddress,
+                    ),
+                    Text(
+                      user.bloodgroup,
+                      style: TextStyle(
+                          color: Colors.red, fontWeight: FontWeight.bold),
+                    )
+                  ]),
+              Spacer(),
+              Padding(
+                padding: const EdgeInsets.only(right: 18.0),
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      CircleAvatar(
+                          backgroundColor: Colors.grey[300],
+                          child: Icon(Icons.more_horiz,
+                              color: Colors.grey[700], size: 18)),
+                      SizedBox(
+                        width: 20,
+                      ),
+                      InkWell(
+                        onTap: () {
+                          _launchCaller();
+                        },
+                        child: CircleAvatar(
+                            backgroundColor: Colors.green[200],
+                            child: Icon(Icons.phone,
+                                color: Colors.green[700], size: 15)),
+                      )
+                    ]),
+              ),
+              SizedBox(width: Defaults.paddingnormal),
+            ])),
+      ),
     );
   }
 }
