@@ -7,33 +7,34 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../controllers/custommap_controller.dart';
 
 class CustommapView extends GetView<CustommapController> {
-  List<Widget> widget = [GoogleMap(
-          mapType: MapType.normal,
-          initialCameraPosition: CameraPosition(
-              zoom: 16.0,
-              target: LatLng(userController.mylatitude.value,
-                  userController.mylongitude.value)),
-          myLocationEnabled: true,
-          onTap: (pos) {},
-          // myLocationButtonEnabled: true,
-          markers: Set.from([]),
-          onMapCreated: (GoogleMapController controller) {
-            // addMarker();
+  final List<Widget> widget = [
+    GoogleMap(
+      mapType: MapType.normal,
+      initialCameraPosition: CameraPosition(
+          zoom: 16.0,
+          target: LatLng(userController.mylatitude.value,
+              userController.mylongitude.value)),
+      myLocationEnabled: true,
+      onTap: (pos) {},
+      // myLocationButtonEnabled: true,
+      markers: Set.from([]),
+      onMapCreated: (GoogleMapController controller) {
+        // addMarker();
 
-            // controller.animateCamera(CameraUpdate.newCameraPosition(
-            //     CameraPosition(
-            //         zoom: 16.0,
-            //         target: LatLng(userController.mylatitude.value,
-            //             userController.mylongitude.value))));
-          },
-        )];
+        // controller.animateCamera(CameraUpdate.newCameraPosition(
+        //     CameraPosition(
+        //         zoom: 16.0,
+        //         target: LatLng(userController.mylatitude.value,
+        //             userController.mylongitude.value))));
+      },
+    )
+  ];
   @override
   Widget build(BuildContext context) {
     print(true);
-    return Stack(
-      children: [
-        
-      ],
+    return IndexedStack(
+      index: 0,
+      children: widget,
     );
   }
 }

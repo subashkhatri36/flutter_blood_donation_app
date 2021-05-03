@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class RequestModel {
@@ -60,11 +58,12 @@ class RequestModel {
     // List data = jsonDecode(json.data()['likes']).toList();
     // print(data.toString());
     this.likes = [];
+
     // data.forEach((element) {
 
     // })
     // this.likes = jsonDecode(json.data()['likes']) ?? [];
-    this.comment = json.data()['comment'] ?? 0;
+    this.comment = 0; //json.data()['comment'] ?? 0;
   }
 
   Map<String, dynamic> toJson() {
@@ -77,7 +76,7 @@ class RequestModel {
     data['photoUrl'] = this.photoUrl;
     data['timestamp'] = Timestamp.now();
     data['userPhotourl'] = this.userphotoUrl;
-    //data['likes'] = jsonEncode(this.likes);
+    data['likes'] = this.likes;
     data['status'] = this.status;
     data['comment'] = 0;
     return data;

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_blood_donation_app/app/constant/const.dart';
 import 'package:flutter_blood_donation_app/app/constant/defaults.dart';
 import 'package:flutter_blood_donation_app/app/modules/account/views/account_view.dart';
-import 'package:flutter_blood_donation_app/app/modules/custommap/views/custommap_view.dart';
 import 'package:flutter_blood_donation_app/app/modules/home/views/custom_map.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -158,34 +157,23 @@ class HomeView extends GetView<HomeController> {
 }
 
 class RequestsHome extends StatelessWidget {
-  const RequestsHome({
-    Key key,
-  }) : super(key: key);
-
+  final homeController = Get.find<HomeController>();
   @override
   Widget build(BuildContext context) {
-    final homeController = Get.find<HomeController>();
 //map fix blood group sort
 //user blood group
     return Obx(
-      () => !homeController.loading.value
+      () => homeController.requestData.length != 0
           ? ListView.builder(
               physics: BouncingScrollPhysics(),
               itemCount: homeController.requestData.length,
               itemBuilder: (BuildContext context, int index) {
                 return UserRequest(request: homeController.requestData[index]);
-
-                // Container(
-                //   height: 100,
-                //   color: Colors.red,
-                //   child: Image.memory(
-                //     base64Decode(homeController.requestData[index].photoUrl),
-                //     fit: BoxFit.fill,
-                //   ),
-                // );
               },
             )
-          : CircularProgressIndicator(),
+          : CircularProgressIndicator(
+              backgroundColor: Colors.red,
+            ),
     );
   }
 }

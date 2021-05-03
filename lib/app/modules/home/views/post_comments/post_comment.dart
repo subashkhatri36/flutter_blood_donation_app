@@ -78,28 +78,31 @@ class PostComment extends StatelessWidget {
                                                 CrossAxisAlignment.end,
                                             children: [
                                               Container(
-                                                   padding: EdgeInsets.all(20),
-                                                  decoration: BoxDecoration(
-                                                      color: Colors.grey[400]
-                                                          .withOpacity(.4),
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              20)),
+                                                padding: EdgeInsets.all(20),
+                                                decoration: BoxDecoration(
+                                                    color: Colors.grey[400]
+                                                        .withOpacity(.4),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            20)),
                                                 child: Text(postController
                                                     .commentData[i].comment),
                                               ),
                                               InkWell(
-                                                onTap: (){
-                                                  print(postController.commentData[i].userid);
+                                                onTap: () {
+                                                  print(postController
+                                                      .commentData[i].userid);
                                                 },
-                                                                                              child: CircleAvatar(
+                                                child: CircleAvatar(
                                                   backgroundImage: NetworkImage(
                                                       userController
-                                                          .getUserByUserid(
-                                                              postController
-                                                                  .commentData[i]
-                                                                  .userid)
-                                                          .photoUrl??noimage),
+                                                              .getUserByUserid(
+                                                                  postController
+                                                                      .commentData[
+                                                                          i]
+                                                                      .userid)
+                                                              .photoUrl ??
+                                                          noimage),
                                                 ),
                                               )
                                             ],
@@ -186,7 +189,7 @@ class PostComment extends StatelessWidget {
                   ),
           ),
           Padding(
-            padding: const EdgeInsets.only(left: 8.0, right: 8, bottom: 20),
+            padding: const EdgeInsets.only(left: 8.0, right: 8, bottom: 8),
             child: Container(
               height: 40,
               padding: EdgeInsets.zero,
@@ -233,7 +236,7 @@ class PostComment extends StatelessWidget {
                   //   color: Colors.yellow[800],
                   // ),
                   SizedBox(
-                    width: 14,
+                    width: 5,
                   ),
                   GestureDetector(
                     onTap: () {
@@ -247,7 +250,7 @@ class PostComment extends StatelessWidget {
                           comment: commentText.text,
                         );
                         commentRepo.sendComment(comment);
-                        firebaseFirestore.collection('request').doc(request.id).update({'comment':request.comment+1});
+                        // firebaseFirestore.collection('request').doc(request.id).update({'comment':request.comment+1});
                         commentText.clear();
                       }
                     },
@@ -257,15 +260,9 @@ class PostComment extends StatelessWidget {
                       size: 34,
                     ),
                   ),
-                  SizedBox(
-                    width: 10,
-                  ),
                 ],
               ),
             ),
-          ),
-          SizedBox(
-            height: 3,
           ),
         ],
       ),

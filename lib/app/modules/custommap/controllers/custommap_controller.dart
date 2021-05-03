@@ -2,7 +2,6 @@ import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class CustommapController extends GetxController {
-  //TODO: Implement CustommapController
   var marker = List<Marker>.empty(growable: true).obs;
   var mapmarker = Set.from([]);
   final count = 0.obs;

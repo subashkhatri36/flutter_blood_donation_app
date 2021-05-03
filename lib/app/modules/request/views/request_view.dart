@@ -12,58 +12,42 @@ class RequestView extends GetView<RequestController> {
   Widget build(BuildContext context) {
     //  var scr = new GlobalKey();
     return Scaffold(
-      body: Container(
-        height: MediaQuery.of(context).size.height,
-        child: SingleChildScrollView(
-          child: Form(
-            key: controller.requestformKey,
-            child: Column(mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                // crossAxisAlignment: CrossAxisAlignment.center,
-                // padding: EdgeInsets.only(left: 20, right: 10, top: 20),
-                children: [
-                  AppBar(
-                    leading: InkWell(
-                        onTap: () {
-                          Get.offNamed('/home');
-                        },
-                        child: Icon(Icons.arrow_back)),
-                    title: Text('RequestBlood'),
-                    //centerTitle: true,
-                  ),
-                  Text(
-                    'Our donors help when you need them the most',
-                    textAlign: TextAlign.center,
-                    style: smallText.copyWith(color: grey),
-                  ),
-                  Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                    Text(' Request on behalf of friend'),
-                    Obx(
-                      () => Switch(
-                        value: controller.isSwitched.value,
-                        onChanged: (value) {
-                          controller.isSwitched.value = value;
-                        },
-                        activeTrackColor: Colors.lightGreenAccent,
-                        activeColor: Colors.green,
-                      ),
-                    ),
-                  ]),
-                  SizedBox(height: 10),
-                  // Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  //   Text('Find donor near my location'),
-                  //   Obx(
-                  //     () => Switch(
-                  //       value: controller.mylocation.value,
-                  //       onChanged: (value) {
-                  //         controller.mylocation.value = value;
-                  //       },
-                  //       activeTrackColor: Colors.lightGreenAccent,
-                  //       activeColor: Colors.green,
-                  //     ),
-                  //   ),
-                  // ]),
-                  // SizedBox(height: 10),
+      body: SingleChildScrollView(
+        child: Form(
+          key: controller.requestformKey,
+          child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                AppBar(
+                  leading: InkWell(
+                      onTap: () {
+                        Get.offNamed('/home');
+                      },
+                      child: Icon(Icons.arrow_back)),
+                  title: Text('RequestBlood'),
+                ),
+                Text(
+                  'Our donors help when you need them the most',
+                  textAlign: TextAlign.center,
+                  style: smallText.copyWith(color: grey),
+                ),
+                Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                  Text(' Request on behalf of friend'),
                   Obx(
+                    () => Switch(
+                      value: controller.isSwitched.value,
+                      onChanged: (value) {
+                        controller.isSwitched.value = value;
+                      },
+                      activeTrackColor: Colors.lightGreenAccent,
+                      activeColor: Colors.green,
+                    ),
+                  ),
+                ]),
+                SizedBox(height: 10),
+                Padding(
+                  padding: const EdgeInsets.all(15.0),
+                  child: Obx(
                     () => !controller.mylocation.value
                         ? TextFormField(
                             controller: controller.locationController,
@@ -80,7 +64,10 @@ class RequestView extends GetView<RequestController> {
                           )
                         : Text(''),
                   ),
-                  Obx(
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(18.0),
+                  child: Obx(
                     () => controller.mylocation.value
                         ? Text(
                             'Ranibari,Kathmandu',
@@ -88,112 +75,128 @@ class RequestView extends GetView<RequestController> {
                           )
                         : Container(),
                   ),
-                  Obx(
-                    () => controller.imagePath.value == ''
-                        ? Container(
-                            // height: 200,
-                            child: CustomGoogleMap(),
-                          )
-                        : Image.memory(
-                            controller.data.value,
-                            height: 100,
-                            width: double.infinity,
+                ),
+                Obx(
+                  () => controller.imagePath.value == ''
+                      ? Container(
+                          // height: 200,
+                          child: CustomGoogleMap(),
+                        )
+                      : Image.memory(
+                          controller.data.value,
+                          height: 100,
+                          width: double.infinity,
+                        ),
+                ),
+                SizedBox(height: 10),
+                Padding(
+                  padding: const EdgeInsets.all(15.0),
+                  child: TextFormField(
+                      controller: controller.detailController,
+                      validator: (v) {
+                        if (v.isEmpty)
+                          return 'Enter a valid';
+                        else if (v.isNum)
+                          return 'Enter a prover result';
+                        else
+                          return null;
+                      },
+                      decoration: InputDecoration(
+                          hintMaxLines: 3, hintText: 'Contact no')),
+                ),
+                SizedBox(height: 10),
+                Padding(
+                  padding: const EdgeInsets.all(15.0),
+                  child: TextFormField(
+                      controller: controller.detailController,
+                      validator: (v) {
+                        if (v.isEmpty)
+                          return 'Enter a valid';
+                        else if (v.isNum)
+                          return 'Enter a prover result';
+                        else
+                          return null;
+                      },
+                      decoration: InputDecoration(
+                          hintMaxLines: 3, hintText: 'Hospital detail')),
+                ),
+                SizedBox(height: 10),
+                Obx(() => controller.isSwitched.value
+                    ? Text('Required Blood Group',
+                        style: largeText.copyWith(color: Colors.grey))
+                    : const Text('')),
+                SizedBox(height: 10),
+                Obx(() {
+                  if (controller.isSwitched.value)
+                    return Container(
+                        height: 170,
+                        child: GridView(
+                          padding:
+                              EdgeInsets.only(top: 10, left: 20, right: 20),
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 4,
+                                  crossAxisSpacing: 30,
+                                  mainAxisSpacing: 30),
+                          children: [
+                            for (int i = 0; i < 8; i++)
+                              InkWell(
+                                onTap: () {
+                                  controller.bloodgroup.value = bloodgroup[i];
+                                },
+                                child: CircleAvatar(
+                                    backgroundColor:
+                                        controller.bloodgroup.value ==
+                                                bloodgroup[i]
+                                            ? Colors.red
+                                            : Colors.grey,
+                                    child: Text(
+                                      bloodgroup[i],
+                                      style: mediumText.copyWith(
+                                          color: Theme.of(context)
+                                              .scaffoldBackgroundColor),
+                                    )),
+                              ),
+                          ],
+                        ));
+                  return Container();
+                }),
+                SizedBox(
+                  height: 20,
+                ),
+                Obx(
+                  () => !userController.loading.value
+                      ? Container(
+                          padding: EdgeInsets.only(left: 20, right: 20),
+                          width: double.infinity,
+                          child: TextButton(
+                            onPressed: () {
+                              if (controller.requestformKey.currentState
+                                  .validate()) {
+                                controller.sendrequest();
+                                Get.offNamed("/home");
+                              }
+                            },
+                            child: Text('Continue'),
+                            style: TextButton.styleFrom(
+                                primary: Colors.white,
+                                backgroundColor: Colors.deepOrange),
                           ),
-                  ),
-                  SizedBox(height: 10),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: TextFormField(
-                        controller: controller.detailController,
-                        validator: (v) {
-                          if (v.isEmpty)
-                            return 'Enter a valid';
-                          else if (v.isNum)
-                            return 'Enter a prover result';
-                          else
-                            return null;
-                        },
-                        decoration: InputDecoration(
-                            hintMaxLines: 3, hintText: 'Hospital detail')),
-                  ),
-                  SizedBox(height: 10),
-                  Obx(() => controller.isSwitched.value
-                      ? Text('Required Blood Group',
-                          style: largeText.copyWith(color: Colors.grey))
-                      : const Text('')),
-                  SizedBox(height: 10),
-                  Obx(() {
-                    if (controller.isSwitched.value)
-                      return Container(
-                          height: 170,
-                          child: GridView(
-                            padding:
-                                EdgeInsets.only(top: 10, left: 20, right: 20),
-                            gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 4,
-                                    crossAxisSpacing: 30,
-                                    mainAxisSpacing: 30),
-                            children: [
-                              for (int i = 0; i < 8; i++)
-                                InkWell(
-                                  onTap: () {
-                                    controller.bloodgroup.value = bloodgroup[i];
-                                  },
-                                  child: CircleAvatar(
-                                      backgroundColor:
-                                          controller.bloodgroup.value ==
-                                                  bloodgroup[i]
-                                              ? Colors.red
-                                              : Colors.grey,
-                                      child: Text(
-                                        bloodgroup[i],
-                                        style: mediumText.copyWith(
-                                            color: Theme.of(context)
-                                                .scaffoldBackgroundColor),
-                                      )),
-                                ),
-                            ],
-                          ));
-                    return Container();
-                  }),
-                  Obx(() => SizedBox(
-                        height: controller.isSwitched.value ? 20 : 220,
-                      )),
-                  Obx(
-                    () => !userController.loading.value
-                        ? Container(
-                            padding: EdgeInsets.only(left: 20, right: 20),
-                            width: double.infinity,
-                            child: TextButton(
-                              onPressed: () {
-                                if (controller.requestformKey.currentState
-                                    .validate()) {
-                                  controller.sendrequest();
-                                  Get.offNamed("/home");
-                                }
-                              },
-                              child: Text('Continue'),
-                              style: TextButton.styleFrom(
-                                  primary: Colors.white,
-                                  backgroundColor: Colors.deepOrange),
-                            ),
-                          )
-                        //phone no
-                        : Text('Loading'),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Text(
-                    'These Services are free of cost. do not pay anyone',
-                    style: smallText.copyWith(color: grey),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  )
-                ]),
-          ),
+                        )
+                      //phone no
+                      : Text('Loading'),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Text(
+                  'These Services are free of cost. do not pay anyone',
+                  style: smallText.copyWith(color: grey),
+                ),
+                SizedBox(
+                  height: 10,
+                )
+              ]),
         ),
       ),
     );

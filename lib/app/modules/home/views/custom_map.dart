@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_blood_donation_app/app/constant/const.dart';
 import 'package:flutter_blood_donation_app/app/constant/defaults.dart';
@@ -17,18 +19,7 @@ class CustomMap extends StatefulWidget {
 
 class _CustomMapState extends State<CustomMap> {
   final donorController = Get.find<DonorDetailsController>();
-  // Completer<GoogleMapController> _controller = Completer();
-  static final CameraPosition _kGooglePlex = CameraPosition(
-    target: LatLng(37.42796133580664, -122.085749655962),
-    zoom: 14.4746,
-  );
-
-  // static final CameraPosition _kLake = CameraPosition(
-  //     bearing: 192.8334901395799,
-  //     target: LatLng(37.43296265331129, -122.08832357078792),
-  //     tilt: 59.440717697143555,
-  //     zoom: 19.151926040649414);
-
+  GoogleMapController mapController;
   BitmapDescriptor customIcon;
   BitmapDescriptor userIcon;
   List<BitmapDescriptor> mapicons = [];
@@ -38,8 +29,8 @@ class _CustomMapState extends State<CustomMap> {
   UserModel selectedUser;
   List<DropdownMenuItem> items = [];
   double pinPillPosition = -100;
-  List<UserModel> allusers = [];
-  String selelctedbloodgruop;
+  List<UsermodelSortedtoMyLocationModel> allusers = [];
+  String selectedbloodgroup;
   List bloodicons = [
     'assets/images/apositive.png',
     'assets/images/anegative.png',
@@ -50,6 +41,23 @@ class _CustomMapState extends State<CustomMap> {
     'assets/images/opositive.png',
     'assets/images/onegative.png',
   ];
+
+  Timer timer;
+
+  void startTimer() {
+    //print('timer started');
+    // setState(() {
+    //   _start = 10;
+    // });
+    const sec = Duration(seconds: 4);
+    timer = Timer(sec, () {
+      setState(() {
+        pinPillPosition = -100;
+      });
+      // print('timer stopped');
+    });
+  }
+
   createMarker(context, image) {
     ImageConfiguration config =
         createLocalImageConfiguration(context, size: Size(10, 10));
@@ -91,24 +99,25 @@ class _CustomMapState extends State<CustomMap> {
   }
 
   addMarker() {
-    //  print(selelctedbloodgruop);
-    allusers.forEach((element) {
+    userController.userlist.toList().forEach((element) {
       if (element.userId != userController.myinfo.value.userId)
         markers.add(Marker(
           icon: mapicons[bloodgroup.indexOf(element.bloodgroup)],
           markerId: MarkerId('${element.userId}'),
           position: LatLng(element.latitude, element.longitude),
-          consumeTapEvents: true,
-          infoWindow: InfoWindow(
-              title: '${element.username}', snippet: "${element.userAddress}"),
+          //consumeTapEvents: true,
+          // infoWindow: InfoWindow(
+          //     title: '${element.username}', snippet: "${element.userAddress}"),
           onTap: () {
+            print('tapp');
             setState(() {
               pinPillPosition = 0;
               selectedUser = element;
             });
+            startTimer();
           },
         ));
-      else {
+      else //if (element.bloodgroup == selectedbloodgroup)
         markers.add(Marker(
           icon: userIcon,
           markerId: MarkerId('${element.userId}'),
@@ -121,9 +130,9 @@ class _CustomMapState extends State<CustomMap> {
               pinPillPosition = 0;
               selectedUser = element;
             });
+            startTimer();
           },
         ));
-      }
     });
   }
 
@@ -132,8 +141,8 @@ class _CustomMapState extends State<CustomMap> {
     super.initState();
 
     markers = Set.from([]);
-    setUser();
-    selelctedbloodgruop = userController.myinfo.value.bloodgroup;
+    //  setUser();
+    selectedbloodgroup = userController.myinfo.value.bloodgroup;
     selectedUser = userController.myinfo.value;
   }
 
@@ -143,9 +152,12 @@ class _CustomMapState extends State<CustomMap> {
   }
 
   setUser() {
-    setState(() {
-      allusers = userController.userlist;
-    });
+    // List<UsermodelSortedtoMyLocationModel> users =
+    //     donorController.getDonors(selectedbloodgroup);
+    //print(users.length);
+    // setState(() {
+    //   allusers = users;
+    // });
   }
 
   createmarker(context) {
@@ -166,165 +178,175 @@ class _CustomMapState extends State<CustomMap> {
   @override
   Widget build(BuildContext context) {
     userMarker(context, 'assets/images/defaultuser.png');
-    List<UsermodelSortedtoMyLocationModel> users =
-        donorController.getDonors(selelctedbloodgruop);
+    allusers = donorController.getDonors(selectedbloodgroup);
     createmarker(context);
+
     return Stack(
       children: [
-        !userController.userlistshown.value
-            // ? Container(
-            //     child: Text(selelctedbloodgruop),
-            //   )
-            ? GoogleMap(
-                mapType: MapType.normal,
-                initialCameraPosition: CameraPosition(
+        // InkWell(
+        //     onTap: () {
+        //       setState(() {
+        //         selectedbloodgroup = 'A+';
+        //       });
+        //     },
+        //     child: Text(selectedbloodgroup)),
+        // if (!userController.userlistshown.value)
+        // ? Container(
+        //     child: Text(selelctedbloodgruop),
+        //   )
+        GoogleMap(
+          mapType: MapType.normal,
+          initialCameraPosition: CameraPosition(
+              zoom: 16.0,
+              target: LatLng(userController.mylatitude.value,
+                  userController.mylongitude.value)),
+          myLocationEnabled: true,
+          onTap: (pos) {
+            setState(() {
+              pinPillPosition = -100;
+            });
+          },
+          // myLocationButtonEnabled: true,
+          markers: markers,
+          onMapCreated: (GoogleMapController controller) {
+            addMarker();
+            setState(() {
+              mapController = controller;
+            });
+
+            controller.animateCamera(CameraUpdate.newCameraPosition(
+                CameraPosition(
                     zoom: 16.0,
                     target: LatLng(userController.mylatitude.value,
-                        userController.mylongitude.value)),
-                myLocationEnabled: true,
-                onTap: (pos) {
-                  setState(() {
-                    pinPillPosition = -100;
-                  });
-                },
-                // myLocationButtonEnabled: true,
-                markers: markers,
-                onMapCreated: (GoogleMapController controller) {
-                  addMarker();
-
-                  // controller.animateCamera(CameraUpdate.newCameraPosition(
-                  //     CameraPosition(
-                  //         zoom: 16.0,
-                  //         target: LatLng(userController.mylatitude.value,
-                  //             userController.mylongitude.value))));
-                },
-              )
-            : ListView(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Row(
-                      children: [
-                        Text(
-                          'Donors Available',
-                          style: largeText.copyWith(
-                              color: Colors.grey[600],
-                              fontWeight: FontWeight.bold),
-                        ),
-                        Spacer(),
-                        // Text(
-                        //   'SortBy:',
-                        //   style: TextStyle(
-                        //       color: Colors.grey, fontWeight: FontWeight.bold),
-                        // ),
-                        DropdownButton(
-                            onChanged: (v) {
-                              setState(() {
-                                selelctedbloodgruop = v;
-                              });
-                            },
-                            value: selelctedbloodgruop,
-                            items: [
-                              ...bloodgroup.map((e) => DropdownMenuItem(
-                                    value: e,
-                                    child: Text(e),
-                                  ))
-                            ]),
-                      ],
+                        userController.mylongitude.value))));
+          },
+        ),
+        if (userController.userlistshown.value)
+          Container(
+            color: Colors.white,
+            child: ListView(
+              padding: EdgeInsets.symmetric(horizontal: 5),
+              children: [
+                Row(
+                  children: [
+                    Text(
+                      'Donors Available',
+                      style: largeText.copyWith(
+                          color: Colors.grey[600], fontWeight: FontWeight.bold),
                     ),
-                  ),
-                  ...users.map((e) => Container(
-                        decoration: BoxDecoration(
-                            //    borderRadius: BorderRadius.circular(30),
-                            //   color: Colors.white,
+                    Spacer(),
+                    // Text(
+                    //   'SortBy:',
+                    //   style: TextStyle(
+                    //       color: Colors.grey, fontWeight: FontWeight.bold),
+                    // ),
+                    DropdownButton(
+                        onChanged: (v) {
+                          setState(() {
+                            allusers =
+                                donorController.getDonors(selectedbloodgroup);
+                            // print(allusers.length);
+                            selectedbloodgroup = v;
+                          });
+                        },
+                        value: selectedbloodgroup,
+                        items: [
+                          ...bloodgroup.map((e) => DropdownMenuItem(
+                                value: e,
+                                child: Container(child: Text(e)),
+                              ))
+                        ]),
+                  ],
+                ),
+                ...allusers.map((e) => ListTile(
+                    contentPadding:
+                        EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                    onTap: () {
+                      Get.to(DonorProfile(
+                          user: userController.userlist[e.donorindex]));
+                    },
+                    // isThreeLine: true,
+                    leading: Container(
+                      width: 60,
+                      child: Stack(
+                        children: [
+                          Positioned(
+                            left: 10,
+                            child: CircleAvatar(
+                              backgroundColor: Colors.deepOrange,
+                              radius: 25,
+                              backgroundImage: NetworkImage(userController
+                                  .userlist[e.donorindex].photoUrl),
                             ),
-                        padding: const EdgeInsets.all(8.0),
-                        child: ListTile(
-                            onTap: () {
-                              Get.to(DonorProfile(
-                                  user: userController.userlist[e.donorindex]));
-                            },
-                            // isThreeLine: true,
-                            leading: Container(
-                              width: 60,
-                              child: Stack(
-                                children: [
-                                  Positioned(
-                                    left: 10,
-                                    child: CircleAvatar(
-                                      radius: 25,
-                                      backgroundImage: NetworkImage(
-                                          userController
-                                              .userlist[e.donorindex].photoUrl),
-                                    ),
-                                  ),
-                                  Positioned(
-                                    top: 0,
-                                    left: 0,
-                                    child: CircleAvatar(
-                                      backgroundColor: Colors.white,
-                                      radius: 12,
-                                      child: CircleAvatar(
-                                          backgroundColor: Colors.red,
-                                          radius: 10,
-                                          child: Text(
-                                            'AB+',
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 10),
-                                          )),
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                            title: Text(e.name),
-                            subtitle: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(userController
-                                      .userlist[e.donorindex].userAddress),
-                                  Text(
-                                      "${(e.distance / 1000).toStringAsFixed(2)}Km"),
-                                ]),
-                            trailing: Column(children: [
-                              InkWell(
-                                onTap: () {
-                                  _launchCaller(e);
-                                },
-                                child: CircleAvatar(
-                                  backgroundColor: Colors.green,
+                          ),
+                          Positioned(
+                            top: 0,
+                            left: 0,
+                            child: CircleAvatar(
+                              backgroundColor: Colors.white,
+                              radius: 12,
+                              child: CircleAvatar(
+                                  backgroundColor: Colors.red,
                                   radius: 10,
-                                  child: Icon(
-                                    Icons.phone,
-                                    size: 15,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                                height: 5,
-                              ),
-                              InkWell(
-                                onTap: () {},
-                                child: CircleAvatar(
-                                  backgroundColor: Colors.grey,
-                                  radius: 11,
-                                  child: CircleAvatar(
-                                    backgroundColor: Colors.white,
-                                    radius: 9,
-                                    child: Icon(
-                                      Icons.message,
-                                      size: 12,
-                                      color: Colors.grey,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ])),
-                      ))
-                  //DonorDetailsView(selelctedbloodgruop)
-                ],
-              ),
+                                  child: Text(
+                                    'AB+',
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 10),
+                                  )),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                    title: Text(e.name),
+                    subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(userController
+                              .userlist[e.donorindex].userAddress),
+                          Text("${(e.distance / 1000).toStringAsFixed(2)}Km"),
+                        ]),
+                    trailing: Column(children: [
+                      InkWell(
+                          onTap: () {
+                            mapController.animateCamera(
+                                CameraUpdate.newCameraPosition(CameraPosition(
+                              bearing: 45,
+                              target: LatLng(
+                                  userController
+                                      .userlist[e.donorindex].latitude,
+                                  userController
+                                      .userlist[e.donorindex].longitude),
+                              tilt: 30.0,
+                              zoom: 20,
+                            )));
+                            userController.userlistshown.value = false;
+                          },
+                          child: CircleAvatar(
+                              backgroundColor: Colors.grey.withOpacity(.5),
+                              radius: 12,
+                              child: Icon(Icons.map,
+                                  size: 15, color: Colors.redAccent))),
+                      SizedBox(height: 5),
+                      InkWell(
+                        onTap: () {
+                          _launchCaller(e);
+                        },
+                        child: CircleAvatar(
+                          backgroundColor: Colors.grey.withOpacity(.5),
+                          radius: 12,
+                          child: Icon(
+                            Icons.phone,
+                            color: Colors.redAccent,
+                            size: 15,
+                          ),
+                        ),
+                      ),
+                    ])))
+                //DonorDetailsView(selelctedbloodgruop)
+              ],
+            ),
+          ),
         AnimatedPositioned(
             bottom: pinPillPosition,
             right: 0,
@@ -332,14 +354,7 @@ class _CustomMapState extends State<CustomMap> {
             duration: Duration(milliseconds: 200),
             child:
                 pinPillPosition != -100 ? OntapUser(selectedUser) : Text('')),
-        // Obx(
-        //   () => InkWell(
-        //     onTap: () {
-        //       userController.userlistshown.toggle();
-        //     },
-        //     child: Text(userController.userlistshown.value.toString()),
-        //   ),
-        // )
+        // Center(child: Text('Text("$pinPillPosition")')),
       ],
     );
   }
@@ -357,7 +372,7 @@ class _CustomMapState extends State<CustomMap> {
         setState(() {
           pinPillPosition = 0;
         });
-        print(pinPillPosition);
+        // print(pinPillPosition);
       },
     ));
   }
@@ -407,7 +422,7 @@ class OntapUser extends StatelessWidget {
             child: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
               SizedBox(width: 5),
               CircleAvatar(
-                radius: 39,
+                radius: 30,
                 backgroundImage:
                     NetworkImage(user.photoUrl == '' ? noimage : user.photoUrl),
               ),
@@ -416,12 +431,14 @@ class OntapUser extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                      width: 140,
-                      child: Text(
-                        user.username,
-                        overflow: TextOverflow.clip,
-                        style: smallText,
+                    FittedBox(
+                      child: Container(
+                        width: 110,
+                        child: Text(
+                          user.username,
+                          overflow: TextOverflow.clip,
+                          style: smallText,
+                        ),
                       ),
                     ),
                     Text(
@@ -431,7 +448,7 @@ class OntapUser extends StatelessWidget {
                       user.bloodgroup,
                       style: TextStyle(
                           color: Colors.red, fontWeight: FontWeight.bold),
-                    )
+                    ),
                   ]),
               Spacer(),
               Padding(

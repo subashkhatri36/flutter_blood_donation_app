@@ -1,7 +1,11 @@
+import 'dart:ui';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blood_donation_app/app/constant/const.dart';
 import 'package:flutter_blood_donation_app/app/core/model/user_models.dart';
+import 'package:flutter_blood_donation_app/app/modules/home/controllers/home_controller.dart';
+import 'package:flutter_blood_donation_app/app/modules/home/views/home_view.dart';
 import 'package:flutter_blood_donation_app/app/utlis/size_config.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -15,206 +19,186 @@ class DonorProfile extends StatelessWidget {
       body: ListView(
         children: [
           DonorProfileHeader(user: user),
-          Divider(),
-          // Container(
-          //   color: Colors.grey[300],
-          //   child: Column(
-          //     children: [
-          //       ListTile(
-          //         leading: CircleAvatar(),
-          //         title: Text('Schedule New Appoinment'),
-          //         subtitle: Text('Choose time and location and donation type'),
-          //       ),
-          //       ListTile(
-          //           leading: CircleAvatar(),
-          //           title: Text('Schedule New Appoinment'),
-          //           subtitle:
-          //               Text('Choose time and location and donation type')),
-          //     ],
-          //   ),
-          // ),
-          Container(
-            padding: EdgeInsets.only(left: 10),
-            color: Colors.grey[300].withOpacity(.3),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // ListTile(
-                //   title: Text(
-                //     'Address',
-                //     style: mediumText,
-                //   ),
-                //   subtitle: Text('Ranibari, Kathmandu'),
-                // ),
-                // Divider(),
-                // ListTile(
-                //   title: Text(
-                //     'Email',
-                //     style: mediumText,
-                //   ),
-                //   subtitle: Text('s@gmail.com'),
-                // ),
-                // Divider(),
-                // ListTile(
-                //   title: Text(
-                //     'Contact',
-                //     style: mediumText,
-                //   ),
-                //   subtitle: Text('0542131'),
-                // ),
-                // ListTile(
-                //   title: Text(
-                //     '984276234',
-                //     style: mediumText,
-                //   ),
-                //   subtitle: Text('Ranibari, Kathmandu'),
-                //   trailing: InkWell(onTap: () {}, child: Icon(Icons.phone)),
-                // ),
-              ],
-            ),
-          ),
-          Container(
-            padding: EdgeInsets.only(left: 10, right: 10),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Phone',
-                  style: largeText.copyWith(
-                      color: Colors.grey[800], fontWeight: FontWeight.bold),
-                ),
-                Card(
-                  child: ListTile(
-                    leading: Card(child: Icon(CupertinoIcons.phone)),
-                    title: Text(
-                      user.phoneNo,
-                      style: largeText,
-                    ),
-                    subtitle: Text(''),
-                    trailing: IconButton(
-                      icon: CircleAvatar(
-                        backgroundColor: Colors.green,
-                        child: Icon(
-                          CupertinoIcons.phone,
-                          color: Colors.white,
-                        ),
-                      ),
-                      onPressed: () async {
-                        String url = 'tel:${user.phoneNo}';
-                        if (await canLaunch(url)) {
-                          await launch(url);
-                        } else {
-                          throw 'Could not launch $url';
-                        }
-                      },
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
           Container(
             child: Column(
               children: [
                 ListTile(
+                  contentPadding: EdgeInsets.only(left: 10),
                   title: Text(
                     'Last Donations',
-                    style: largeText.copyWith(fontWeight: FontWeight.bold),
+                    style: largeText.copyWith(
+                        fontWeight: FontWeight.w800, color: Colors.grey[700]),
                   ),
                   subtitle: Text('Wednesday , August 4 ,2019'),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 8.0, right: 8),
-                  child: Card(
-                    child: Column(
-                      children: [
-                        ListTile(
-                          leading: Card(
-                            child: Icon(Icons.water_damage),
-                          ),
-                          title: Text('2 Dontations(Year to Date)'),
-                          subtitle: Text('Blood'),
-                        ),
-                        // ListTile(
-                        //   leading: Card(
-                        //     child: Icon(Icons.water_damage),
-                        //   ),
-                        //   title: Text('2 Dontations(Year to Date)'),
-                        //   subtitle: Text('Blood'),
-                        // ),
-                      ],
-                    ),
-                  ),
                 ),
               ],
             ),
           ),
-          Column(
-            children: [
-              ListTile(
-                title: Text(
-                  'All Donations',
-                  style: largeText.copyWith(fontWeight: FontWeight.bold),
+          ListTile(
+            contentPadding: EdgeInsets.only(left: 10),
+            title: Row(children: [
+              Text(
+                'All Donations',
+                style: largeText.copyWith(
+                    fontWeight: FontWeight.w800, color: Colors.grey[700]),
+              )
+            ]),
+            subtitle: Text('Wednesday , August 4 ,2019'),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Rate this user',
+                  style: largeText.copyWith(
+                      fontWeight: FontWeight.w800, color: Colors.grey[700]),
                 ),
-                subtitle: Text('Wednesday , August 4 ,2019'),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 8.0, right: 8),
-                child: Card(
-                  child: Column(
-                    children: [
-                      ListTile(
-                        leading: Card(
-                          child: Icon(Icons.water_damage),
-                        ),
-                        title: Text('2 Dontations(Year to Date)'),
-                        subtitle: Text('Blood'),
+                Text(
+                  'Tell others what you think',
+                  style: smallText.copyWith(color: Colors.grey[600]),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Row(children: [
+                  for (int i = 0; i < 5; i++)
+                    Container(
+                      padding: EdgeInsets.only(left: 10),
+                      child: Icon(
+                        Icons.star_border,
+                        color: Colors.redAccent,
                       ),
-                      // ListTile(
-                      //   leading: Card(
-                      //     child: Icon(Icons.water_damage),
-                      //   ),
-                      //   title: Text('2 Dontations(Year to Date)'),
-                      //   subtitle: Text('Blood'),
-                      // ),
-                    ],
+                    ),
+                ]),
+                SizedBox(
+                  height: 15,
+                ),
+                InkWell(
+                  onTap: () {
+                    Get.to(ReviewPage(user: user));
+                  },
+                  child: Text(
+                    'Write a review',
+                    style: largeText.copyWith(
+                        fontWeight: FontWeight.w800,
+                        color: Colors.redAccent[400]),
                   ),
-                ),
-              ),
-              Container(
-                padding: EdgeInsets.all(20),
-                //  height: 180,
-                color: Colors.grey[400].withOpacity(.5),
-                child: Column(
-                  children: [
-                    Text(
-                      'Rate User',
-                      style: mediumText.copyWith(fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        for (int i = 0; i < 5; i++)
-                          Icon(
-                            Icons.star,
-                            size: 30,
-                          )
-                      ],
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                  ],
-                ),
-              ),
-            ],
+                )
+              ],
+            ),
           ),
         ],
       ),
     );
+  }
+}
+
+class ReviewPage extends StatelessWidget {
+  const ReviewPage({
+    Key key,
+    this.user,
+  }) : super(key: key);
+  final UserModel user;
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+            centerTitle: false,
+            leading: InkWell(
+                onTap: () {
+                  Get.back();
+                },
+                child: Icon(Icons.close)),
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CircleAvatar(
+                  backgroundColor: Theme.of(context).primaryColor,
+                  backgroundImage: NetworkImage(user.photoUrl),
+                ),
+                SizedBox(
+                  width: 5,
+                ),
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Text(
+                    user.username.capitalize,
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  Text(
+                    'Rate this user',
+                    style: TextStyle(fontSize: 12),
+                  ),
+                ]),
+                Spacer(),
+                InkWell(
+                  onTap: () {
+                    Get.to(HomeView());
+                  },
+                  child: Text(
+                    'Post'.toUpperCase(),
+                    style: TextStyle(fontSize: 16),
+                  ),
+                )
+              ],
+            )),
+        body: ListView(
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          children: [
+            Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              CircleAvatar(
+                backgroundImage:
+                    NetworkImage(userController.myinfo.value.photoUrl),
+              ),
+              SizedBox(width: 10),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: SizeConfig.screenWidth - 100,
+                    child: Text(
+                      userController.myinfo.value.username.capitalize,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  SizedBox(height: 5),
+                  Text(
+                    'Reviews are public and include\n your account details.',
+                    style: TextStyle(fontSize: 12),
+                  ),
+                  SizedBox(height: 20),
+                ],
+              ),
+            ]),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                for (int i = 0; i < 5; i++)
+                  Container(
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      child: Icon(Icons.star_border))
+              ],
+            ),
+            SizedBox(height: 30),
+            TextFormField(
+                maxLines: 3,
+                decoration: InputDecoration(
+                    hintText: 'Describe the user in detail',
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10)))),
+            SizedBox(height: 20),
+            // Text('Tell us more about user (optional)'),
+            // SizedBox(height: 10),
+            // Container(
+            //   decoration: BoxDecoration(
+            //       borderRadius: BorderRadius.circular(10),
+            //       border: Border.all(color: Colors.grey)),
+            //   height: 140,
+            // )
+          ],
+        ));
   }
 }
 
@@ -226,78 +210,97 @@ class DonorProfileHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
         height: 250,
-        //padding: EdgeInsets.only(left: 20),
-        color: Theme.of(context).primaryColor,
         child: Stack(
           children: [
             Container(
-              height: 130,
-              decoration: BoxDecoration(
-                  color: Colors.red,
-                  image: DecorationImage(
-                      image: NetworkImage(user.photoUrl), fit: BoxFit.cover)),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 28.0),
-              child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: Stack(
-                    children: [
-                      CircleAvatar(
-                        radius: 62,
-                        backgroundColor: Colors.white,
-                        child: CircleAvatar(
-                          radius: 60,
-                          backgroundImage:
-                              NetworkImage(user.photoUrl ?? noimage),
-                        ),
-                      ),
-                      Positioned(
-                          left: 0,
+                height: 240,
+                width: double.infinity,
+                child: Image.network(user.photoUrl, fit: BoxFit.cover)),
+
+            BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+              child: Container(
+                color: Colors.grey.withOpacity(.5),
+                padding: const EdgeInsets.only(left: 28.0),
+                child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Stack(
+                      children: [
+                        CircleAvatar(
+                          radius: 53,
+                          backgroundColor: Colors.white,
                           child: CircleAvatar(
-                              radius: 17,
-                              backgroundColor: Colors.white,
-                              child: CircleAvatar(
-                                radius: 15,
-                                backgroundColor: Colors.red,
-                                child: Text(
-                                  user.bloodgroup,
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ))),
-                    ],
-                  )),
+                            radius: 50,
+                            backgroundImage:
+                                NetworkImage(user.photoUrl ?? noimage),
+                          ),
+                        ),
+                        Positioned(
+                            left: 0,
+                            child: CircleAvatar(
+                                radius: 17,
+                                backgroundColor: Colors.white,
+                                child: CircleAvatar(
+                                  radius: 15,
+                                  backgroundColor: Colors.red,
+                                  child: Text(
+                                    user.bloodgroup,
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ))),
+                      ],
+                    )),
+              ),
             ),
-            Padding(
-              padding: const EdgeInsets.only(left: 30.0),
+            Container(
+              //color: Colors.grey[500].withOpacity(.5),
+              padding: const EdgeInsets.only(left: 5.0),
               child: Align(
                   alignment: Alignment.bottomLeft,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.end,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      SizedBox(
+                        height: 5,
+                      ),
                       Row(
                         children: [
                           Text(
                             user.username.capitalize,
                             style: largeText.copyWith(
                                 color: Colors.white,
-                                fontWeight: FontWeight.bold),
+                                fontWeight: FontWeight.w600),
                           ),
                         ],
                       ),
-                     
-                      Row(children: [
-                        Text(
-                          user.userAddress.capitalize,
-                          style: largeText.copyWith(
-                              color: Colors.white, fontWeight: FontWeight.bold),
-                        ),
-                        SizedBox(width: 20),
-                        CircleAvatar(child: Icon(Icons.message))
-                      ]),
+                      Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Text(
+                              "${user.userAddress.capitalize},Ktm",
+                              style: largeText.copyWith(
+                                  fontSize: 14,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w600),
+                            ),
+                            SizedBox(width: 5),
+                            CircleAvatar(
+                                radius: 15,
+                                backgroundColor: Colors.white.withOpacity(.5),
+                                child: Icon(Icons.phone,
+                                    color: Colors.redAccent[400], size: 15)),
+                            SizedBox(
+                              width: 5,
+                            ),
+                            CircleAvatar(
+                                radius: 15,
+                                backgroundColor: Colors.white.withOpacity(.5),
+                                child: Icon(Icons.message,
+                                    color: Colors.redAccent[400], size: 15))
+                          ]),
                       SizedBox(
                         height: 10,
                       )
@@ -309,114 +312,92 @@ class DonorProfileHeader extends StatelessWidget {
               right: 8,
               width: SizeConfig.screenWidth / 2,
               child: Container(
-                  padding: EdgeInsets.only(top: 20),
-                  color: Colors.grey.withOpacity(.7),
-                  height: 200,
+                  padding: EdgeInsets.only(top: 20, left: 8),
+                  decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(.2),
+                      borderRadius: BorderRadius.circular(5)),
+                  height: 220,
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Rating and reviews',
+                              style: mediumText.copyWith(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            Icon(
+                              Icons.info_outline,
+                              color: Colors.white,
+                              size: 20,
+                            )
+                          ]),
+                      SizedBox(height: 5),
                       Text(
-                        'User Review',
-                        style: mediumText.copyWith(
-                            color: Colors.white, fontWeight: FontWeight.bold),
+                        '4.5',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 30,
+                            fontWeight: FontWeight.w700),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          for (int i = 0; i < 5; i++)
+                            Icon(Icons.star, color: Colors.redAccent[400])
+                        ],
+                      ),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      Text(
+                        '  23,423',
+                        style: TextStyle(
+                            color: Colors.white, fontWeight: FontWeight.w600),
                       ),
                       SizedBox(height: 10),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          for (int i = 0; i < 5; i++) Icon(Icons.star)
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          SizedBox(width: 6),
-                          Text(
-                            '1',
-                            style: mediumText.copyWith(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white),
-                          ),
-                          Icon(Icons.star),
-                          Container(
-                              width: SizeConfig.screenWidth / 2 - 40,
-                              child: LinearProgressIndicator(
-                                value: .14,
-                                backgroundColor: Colors.grey,
-                              )),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          SizedBox(width: 6),
-                          Text(
-                            '1',
-                            style: mediumText.copyWith(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white),
-                          ),
-                          Icon(Icons.star),
-                          Container(
-                              width: SizeConfig.screenWidth / 2 - 40,
-                              child: LinearProgressIndicator(
-                                value: .14,
-                                backgroundColor: Colors.grey,
-                              )),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          SizedBox(width: 6),
-                          Text(
-                            '1',
-                            style: mediumText.copyWith(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white),
-                          ),
-                          Icon(Icons.star),
-                          Container(
-                              width: SizeConfig.screenWidth / 2 - 40,
-                              child: LinearProgressIndicator(
-                                value: .14,
-                                backgroundColor: Colors.grey,
-                              )),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          SizedBox(width: 6),
-                          Text(
-                            '1',
-                            style: mediumText.copyWith(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white),
-                          ),
-                          Icon(Icons.star),
-                          Container(
-                              width: SizeConfig.screenWidth / 2 - 40,
-                              child: LinearProgressIndicator(
-                                value: .14,
-                                backgroundColor: Colors.grey,
-                              )),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          SizedBox(width: 6),
-                          Text(
-                            '1',
-                            style: mediumText.copyWith(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white),
-                          ),
-                          Icon(Icons.star),
-                          Container(
-                              width: SizeConfig.screenWidth / 2 - 40,
-                              child: LinearProgressIndicator(
-                                value: .14,
-                                backgroundColor: Colors.grey,
-                              )),
-                        ],
-                      ),
+                      for (int i = 5; i > 0; i--)
+                        Row(
+                          children: [
+                            SizedBox(width: 6),
+                            Text(
+                              i.toString(),
+                              style: mediumText.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 14,
+                                  color: Colors.white),
+                            ),
+                            SizedBox(
+                              width: 5,
+                            ),
+                            Container(
+                                width: SizeConfig.screenWidth / 2 - 50,
+                                child: Stack(
+                                  children: [
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(20),
+                                        color: Colors.white,
+                                      ),
+                                      height: 7,
+                                    ),
+                                    Container(
+                                      width:
+                                          .50 * SizeConfig.screenWidth / 2 - 50,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(20),
+                                        color: Colors.redAccent[400],
+                                      ),
+                                      height: 7,
+                                    ),
+                                  ],
+                                )),
+                          ],
+                        ),
                     ],
                   )),
             ),
@@ -426,10 +407,6 @@ class DonorProfileHeader extends StatelessWidget {
                 child: Container(
                   decoration: BoxDecoration(
                       color: Colors.white,
-                      // gradient: LinearGradient(colors: [
-                      //   Colors.white,
-                      //   Colors.yellow,
-                      // ]),
                       borderRadius:
                           BorderRadius.only(topRight: Radius.circular(10))),
                   child: IconButton(

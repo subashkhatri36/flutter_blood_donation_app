@@ -13,9 +13,9 @@ import '../controllers/updateaccount_controller.dart';
 class UpdateaccountView extends GetView<UpdateaccountController> {
   final model = Get.arguments;
   final mcontroller = Get.find<AccountController>();
-final updateController=Get. find<UpdateaccountController>() ;
-  @override 
-  Widget build(BuildContext context)  {
+  final updateController = Get.find<UpdateaccountController>();
+  @override
+  Widget build(BuildContext context) {
     controller.loading(model);
     return Scaffold(
         appBar: AppBar(
@@ -46,100 +46,99 @@ final updateController=Get. find<UpdateaccountController>() ;
                         validateMinMaxLength(string: value, minLegth: 10),
                   ),
                   SizedBox(height: Defaults.paddingmiddle),
-                 // Obx(() => Text(controller.mylatitude.value.toString())),
+                  // Obx(() => Text(controller.mylatitude.value.toString())),
                   SizedBox(height: Defaults.paddingmiddle),
-                    Container (
-                      height:200,
-                      child: GoogleMap(
-                  initialCameraPosition: CameraPosition(
-                      target: LatLng(updateController.mylatitude.value,
-                          updateController .mylongitude.value),
-                      zoom: 0.0,
-                  ),
-                  markers: Set<Marker>.of(
-                      [
-                        Marker(
-                     
-     
-      
-                          markerId: MarkerId('marker_1'),
-                          position: LatLng(controller.mylatitude.value,
-                              controller.mylongitude.value),
-                          consumeTapEvents: true,
-                          infoWindow: InfoWindow(
-                            title: 'Blood Request location',
-                            snippet: "My location",
-                          ),
-                          onTap: () {
-                            print("Marker tapped");
-                          },
-                        ),
-                      ],
-                  ),
-                  mapType: MapType.normal,
-                  onTap: (location) => print('onTap: $location'),
-                  onCameraMove: (cameraUpdate) =>
-                        print('onCameraMove: $cameraUpdate'),
-                  compassEnabled: true,
-                  onMapCreated: (controller) {
-                      ///  reqController.loading.value = true;
-                      Future.delayed(Duration(seconds: 2)).then(
-                        (_) {
-                           updateController .mapController=controller;
-                          controller
-                              .animateCamera(
-                                CameraUpdate.newCameraPosition(
-                                  CameraPosition(
-                                    bearing: 270.0,
-                                    target: LatLng(
-                                       updateController  .mylongitude.value,
-                                        updateController   .mylongitude.value),
-                                    tilt: 30.0,
-                                    zoom: 14,
-                                  ),
-                                ),
-                              )
-                              .then((value) =>
-                                  Future.delayed(Duration(seconds: 2))
-                                      .then((_) async {
-                                    await controller.takeSnapshot().then((value) {
-                                      // setState(() {
-                                      //   _imageBytes = value;
-                                      // });
-                                      // reqController.data.value = value;
-                                      // reqController.loading.value = false;
-                                    });
+                  //     Container (
+                  //       height:200,
+                  //       child: GoogleMap(
+                  //   initialCameraPosition: CameraPosition(
+                  //       target: LatLng(updateController.mylatitude.value,
+                  //           updateController .mylongitude.value),
+                  //       zoom: 0.0,
+                  //   ),
+                  //   markers: Set<Marker>.of(
+                  //       [
+                  //         Marker(
 
-                                    //  print(reqController.data.value);
-                                  }));
-                          //   controller.getVisibleRegion().then(
-                          //       (bounds) => print("bounds: ${bounds.toString()}"));
-                        },
+                  //           markerId: MarkerId('marker_1'),
+                  //           position: LatLng(controller.mylatitude.value,
+                  //               controller.mylongitude.value),
+                  //           consumeTapEvents: true,
+                  //           infoWindow: InfoWindow(
+                  //             title: 'Blood Request location',
+                  //             snippet: "My location",
+                  //           ),
+                  //           onTap: () {
+                  //             print("Marker tapped");
+                  //           },
+                  //         ),
+                  //       ],
+                  //   ),
+                  //   mapType: MapType.normal,
+                  //   onTap: (location) => print('onTap: $location'),
+                  //   onCameraMove: (cameraUpdate) =>
+                  //         print('onCameraMove: $cameraUpdate'),
+                  //   compassEnabled: true,
+                  //   onMapCreated: (controller) {
+                  //       ///  reqController.loading.value = true;
+                  //       Future.delayed(Duration(seconds: 2)).then(
+                  //         (_) {
+                  //            updateController .mapController=controller;
+                  //           controller
+                  //               .animateCamera(
+                  //                 CameraUpdate.newCameraPosition(
+                  //                   CameraPosition(
+                  //                     bearing: 270.0,
+                  //                     target: LatLng(
+                  //                        updateController  .mylongitude.value,
+                  //                         updateController   .mylongitude.value),
+                  //                     tilt: 30.0,
+                  //                     zoom: 14,
+                  //                   ),
+                  //                 ),
+                  //               )
+                  //               .then((value) =>
+                  //                   Future.delayed(Duration(seconds: 2))
+                  //                       .then((_) async {
+                  //                     await controller.takeSnapshot().then((value) {
+                  //                       // setState(() {
+                  //                       //   _imageBytes = value;
+                  //                       // });
+                  //                       // reqController.data.value = value;
+                  //                       // reqController.loading.value = false;
+                  //                     });
+
+                  //                     //  print(reqController.data.value);
+                  //                   }));
+                  //           //   controller.getVisibleRegion().then(
+                  //           //       (bounds) => print("bounds: ${bounds.toString()}"));
+                  //         },
+                  //       );
+                  //       // _mapController = controller;
+                  //   },
+                  // ),
+                  //     ),
+                  TextFormField(
+                    onChanged: (v) {
+                      updateController.getcoordinateAddress(v);
+                      updateController.mapController.animateCamera(
+                        CameraUpdate.newCameraPosition(
+                          CameraPosition(
+                            bearing: 270.0,
+                            target: LatLng(updateController.mylatitude.value,
+                                updateController.mylongitude.value),
+                            tilt: 30.0,
+                            zoom: 14,
+                          ),
+                        ),
                       );
-                      // _mapController = controller;
-                  },
-                ),
-                    ), 
-                  TextFormField (
-                   onChanged:  (v ){
-                     updateController.getcoordinateAddress(v);
-                      updateController. mapController . animateCamera(CameraUpdate.newCameraPosition(
-                                  CameraPosition(
-                                    bearing: 270.0,
-                                    target: LatLng(
-                                      updateController.mylatitude.value,
-                                        updateController.mylongitude.value),
-                                    tilt: 30.0,
-                                    zoom: 14,
-                                  ),
-                                ),
-                             );
-                   },
+                    },
                     obscureText: false,
                     controller: controller.addressController,
-                 decoration:  InputDecoration (   hintText: 'Address',
-                   suffix  : Icon(Icons.location_on),
-                  ),
+                    decoration: InputDecoration(
+                      hintText: 'Address',
+                      suffix: Icon(Icons.location_on),
+                    ),
                     validator: (value) =>
                         validateMinLength(string: value, length: 3),
                   ),
@@ -208,7 +207,7 @@ final updateController=Get. find<UpdateaccountController>() ;
                           if (!controller.updateState.value) {
                             controller.updateState.value = true;
                             bool body = await controller.updateProfile();
-                            if (body) { 
+                            if (body) {
                               controller.updateState.value = false;
                               mcontroller.model.phoneNo =
                                   controller.poneController.text;

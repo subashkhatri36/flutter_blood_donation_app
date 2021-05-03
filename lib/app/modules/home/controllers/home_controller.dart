@@ -23,6 +23,7 @@ class HomeController extends GetxController {
   var userlist = List<UserModel>.empty(growable: true).obs;
   var requestData = List<RequestModel>.empty(growable: true).obs;
   var userlistshown = false.obs;
+ // var mapController = GoogleMapController();
   var ismap = true.obs;
   Future<void> initConnectivity() async {
     ConnectivityResult result;

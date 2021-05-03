@@ -16,6 +16,14 @@ import 'donor_profile/donor_profile.dart';
 
 class UserRequest extends StatelessWidget {
   final RequestModel request;
+  _launchCaller(String e) async {
+    String url = "tel:$e";
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
 
   const UserRequest({this.request});
   @override
@@ -140,13 +148,17 @@ class UserRequest extends StatelessWidget {
                       height: 30,
                       child: InkWell(
                         onTap: () async {
-                          String url =
-                              "tel:${userController.userlist[userController.getUserByUserid(request.userid)].phoneNo}";
-                          if (await canLaunch(url)) {
-                            await launch(url);
-                          } else {
-                            print(canLaunch(url));
-                          }
+                          _launchCaller(userController
+                              .userlist[userController
+                                  .getUserByUserid(request.userid)]
+                              .phoneNo);
+                          // String url =
+                          //     "tel:${userController.userlist[userController.getUserByUserid(request.userid)].phoneNo}";
+                          // if (await canLaunch(url)) {
+                          //   await launch(url);
+                          // } else {
+                          //   print(canLaunch(url));
+                          // }
                         },
                         child: Text(
                           'Call',
@@ -163,21 +175,22 @@ class UserRequest extends StatelessWidget {
                   ),
                 ]),
           ),
-          // Row(
-          //   children: [
-          //     CircleAvatar(
-          //         radius: 10,
-          //         child: Icon(
-          //           Icons.thumb_up_alt_rounded,
-          //           size: 10,
-          //         )),
-          //     Text(
-          //       'Sudarshan and 4 other',
-          //       textAlign: TextAlign.start,
-          //       style: sm allText.copyWith(color: Colors.grey),
-          //     ),
-          //   ],
-          // ),
+          Row(
+            children: [
+              CircleAvatar(
+                  radius: 10,
+                  child: Icon(
+                    Icons.thumb_up_alt_rounded,
+                    size: 10,
+                  )),
+              Text(request.likes.length.toString())
+              // Text(
+              //   'Sudarshan and 4 other',
+              //   textAlign: TextAlign.start,
+              //   style: smallText.copyWith(color: Colors.grey),
+              // ),
+            ],
+          ),
           SizedBox(width: 5),
           LikeButton(request: request),
         ]),
@@ -207,44 +220,45 @@ class _LikeButtonState extends State<LikeButton> {
       child: Row(children: [
         TextButton(
             onPressed: () {
-              //  print(userController.requestData.indexOf(request));
+              // print(widget.request.likes.length);
+              // print(userController.requestData.indexOf(request));
               // LikeModel like =
               //     LikeModel(userid: request.userid, liked: true);
-              if (widget.request.likes.contains(widget.request.userid)) {
-                //setState(() {
-                widget.request.likes.remove(widget.request.userid);
-                print(widget.request.likes.toString());
-                //
-                firebaseFirestore
-                    .collection('request')
-                    .doc(widget.request.id)
-                    .update({
-                  'likes': jsonEncode(widget.request.likes),
-                });
-              } else {
-                // setState(() {
-                widget.request.likes.add(widget.request.userid);
-                print(widget.request.likes);
-                // });
-                firebaseFirestore
-                    .collection('request')
-                    .doc(widget.request.id)
-                    .update({
-                  'likes': jsonEncode(widget.request.likes),
-                });
-              }
+              // if (widget.request.likes.contains(widget.request.userid)) {
+              //   //setState(() {
+              //   widget.request.likes.remove(widget.request.userid);
+              //   print(widget.request.likes.toString());
+              //   //
+              // firebaseFirestore
+              //     .collection('request')
+              //     .doc(widget.request.id)
+              //     .update({
+              //   'likes': jsonEncode(widget.request.likes),
+              // });
+              // } else {
+              //   // setState(() {
+              widget.request.likes.add(widget.request.userid);
+              //   print(widget.request.likes);
+              // });
+              // firebaseFirestore
+              //     .collection('request')
+              //     .doc(widget.request.id)
+              //     .update({
+              //   'likes': jsonEncode(widget.request.likes),
+              //  });
+              // }
               // request.likes.forEach((element) {
               //   if (element.userid ==
               //       userController.myinfo.value.userId) {
               //     int index = request.likes.indexOf(element);
               //   }
               // });
-              print(widget.request.likes.length);
-              // firebaseFirestore
-              //     .collection('request')
-              //     .doc(widget.request.id)
-              //     .delete()
-              //     .whenComplete(() => print('completed'));
+              // print(widget.request.likes.length);
+              firebaseFirestore
+                  .collection('request')
+                  .doc(widget.request.id)
+                  .delete()
+                  .whenComplete(() => print('completed'));
             },
             child: Row(
               children: [
