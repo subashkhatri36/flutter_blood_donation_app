@@ -9,41 +9,21 @@ import 'package:flutter_blood_donation_app/app/core/model/user_models.dart';
 import 'package:flutter_blood_donation_app/app/modules/home/views/post_comments/post_comment.dart';
 import 'package:flutter_blood_donation_app/app/utlis/size_config.dart';
 import 'package:get/get.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-import '../../../Widgets/CustomButton.dart';
 import '../controllers/home_controller.dart';
 import 'donor_profile/donor_profile.dart';
 
-List<PopupMenuItem> menuItem = [
-  // PopupMenuItem(
-  //   child: Text('Request Blood'),
-  //   value: '/request',
-  // ),
-  // PopupMenuItem(
-  //   child: Text('Home'),
-  //   value: '/home',
-  // ),
-  //
-  PopupMenuItem(
-    child: Text('Accept Request'),
-    value: '/accept',
-  ),
-  // PopupMenuItem(
-  //   child: Text('Account'),
-  //   value: '/account',
-  // ),
-  // PopupMenuItem(
-  //   child: Text('Settings'),
-  //   value: '/settings',
-  // ),
-  // PopupMenuItem(
-  //   child: Text('Refer'),
-  //   value: '/refer',
-  // ),
-];
-
 class UserRequest extends StatelessWidget {
   final RequestModel request;
+  _launchCaller(String e) async {
+    String url = "tel:$e";
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
 
   const UserRequest({this.request});
   @override
@@ -152,7 +132,6 @@ class UserRequest extends StatelessWidget {
                         ]),
                         Text('${request.address} ,Kathmandu',
                             style: smallText.copyWith(color: Colors.grey)),
-                        //
                       ]),
                   Spacer(),
                   Padding(
@@ -167,51 +146,51 @@ class UserRequest extends StatelessWidget {
                       ),
 
                       height: 30,
-                      child: PopupMenuButton(
-                        onSelected: (v) {
-                          //print('request accept');
-                          //print(v.toString());
-                          // Get.snackbar(v, v);
-                          // if (v == '/login') {
-                          //   userController.signout();
+                      child: InkWell(
+                        onTap: () async {
+                          _launchCaller(userController
+                              .userlist[userController
+                                  .getUserByUserid(request.userid)]
+                              .phoneNo);
+                          // String url =
+                          //     "tel:${userController.userlist[userController.getUserByUserid(request.userid)].phoneNo}";
+                          // if (await canLaunch(url)) {
+                          //   await launch(url);
+                          // } else {
+                          //   print(canLaunch(url));
                           // }
-                          // Get.toNamed(v);
-                        },
-                        itemBuilder: (context) {
-                          return List.generate(menuItem.length, (i) {
-                            return menuItem[i];
-                          });
                         },
                         child: Text(
-                          'Help',
+                          'Call',
                           style: TextStyle(color: Colors.white),
                         ),
                       ),
-
-                      // CustomButton(
-                      //     label: 'Help',
-                      //     labelColor: Colors.white,
-                      //     btnColor: Colors.purple,
-                      //     borderRadius: 5)
                     ),
+
+                    // CustomButton(
+                    //     label: 'Help',
+                    //     labelColor: Colors.white,
+                    //     btnColor: Colors.purple,
+                    //     borderRadius: 5)
                   ),
                 ]),
           ),
-          // Row(
-          //   children: [
-          //     CircleAvatar(
-          //         radius: 10,
-          //         child: Icon(
-          //           Icons.thumb_up_alt_rounded,
-          //           size: 10,
-          //         )),
-          //     Text(
-          //       'Sudarshan and 4 other',
-          //       textAlign: TextAlign.start,
-          //       style: sm allText.copyWith(color: Colors.grey),
-          //     ),
-          //   ],
-          // ),
+          Row(
+            children: [
+              CircleAvatar(
+                  radius: 10,
+                  child: Icon(
+                    Icons.thumb_up_alt_rounded,
+                    size: 10,
+                  )),
+              Text(request.likes.length.toString())
+              // Text(
+              //   'Sudarshan and 4 other',
+              //   textAlign: TextAlign.start,
+              //   style: smallText.copyWith(color: Colors.grey),
+              // ),
+            ],
+          ),
           SizedBox(width: 5),
           LikeButton(request: request),
         ]),
@@ -237,35 +216,49 @@ class _LikeButtonState extends State<LikeButton> {
   Widget build(BuildContext context) {
     return Container(
       height: 50,
-      width: MediaQuery.of(context).size.width,
       padding: EdgeInsets.only(right: 10),
       child: Row(children: [
         TextButton(
             onPressed: () {
-              //  print(userController.requestData.indexOf(request));
+              // print(widget.request.likes.length);
+              // print(userController.requestData.indexOf(request));
               // LikeModel like =
               //     LikeModel(userid: request.userid, liked: true);
-              if (widget.request.likes.contains(widget.request.userid)) {
-                setState(() {
-                  widget.request.likes.remove(widget.request.userid);
-                });
-              } else {
-                setState(() {
-                  widget.request.likes.add(widget.request.userid);
-                });
-              }
+              // if (widget.request.likes.contains(widget.request.userid)) {
+              //   //setState(() {
+              //   widget.request.likes.remove(widget.request.userid);
+              //   print(widget.request.likes.toString());
+              //   //
+              // firebaseFirestore
+              //     .collection('request')
+              //     .doc(widget.request.id)
+              //     .update({
+              //   'likes': jsonEncode(widget.request.likes),
+              // });
+              // } else {
+              //   // setState(() {
+              widget.request.likes.add(widget.request.userid);
+              //   print(widget.request.likes);
+              // });
+              // firebaseFirestore
+              //     .collection('request')
+              //     .doc(widget.request.id)
+              //     .update({
+              //   'likes': jsonEncode(widget.request.likes),
+              //  });
+              // }
               // request.likes.forEach((element) {
               //   if (element.userid ==
               //       userController.myinfo.value.userId) {
               //     int index = request.likes.indexOf(element);
               //   }
               // });
-              print(widget.request.likes.length);
-              // firebaseFirestore
-              //     .collection('request')
-              //     .doc(widget.request.id)
-              //     .delete()
-              //     .whenComplete(() => print('completed'));
+              // print(widget.request.likes.length);
+              firebaseFirestore
+                  .collection('request')
+                  .doc(widget.request.id)
+                  .delete()
+                  .whenComplete(() => print('completed'));
             },
             child: Row(
               children: [

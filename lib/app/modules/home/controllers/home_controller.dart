@@ -16,14 +16,15 @@ class HomeController extends GetxController {
   var selectedIndex = 0.obs;
   var loading = false.obs;
   var mapview = false.obs;
-  final count = 0.obs;
+  var count = 0.obs;
   var mylatitude = 0.0.obs;
   var mylongitude = 0.0.obs;
   var myinfo = UserModel().obs;
   var userlist = List<UserModel>.empty(growable: true).obs;
   var requestData = List<RequestModel>.empty(growable: true).obs;
   var userlistshown = false.obs;
-
+ // var mapController = GoogleMapController();
+  var ismap = true.obs;
   Future<void> initConnectivity() async {
     ConnectivityResult result;
     try {
@@ -85,8 +86,7 @@ class HomeController extends GetxController {
   getUserByUserid(String userid) {
     List<UserModel> user = [];
     userlist.toList().forEach((element) {
-      if (element.userId == userid) ;
-      user.add(element);
+      if (element.userId == userid) user.add(element);
     });
     return user[0];
   }

@@ -2,39 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_blood_donation_app/app/constant/const.dart';
 import 'package:flutter_blood_donation_app/app/constant/defaults.dart';
 import 'package:flutter_blood_donation_app/app/modules/account/views/account_view.dart';
+import 'package:flutter_blood_donation_app/app/modules/home/views/custom_map.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/model/user_models.dart';
-import '../../login/views/login_view.dart';
 import '../controllers/home_controller.dart';
-import 'custom_map.dart';
+
 import 'request_widgets.dart';
 
-// List<RequestModel> request = [
-//   RequestModel(
-//       id: '1',
-//       name: 'Ram',
-//       bloodgroup: 'B+',
-//       detail: 'Detail',
-//       address: 'Ranibari',
-//       photoUrl: '',
-//       timestamp: Timestamp.now()),
-//   RequestModel(
-//       id: '1',
-//       name: 'Ram',
-//       bloodgroup: 'B+',
-//       detail: 'Detail',
-//       address: 'Ranibari',
-//       timestamp: Timestamp.now()),
-//   RequestModel(
-//       id: '1',
-//       name: 'ram',
-//       bloodgroup: 'B+',
-//       detail: 'Detail',
-//       address: 'Ranibari',
-//       timestamp: Timestamp.now()),
-// ];
 List<PopupMenuItem> menuItem = [
   // PopupMenuItem(
   //   child: Text('Request Blood'),
@@ -45,10 +21,10 @@ List<PopupMenuItem> menuItem = [
   //   value: '/home',
   // ),
   //
-  PopupMenuItem(
-    child: Text('Donors available'),
-    value: '/donor-details',
-  ),
+  // PopupMenuItem(
+  //   child: Text('Donors available'),
+  //   value: '/donor-details',
+  // ),
   // PopupMenuItem(
   //   child: Text('Account'),
   //   value: '/account',
@@ -63,91 +39,21 @@ List<PopupMenuItem> menuItem = [
   ),
 ];
 
-// List<UserModel> users = [
-//   UserModel(
-//       userId: 'sfs',
-//       phoneNo: '12323',
-//       username: 'ram',
-//       active: null,
-//       bloodgroup: 'B +',
-//       email: '',
-//       latitude: 22,
-//       longitude: 32,
-//       userAddress: '',
-//       photoUrl: 'https://wallpaperaccess.com/full/2213424.jpg'),
-//   UserModel(
-//       userId: 'sfas',
-//       phoneNo: '12323',
-//       username: 'Sita',
-//       active: false,
-//       bloodgroup: 'A -',
-//       email: '',
-//       latitude: 23,
-//       longitude: 77,
-//       userAddress: 'B',
-//       photoUrl:
-//           'https://images.unsplash.com/photo-1457449940276-e8deed18bfff?ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8cHJvZmlsZXxlbnwwfHwwfHw%3D&ixlib=rb-1.2.1&w=1000&q=80'),
-//   UserModel(
-//       userId: 'sf',
-//       phoneNo: '12323',
-//       username: 'Hari',
-//       active: null,
-//       bloodgroup: 'A +',
-//       email: '',
-//       latitude: 22,
-//       longitude: 22,
-//       userAddress: '',
-//       photoUrl:
-//           'https://images.unsplash.com/photo-1532074205216-d0e1f4b87368?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MjJ8fHByb2ZpbGV8ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80'),
-//   UserModel(
-//       userId: 'sf',
-//       phoneNo: '12323',
-//       username: 'Ramesh',
-//       active: null,
-//       bloodgroup: 'AB +',
-//       email: '',
-//       latitude: 32,
-//       longitude: 32,
-//       userAddress: '',
-//       photoUrl:
-//           'https://expertphotography.com/wp-content/uploads/2018/10/cool-profile-pictures-retouching-1.jpg'),
-//   UserModel(
-//       userId: 'sf',
-//       phoneNo: '12323',
-//       username: 'Shyam',
-//       active: null,
-//       bloodgroup: 'AB -',
-//       email: '',
-//       latitude: 33,
-//       longitude: 22,
-//       userAddress: '',
-//       photoUrl: 'https://i.stack.imgur.com/HILmr.png'),
+// final List<Widget> _children = [
+//   RequestsHome(),
+//   CustomMapMap(),
+//   AccountView(),
 // ];
 
 class HomeView extends GetView<HomeController> {
   Widget buildBody(context) {
-    //double height = MediaQuery.of(context).size.height;
     switch (controller.selectedIndex.value) {
       case 2:
         return AccountView();
 
         break;
       case 1:
-        return Obx(() => userController.userlistshown.value
-            ? ListView.builder(
-                //padding: EdgeInsets.symmetric(horizontal:5,vertical:10),
-                shrinkWrap: true,
-                itemCount: 5,
-                itemBuilder: (_, int i) {
-                  return ListTile(
-                      onTap: () {
-                        Get.to(Scaffold());
-                      },
-                      contentPadding: EdgeInsets.only(left: 5, right: 5),
-                      title: MemberInfo(userController.userlist.toList()[i]));
-                })
-            // : Container());
-            : CustomMap());
+        return CustomMap();
 
         break;
       case 0:
@@ -201,7 +107,7 @@ class HomeView extends GetView<HomeController> {
               onTap: (v) {
                 print(v);
                 controller.selectedIndex.value = v;
-                // if (controller.selectedIndex.value == 1)
+
                 controller.userlistshown.value = true;
               },
               selectedItemColor: Theme.of(context).primaryColor,
@@ -209,7 +115,9 @@ class HomeView extends GetView<HomeController> {
               items: [
                 BottomNavigationBarItem(
                     icon: Icon(Icons.home), label: 'Requests'),
-                BottomNavigationBarItem(icon: Icon(Icons.clear), label: 'Map'),
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.clear),
+                    label: controller.userlistshown.value ? 'Map' : 'Users'),
                 BottomNavigationBarItem(
                     icon: Icon(Icons.person), label: 'Account'),
               ],
@@ -235,46 +143,37 @@ class HomeView extends GetView<HomeController> {
                   //     ? Theme.of(context).primaryColor
                   Theme.of(context).primaryColor
                   : Colors.white,
-              child: Icon(Icons.map_sharp,
+              child: Icon(
+                  controller.userlistshown.value ? Icons.list : Icons.map_sharp,
                   color: controller.userlistshown.value
                       ? Colors.grey
                       : Colors.white),
             ),
           ),
           floatingActionButtonLocation:
-              FloatingActionButtonLocation.miniCenterDocked,
+              FloatingActionButtonLocation.centerDocked,
         ));
   }
 }
 
 class RequestsHome extends StatelessWidget {
-  const RequestsHome({
-    Key key,
-  }) : super(key: key);
-
+  final homeController = Get.find<HomeController>();
   @override
   Widget build(BuildContext context) {
-    final homeController = Get.find<HomeController>();
-
+//map fix blood group sort
+//user blood group
     return Obx(
-      () => !homeController.loading.value
+      () => homeController.requestData.length != 0
           ? ListView.builder(
               physics: BouncingScrollPhysics(),
               itemCount: homeController.requestData.length,
               itemBuilder: (BuildContext context, int index) {
                 return UserRequest(request: homeController.requestData[index]);
-
-                // Container(
-                //   height: 100,
-                //   color: Colors.red,
-                //   child: Image.memory(
-                //     base64Decode(homeController.requestData[index].photoUrl),
-                //     fit: BoxFit.fill,
-                //   ),
-                // );
               },
             )
-          : CircularProgressIndicator(),
+          : CircularProgressIndicator(
+              backgroundColor: Colors.red,
+            ),
     );
   }
 }
