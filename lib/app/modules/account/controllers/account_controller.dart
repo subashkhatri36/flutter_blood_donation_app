@@ -2,8 +2,6 @@ import 'dart:io';
 
 import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter_blood_donation_app/app/core/model/comment_model.dart';
 import 'package:flutter_blood_donation_app/app/core/model/request_model.dart';
 import 'package:flutter_blood_donation_app/app/core/model/review_model.dart';
 import 'package:get/get.dart';
@@ -81,7 +79,6 @@ class AccountController extends GetxController {
           await _accountRepo.getCurrentRequest(id);
 
       userRequest.fold((l) => Get.snackbar('Error', l.toString()), (r) {
-        print(r.bloodgroup);
         currentRequest = r;
         requestSendOn.value = true;
       });
@@ -92,7 +89,7 @@ class AccountController extends GetxController {
 
   Future<bool> getDelete(String docId) async {
     bool value = false;
-    Either<bool, bool> dele = await _accountRepo.deleteComment(docId);
+    Either<bool, bool> dele = await _accountRepo.deleteUserComment(docId);
     dele.fold((l) => value = l, (r) => value = r);
     return value;
   }

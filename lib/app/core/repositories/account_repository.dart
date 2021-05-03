@@ -13,10 +13,11 @@ abstract class AccountRepo {
   Future<Either<String, UserModel>> getUserData(String userId);
   Future<Either<String, String>> updateUser(String userId, UserModel userModel);
   Future<Either<String, String>> uploadImage(File path, String userId);
-  Future<Either<bool, bool>> deleteComment(String docId);
+  Future<Either<bool, bool>> deleteUserComment(String docId);
   Future<Either<String, List<ReviewModel>>> getUserComment(String userId);
   Future<Either<String, RequestModel>> getCurrentRequest(String userId);
   Future<Either<String, String>> deleteuserRequest(String docId);
+  Future<Either<String, List<RequestModel>>> getAllUserRequest(String userId);
 }
 
 class AccountRepositories implements AccountRepo {
@@ -54,7 +55,7 @@ class AccountRepositories implements AccountRepo {
   }
 
   @override
-  Future<Either<bool, bool>> deleteComment(String docId) async {
+  Future<Either<bool, bool>> deleteUserComment(String docId) async {
     try {
       bool complete = false;
       await FirebaseFirestore.instance
@@ -64,6 +65,7 @@ class AccountRepositories implements AccountRepo {
           .doc(docId)
           .delete()
           .whenComplete(() => complete = true);
+      print(complete);
       if (complete) {
         return right(true);
       } else {
@@ -200,6 +202,7 @@ class AccountRepositories implements AccountRepo {
   Future<Either<String, String>> deleteuserRequest(String docId) async {
     try {
       bool complete = false;
+
       await FirebaseFirestore.instance
           .collection('request')
           .doc(docId)
@@ -209,6 +212,34 @@ class AccountRepositories implements AccountRepo {
         return right('Delete Successfully');
       } else
         return left('Something went Wrong while deleting request');
+    } catch (error) {
+      return left(error.toString());
+    }
+  }
+
+  @override
+  Future<Either<String, List<RequestModel>>> getAllUserRequest(
+      String userId) async {
+    try {
+      List<RequestModel> requestModel = [];
+      bool complete = false;
+
+      await FirebaseFirestore.instance
+          .collection('request')
+          .where('userid', isEqualTo: userId)
+          .get()
+          .then((value) {
+        value.docs.forEach((element) {
+          if (element.exists)
+            requestModel.add(RequestModel.fromDocumentSnapshot(element));
+        });
+      }).whenComplete(() => complete = true);
+
+      if (complete) {
+        return right(requestModel);
+      } else {
+        return left('Something went Wrong while fetching request');
+      }
     } catch (error) {
       return left(error.toString());
     }

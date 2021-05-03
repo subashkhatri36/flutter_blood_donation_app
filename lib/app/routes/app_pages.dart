@@ -1,5 +1,7 @@
 import 'package:get/get.dart';
 
+import 'package:flutter_blood_donation_app/app/modules/ViewAllReviews/bindings/view_all_reviews_binding.dart';
+import 'package:flutter_blood_donation_app/app/modules/ViewAllReviews/views/view_all_reviews_view.dart';
 import 'package:flutter_blood_donation_app/app/modules/account/bindings/account_binding.dart';
 import 'package:flutter_blood_donation_app/app/modules/account/views/account_view.dart';
 import 'package:flutter_blood_donation_app/app/modules/donor_details/bindings/donor_details_binding.dart';
@@ -16,6 +18,8 @@ import 'package:flutter_blood_donation_app/app/modules/splash/bindings/splash_bi
 import 'package:flutter_blood_donation_app/app/modules/splash/views/splash_view.dart';
 import 'package:flutter_blood_donation_app/app/modules/updateaccount/bindings/updateaccount_binding.dart';
 import 'package:flutter_blood_donation_app/app/modules/updateaccount/views/updateaccount_view.dart';
+import 'package:flutter_blood_donation_app/app/modules/viewallrequest/bindings/viewallrequest_binding.dart';
+import 'package:flutter_blood_donation_app/app/modules/viewallrequest/views/viewallrequest_view.dart';
 
 part 'app_routes.dart';
 
@@ -33,7 +37,6 @@ class AppPages {
       page: () => LoginView(),
       binding: LoginBinding(),
     ),
- 
     GetPage(
       name: _Paths.SPLASH,
       page: () => SplashView(),
@@ -63,6 +66,16 @@ class AppPages {
       name: _Paths.UPDATEACCOUNT,
       page: () => UpdateaccountView(),
       binding: UpdateaccountBinding(),
+    ),
+    GetPage(
+      name: _Paths.VIEWALLREQUEST,
+      page: () => ViewallrequestView(),
+      binding: ViewallrequestBinding(),
+    ),
+    GetPage(
+      name: _Paths.VIEW_ALL_REVIEWS,
+      page: () => ViewAllReviewsView(),
+      binding: ViewAllReviewsBinding(),
     ),
   ];
 }

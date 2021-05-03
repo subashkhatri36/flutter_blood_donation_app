@@ -12,6 +12,8 @@ abstract class Routes {
   static const DONOR_DETAILS = _Paths.DONOR_DETAILS;
   static const ACCOUNT = _Paths.ACCOUNT;
   static const UPDATEACCOUNT = _Paths.UPDATEACCOUNT;
+  static const VIEWALLREQUEST = _Paths.VIEWALLREQUEST;
+  static const VIEW_ALL_REVIEWS = _Paths.VIEW_ALL_REVIEWS;
 }
 
 abstract class _Paths {
@@ -25,4 +27,6 @@ abstract class _Paths {
   static const DONOR_DETAILS = '/donor-details';
   static const ACCOUNT = '/account';
   static const UPDATEACCOUNT = '/updateaccount';
+  static const VIEWALLREQUEST = '/viewallrequest';
+  static const VIEW_ALL_REVIEWS = '/view-all-reviews';
 }
