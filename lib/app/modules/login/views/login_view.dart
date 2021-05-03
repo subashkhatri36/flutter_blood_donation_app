@@ -11,7 +11,7 @@ class LoginView extends GetView<LoginController> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: Column(children: [
-      Expanded(flex: 4, child: LoginHeaderWidget()),
+      Expanded(flex: 3, child: LoginHeaderWidget()),
       Expanded(flex: 6, child: LogInBody())
     ]));
   }

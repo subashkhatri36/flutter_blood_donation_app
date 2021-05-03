@@ -1,8 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blood_donation_app/app/constant/const.dart';
 import 'package:flutter_blood_donation_app/app/constant/defaults.dart';
 import 'package:flutter_blood_donation_app/app/modules/account/views/account_view.dart';
 import 'package:flutter_blood_donation_app/app/modules/home/views/custom_map.dart';
+import 'package:flutter_blood_donation_app/app/modules/login/bindings/login_binding.dart';
+import 'package:flutter_blood_donation_app/app/modules/login/views/login_view.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -38,12 +41,6 @@ List<PopupMenuItem> menuItem = [
     value: '/login',
   ),
 ];
-
-// final List<Widget> _children = [
-//   RequestsHome(),
-//   CustomMapMap(),
-//   AccountView(),
-// ];
 
 class HomeView extends GetView<HomeController> {
   Widget buildBody(context) {
@@ -88,9 +85,9 @@ class HomeView extends GetView<HomeController> {
                 PopupMenuButton(onSelected: (v) {
                   // Get.snackbar(v, v);
                   if (v == '/login') {
-                    userController.signout();
+                    FirebaseAuth.instance.signOut();
                   }
-                  Get.toNamed(v);
+                  Get.offAll(LoginView(), binding: LoginBinding());
                 }, itemBuilder: (context) {
                   return List.generate(menuItem.length, (i) {
                     return menuItem[i];
