@@ -7,7 +7,6 @@ import 'package:flutter_blood_donation_app/app/constant/const.dart';
 import 'package:flutter_blood_donation_app/app/constant/themes/app_theme.dart';
 import 'package:flutter_blood_donation_app/app/core/model/user_models.dart';
 import 'package:flutter_blood_donation_app/app/modules/home/controllers/home_controller.dart';
-import 'package:flutter_blood_donation_app/app/modules/home/views/home_view.dart';
 import 'package:flutter_blood_donation_app/app/utlis/rating.dart';
 import 'package:flutter_blood_donation_app/app/utlis/size_config.dart';
 import 'package:get/get.dart';
@@ -21,6 +20,8 @@ class DonorProfile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     controller.checkUserrating(user.userId);
+    controller.loadreview(user);
+
     return Scaffold(
       body: ListView(
         children: [
@@ -87,7 +88,53 @@ class DonorProfile extends StatelessWidget {
                           fontWeight: FontWeight.w800,
                           color: Colors.redAccent[400]),
                     ),
-                  )
+                  ),
+                  Obx(() => controller.loadRevew.isTrue
+                      ? Container()
+                      : Container(
+                          // height: MediaQuery.of(context).size.height,
+                          child: SingleChildScrollView(
+                            child: Column(
+                              children: [
+                                if (controller.reviewmodellist != null)
+                                  if (controller.reviewmodellist.length > 0)
+                                    for (int i =
+                                            controller.reviewmodellist.length -
+                                                1;
+                                        i >
+                                            controller.reviewmodellist.length -
+                                                4;
+                                        i--)
+                                      Column(
+                                        children: [
+                                          ListTile(
+                                            leading: CircleAvatar(
+                                                radius: 20,
+                                                backgroundImage: controller
+                                                        .reviewmodellist[i]
+                                                        .photo
+                                                        .isEmpty
+                                                    ? AssetImage(
+                                                        'assets/images/logoapp.png',
+                                                      )
+                                                    : NetworkImage(controller
+                                                        .reviewmodellist[i]
+                                                        .photo)),
+                                            title: Text(controller
+                                                .reviewmodellist[i].name),
+                                            subtitle: Text(
+                                              controller
+                                                  .reviewmodellist[i].comment,
+                                              maxLines: 5,
+                                            ),
+                                          ),
+                                          Divider(),
+                                        ],
+                                      )
+                              ],
+                            ),
+                          ),
+                        ))
                 ],
               ),
             ),
@@ -97,12 +144,9 @@ class DonorProfile extends StatelessWidget {
   }
 }
 
-Row buildStarsRating(
-  UserModel model, {
-  bool userratingplace = false,
-}) {
+Row buildStarsRating(UserModel model, {bool userratingplace = false}) {
   final controller = Get.find<HomeController>();
-  print(controller.userRatingModel);
+  // print(controller.userRatingModel);
   return Row(mainAxisAlignment: MainAxisAlignment.start, children: [
     //if its a header part then
     //
@@ -156,6 +200,8 @@ class ReviewPage extends StatelessWidget {
   final UserModel user;
   @override
   Widget build(BuildContext context) {
+    final controller = Get.find<HomeController>();
+
     return Scaffold(
         appBar: AppBar(
             centerTitle: false,
@@ -188,7 +234,7 @@ class ReviewPage extends StatelessWidget {
                 Spacer(),
                 InkWell(
                   onTap: () {
-                    Get.to(HomeView());
+                    controller.writeUserReview(user);
                   },
                   child: Text(
                     'Post'.toUpperCase(),
@@ -225,17 +271,18 @@ class ReviewPage extends StatelessWidget {
                 ],
               ),
             ]),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                for (int i = 0; i < 5; i++)
-                  Container(
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                      child: Icon(Icons.star_border))
-              ],
-            ),
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.center,
+            //   children: [
+            //     for (int i = 0; i < 5; i++)
+            //       Container(
+            //           padding: EdgeInsets.symmetric(horizontal: 10),
+            //           child: Icon(Icons.star_border))
+            //   ],
+            // ),
             SizedBox(height: 30),
             TextFormField(
+                controller: controller.reviewController,
                 maxLines: 3,
                 decoration: InputDecoration(
                     hintText: 'Describe the user in detail',

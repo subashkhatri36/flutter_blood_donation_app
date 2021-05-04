@@ -14,6 +14,8 @@ abstract class AccountRepo {
   Future<Either<String, String>> updateUser(String userId, UserModel userModel);
   Future<Either<String, String>> uploadImage(File path, String userId);
   Future<Either<bool, bool>> deleteUserComment(String docId);
+  Future<Either<String, String>> insertUserReview(
+      String userId, ReviewModel model);
   Future<Either<String, List<ReviewModel>>> getUserComment(String userId);
   Future<Either<String, RequestModel>> getCurrentRequest(String userId);
   Future<Either<String, String>> deleteuserRequest(String docId);
@@ -240,6 +242,31 @@ class AccountRepositories implements AccountRepo {
       } else {
         return left('Something went Wrong while fetching request');
       }
+    } catch (error) {
+      return left(error.toString());
+    }
+  }
+
+  @override
+  Future<Either<String, String>> insertUserReview(
+    String userId,
+    ReviewModel model,
+  ) async {
+    try {
+      bool compelete = false;
+      String id = '';
+      await FirebaseFirestore.instance
+          .collection('User')
+          .doc(userId)
+          .collection('Review')
+          .add(model.toMap())
+          .then((value) => id = value.id)
+          .whenComplete(() => compelete = true);
+
+      if (compelete)
+        return right(id);
+      else
+        return left('Something went wrong while positing review');
     } catch (error) {
       return left(error.toString());
     }

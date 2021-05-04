@@ -3,11 +3,14 @@ import 'dart:async';
 import 'package:connectivity/connectivity.dart';
 import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_blood_donation_app/app/constant/const.dart';
 import 'package:flutter_blood_donation_app/app/core/model/request_model.dart';
+import 'package:flutter_blood_donation_app/app/core/model/review_model.dart';
 import 'package:flutter_blood_donation_app/app/core/model/user_models.dart';
 import 'package:flutter_blood_donation_app/app/core/model/user_rating_model.dart';
+import 'package:flutter_blood_donation_app/app/core/repositories/account_repository.dart';
 import 'package:flutter_blood_donation_app/app/core/repositories/post_repo.dart';
 import 'package:flutter_blood_donation_app/app/core/repositories/rating_repositories.dart';
 import 'package:flutter_blood_donation_app/app/core/repositories/users_repo.dart';
@@ -16,6 +19,9 @@ import 'package:get/get.dart';
 
 class HomeController extends GetxController {
   RatingRepo _ratingRepo = new RatingRepositiories();
+  AccountRepo _accountRepo = AccountRepositories();
+  RxList<ReviewModel> reviewmodellist;
+  RxBool loadRevew = false.obs;
 
   var connectionStatus = 0.obs;
   final Connectivity _connectivity = Connectivity();
@@ -34,6 +40,8 @@ class HomeController extends GetxController {
   RxBool ratingchange = false.obs;
   UserRatingModel userRatingModel;
   RxList<UserRatingModel> userRatingModelList;
+
+  TextEditingController reviewController = new TextEditingController();
   // var mapController = GoogleMapController();
   var ismap = true.obs;
   RxString docId = ''.obs;
@@ -112,7 +120,43 @@ class HomeController extends GetxController {
     }
   }
 
-  writeUserReview(UserModel usermodel) {}
+  void writeUserReview(UserModel usermodel) async {
+    if (reviewController.text.trim().isNotEmpty) {
+      ReviewModel mymodel = ReviewModel(
+          id: myinfo.value.userId,
+          name: myinfo.value.username,
+          photo: myinfo.value.photoUrl,
+          comment: reviewController.text);
+
+      // print(reviewController.text);
+
+      Either<String, String> writedata =
+          await _accountRepo.insertUserReview(usermodel.userId, mymodel);
+      writedata.fold((l) => Get.snackbar('Error', l.toString()), (r) {
+        mymodel.id = r;
+        if (reviewmodellist == null) reviewmodellist = [].obs;
+        reviewmodellist.add(mymodel);
+        reviewController.text = '';
+        Get.back();
+        Get.snackbar('Successful', 'Successfully added your review.');
+      });
+    } else {
+      Get.snackbar('Error', 'Pleaase write some review and press post.');
+    }
+  }
+
+  loadreview(UserModel usermodel) async {
+    loadRevew.toggle();
+    List<ReviewModel> rmodel = [];
+
+    Either<String, List<ReviewModel>> reviewdata =
+        await _accountRepo.getUserComment(usermodel.userId);
+    reviewdata.fold((l) => Get.snackbar('Error', l.toString()), (r) {
+      rmodel = r.toList();
+      reviewmodellist = rmodel.obs;
+    });
+    loadRevew.toggle();
+  }
 
   void _updateConnectionState(ConnectivityResult result) {
     switch (result) {
