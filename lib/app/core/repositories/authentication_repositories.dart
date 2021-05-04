@@ -50,14 +50,16 @@ class Authentication implements AuthenticationRepo {
 
       // String id = '';
       bool complete = false;
-      UserCredential userreg = await FirebaseAuth.instance
+      bool rcompete = false;
+      UserCredential user = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(
-              email: model.email, password: password);
+              email: model.email, password: password)
+          .whenComplete(() => null);
 
-      if (userreg != null) {
+      if (user != null) {
         await FirebaseFirestore.instance
             .collection('User')
-            .doc(userreg.user.uid)
+            .doc(user.user.uid)
             .set(model.toMap())
             .whenComplete(() => complete = true);
       }

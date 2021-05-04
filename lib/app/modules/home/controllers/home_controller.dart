@@ -87,9 +87,6 @@ class HomeController extends GetxController {
       if (checkUserrating(model.userId)) {
         if (prevalue == null) prevalue = userRatingModel.star;
 
-        print(rate);
-        print(prevalue);
-
         Either<String, String> updateData = await _ratingRepo.updateRating(
             id, docId.value, rate,
             usermodel: model, prevalue: prevalue);
@@ -106,8 +103,8 @@ class HomeController extends GetxController {
         Either<String, String> updateData =
             await _ratingRepo.insertrating(id, model.userId, rate);
         updateData.fold((l) => Get.snackbar('Error', l.toString()), (r) {
-          userRatingModelList
-              .add(UserRatingModel(userId: docId.value, star: rate));
+          userRatingModel = UserRatingModel(userId: docId.value, star: rate);
+          userRatingModelList.add(userRatingModel);
           Get.snackbar('Successful', r.toString());
         });
       }

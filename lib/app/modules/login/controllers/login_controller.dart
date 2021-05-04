@@ -12,8 +12,8 @@ class LoginController extends GetxController {
   ScrollController pageviewScroll = new PageController();
   RxInt currentpage = 0.obs;
   GlobalKey<FormState> loginformKey = GlobalKey<FormState>();
-  var longitude=27.0.obs;
-  var latitude=85.0.obs;
+  var longitude = 27.0.obs;
+  var latitude = 85.0.obs;
   AuthenticationRepo _authenticationRepo = new Authentication();
 
   //for Login
@@ -62,7 +62,7 @@ class LoginController extends GetxController {
     // try {
     print(emailController.text);
     Either<String, String> userLogin = await _authenticationRepo.userLogin(
-        emailController.text, passwordController.text);
+        emailController.text, rpasswordController.text);
     userLogin.fold(
         (l) => Get.snackbar('Error !', l, snackPosition: SnackPosition.BOTTOM),
         (r) {

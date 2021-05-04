@@ -102,9 +102,10 @@ Row buildStarsRating(
   bool userratingplace = false,
 }) {
   final controller = Get.find<HomeController>();
-
+  print(controller.userRatingModel);
   return Row(mainAxisAlignment: MainAxisAlignment.start, children: [
     //if its a header part then
+    //
     if (!userratingplace)
       for (int i = 1; i < 6; i++)
         Container(
@@ -139,9 +140,7 @@ Row buildStarsRating(
               controller.setUserrating(i, model);
             },
             child: Icon(
-              controller.userRatingModel.star + 1 <= i
-                  ? Icons.star_border
-                  : Icons.star,
+              Icons.star_border,
               color: Colors.redAccent,
             ),
           ),
