@@ -91,6 +91,11 @@ class UserModel {
       email: map.data()['email'],
       active: map.data()['active'],
       photoUrl: map.data()['photoUrl'],
+      onestar: map.data()['onestar'],
+      twostar: map.data()['twostar'],
+      threestar: map.data()['threestar'],
+      fourstar: map.data()['fourstar'],
+      fivestar: map.data()['fivestar'],
     );
   }
   String toJson() => json.encode(toMap());

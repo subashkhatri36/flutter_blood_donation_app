@@ -1,20 +1,26 @@
 import 'dart:ui';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blood_donation_app/app/constant/const.dart';
+import 'package:flutter_blood_donation_app/app/constant/themes/app_theme.dart';
 import 'package:flutter_blood_donation_app/app/core/model/user_models.dart';
 import 'package:flutter_blood_donation_app/app/modules/home/controllers/home_controller.dart';
 import 'package:flutter_blood_donation_app/app/modules/home/views/home_view.dart';
+import 'package:flutter_blood_donation_app/app/utlis/rating.dart';
 import 'package:flutter_blood_donation_app/app/utlis/size_config.dart';
 import 'package:get/get.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:percent_indicator/percent_indicator.dart';
 
 class DonorProfile extends StatelessWidget {
   DonorProfile({this.user});
   final UserModel user;
+  final controller = Get.find<HomeController>();
+
   @override
   Widget build(BuildContext context) {
+    controller.checkUserrating(user.userId);
     return Scaffold(
       body: ListView(
         children: [
@@ -45,54 +51,102 @@ class DonorProfile extends StatelessWidget {
             ]),
             subtitle: Text('Wednesday , August 4 ,2019'),
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Rate this user',
-                  style: largeText.copyWith(
-                      fontWeight: FontWeight.w800, color: Colors.grey[700]),
-                ),
-                Text(
-                  'Tell others what you think',
-                  style: smallText.copyWith(color: Colors.grey[600]),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                Row(children: [
-                  for (int i = 0; i < 5; i++)
-                    Container(
-                      padding: EdgeInsets.only(left: 10),
-                      child: Icon(
-                        Icons.star_border,
-                        color: Colors.redAccent,
-                      ),
-                    ),
-                ]),
-                SizedBox(
-                  height: 15,
-                ),
-                InkWell(
-                  onTap: () {
-                    Get.to(ReviewPage(user: user));
-                  },
-                  child: Text(
-                    'Write a review',
+          if (FirebaseAuth.instance.currentUser.uid != user.userId)
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Rate this user',
                     style: largeText.copyWith(
-                        fontWeight: FontWeight.w800,
-                        color: Colors.redAccent[400]),
+                        fontWeight: FontWeight.w800, color: Colors.grey[700]),
                   ),
-                )
-              ],
+                  Text(
+                    'Tell others what you think',
+                    style: smallText.copyWith(color: Colors.grey[600]),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Obx(() => controller.ratingchange.isTrue
+                      ? CircularProgressIndicator(
+                          backgroundColor: Colors.redAccent,
+                        )
+                      : buildStarsRating(user, userratingplace: true)),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  InkWell(
+                    onTap: () {
+                      Get.to(ReviewPage(user: user));
+                    },
+                    child: Text(
+                      'Write a review',
+                      style: largeText.copyWith(
+                          fontWeight: FontWeight.w800,
+                          color: Colors.redAccent[400]),
+                    ),
+                  )
+                ],
+              ),
             ),
-          ),
         ],
       ),
     );
   }
+}
+
+Row buildStarsRating(
+  UserModel model, {
+  bool userratingplace = false,
+}) {
+  final controller = Get.find<HomeController>();
+
+  return Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+    //if its a header part then
+    if (!userratingplace)
+      for (int i = 1; i < 6; i++)
+        Container(
+          child: Icon(
+            calculateAverage(model).round() >= i
+                ? Icons.star
+                : Icons.star_border,
+            color: Themes.lightBackgroundColor,
+          ),
+        )
+    //checking user from bottom part
+    else if (controller.userRatingModel != null)
+      for (int i = 1; i < 6; i++)
+        Container(
+          child: InkWell(
+              onTap: () {
+                controller.setUserrating(i, model);
+              },
+              child: Icon(
+                controller.userRatingModel.star + 1 <= i
+                    ? Icons.star_border
+                    : Icons.star,
+                color: Colors.redAccent[400],
+              )),
+        )
+    else
+      for (int i = 1; i < 6; i++)
+        Container(
+          padding: EdgeInsets.only(left: 10),
+          child: InkWell(
+            onTap: () {
+              controller.setUserrating(i, model);
+            },
+            child: Icon(
+              controller.userRatingModel.star + 1 <= i
+                  ? Icons.star_border
+                  : Icons.star,
+              color: Colors.redAccent,
+            ),
+          ),
+        ),
+  ]);
 }
 
 class ReviewPage extends StatelessWidget {
@@ -338,24 +392,25 @@ class DonorProfileHeader extends StatelessWidget {
                           ]),
                       SizedBox(height: 5),
                       Text(
-                        '4.5',
+                        calculateAverage(user).toStringAsPrecision(2),
                         style: TextStyle(
                             color: Colors.white,
                             fontSize: 30,
                             fontWeight: FontWeight.w700),
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          for (int i = 0; i < 5; i++)
-                            Icon(Icons.star, color: Colors.redAccent[400])
-                        ],
-                      ),
+                      buildStarsRating(user),
+                      // Row(
+                      //   mainAxisAlignment: MainAxisAlignment.start,
+                      //   children: [
+                      //     for (int i = 0; i < 5; i++)
+                      //       Icon(Icons.star, color: Colors.redAccent[400])
+                      //   ],
+                      // ),
                       SizedBox(
                         height: 5,
                       ),
                       Text(
-                        '  23,423',
+                        ' ' + totalvalue(user).toInt().toString(),
                         style: TextStyle(
                             color: Colors.white, fontWeight: FontWeight.w600),
                       ),
@@ -374,28 +429,36 @@ class DonorProfileHeader extends StatelessWidget {
                             SizedBox(
                               width: 5,
                             ),
-                            Container(
-                                width: SizeConfig.screenWidth / 2 - 50,
-                                child: Stack(
-                                  children: [
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(20),
-                                        color: Colors.white,
-                                      ),
-                                      height: 7,
-                                    ),
-                                    Container(
-                                      width:
-                                          .50 * SizeConfig.screenWidth / 2 - 50,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(20),
-                                        color: Colors.redAccent[400],
-                                      ),
-                                      height: 7,
-                                    ),
-                                  ],
-                                )),
+                            Expanded(
+                              child: LinearPercentIndicator(
+                                lineHeight: 5.0,
+                                percent: showpercentage(i, user),
+                                backgroundColor: Colors.white,
+                                progressColor: Theme.of(context).primaryColor,
+                              ),
+                            ),
+                            // Container(
+                            //     width: SizeConfig.screenWidth / 2 - 50,
+                            //     child: Stack(
+                            //       children: [
+                            //         Container(
+                            //           decoration: BoxDecoration(
+                            //             borderRadius: BorderRadius.circular(20),
+                            //             color: Colors.white,
+                            //           ),
+                            //           height: 7,
+                            //         ),
+                            //         Container(
+                            //           width:
+                            //               .50 * SizeConfig.screenWidth / 2 - 50,
+                            //           decoration: BoxDecoration(
+                            //             borderRadius: BorderRadius.circular(20),
+                            //             color: Colors.redAccent[400],
+                            //           ),
+                            //           height: 7,
+                            //         ),
+                            //       ],
+                            //     )),
                           ],
                         ),
                     ],

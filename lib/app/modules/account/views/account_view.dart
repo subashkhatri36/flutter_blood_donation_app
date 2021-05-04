@@ -11,6 +11,7 @@ import 'package:flutter_blood_donation_app/app/modules/updateaccount/bindings/up
 import 'package:flutter_blood_donation_app/app/modules/updateaccount/views/updateaccount_view.dart';
 import 'package:flutter_blood_donation_app/app/modules/viewallrequest/bindings/viewallrequest_binding.dart';
 import 'package:flutter_blood_donation_app/app/modules/viewallrequest/views/viewallrequest_view.dart';
+import 'package:flutter_blood_donation_app/app/utlis/rating.dart';
 
 import 'package:get/get.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
@@ -634,25 +635,5 @@ class RatingWidget extends StatelessWidget {
               ),
             )),
     );
-  }
-}
-
-Color progressColor(int i, BuildContext context) {
-  switch (i) {
-    case 1:
-      return Theme.of(context).backgroundColor;
-      break;
-    case 2:
-      return Colors.deepOrange;
-      break;
-    case 3:
-      return Colors.yellow;
-      break;
-    case 4:
-      return Colors.green[300];
-      break;
-    default:
-      return Colors.orange;
-      break;
   }
 }

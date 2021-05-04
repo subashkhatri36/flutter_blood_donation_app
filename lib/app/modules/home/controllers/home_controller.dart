@@ -1,16 +1,22 @@
 import 'dart:async';
 
 import 'package:connectivity/connectivity.dart';
+import 'package:dartz/dartz.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_blood_donation_app/app/constant/const.dart';
 import 'package:flutter_blood_donation_app/app/core/model/request_model.dart';
 import 'package:flutter_blood_donation_app/app/core/model/user_models.dart';
+import 'package:flutter_blood_donation_app/app/core/model/user_rating_model.dart';
 import 'package:flutter_blood_donation_app/app/core/repositories/post_repo.dart';
+import 'package:flutter_blood_donation_app/app/core/repositories/rating_repositories.dart';
 import 'package:flutter_blood_donation_app/app/core/repositories/users_repo.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 
 class HomeController extends GetxController {
+  RatingRepo _ratingRepo = new RatingRepositiories();
+
   var connectionStatus = 0.obs;
   final Connectivity _connectivity = Connectivity();
   var selectedIndex = 0.obs;
@@ -23,8 +29,14 @@ class HomeController extends GetxController {
   var userlist = List<UserModel>.empty(growable: true).obs;
   var requestData = List<RequestModel>.empty(growable: true).obs;
   var userlistshown = false.obs;
- // var mapController = GoogleMapController();
+
+  RxBool ratethisUser = false.obs;
+  RxBool ratingchange = false.obs;
+  UserRatingModel userRatingModel;
+  RxList<UserRatingModel> userRatingModelList;
+  // var mapController = GoogleMapController();
   var ismap = true.obs;
+  RxString docId = ''.obs;
   Future<void> initConnectivity() async {
     ConnectivityResult result;
     try {
@@ -36,6 +48,74 @@ class HomeController extends GetxController {
     }
     return _updateConnectionState(result);
   }
+
+  loadingUserRating() async {
+    var id = FirebaseAuth.instance.currentUser.uid;
+    if (id != null) {
+      List<UserRatingModel> datamodel = [];
+      Either<String, List<UserRatingModel>> data =
+          await _ratingRepo.loadingUserRating(id);
+
+      data.fold((l) => Get.snackbar('Error', l.toString()), (r) {
+        datamodel = r.toList();
+        userRatingModelList = datamodel.obs;
+      });
+    }
+  }
+
+  bool checkUserrating(String userId) {
+    bool status = false;
+    if (userRatingModelList != null) {
+      userRatingModelList.forEach((element) {
+        if (userId == element.userId) {
+          status = true;
+          docId.value = element.docId;
+          userRatingModel =
+              new UserRatingModel(userId: element.userId, star: element.star);
+        }
+      });
+    }
+    return status;
+  }
+
+  int prevalue;
+  setUserrating(int rate, UserModel model) async {
+    ratingchange.toggle();
+
+    var id = FirebaseAuth.instance.currentUser.uid;
+    if (id != null) {
+      if (checkUserrating(model.userId)) {
+        if (prevalue == null) prevalue = userRatingModel.star;
+
+        print(rate);
+        print(prevalue);
+
+        Either<String, String> updateData = await _ratingRepo.updateRating(
+            id, docId.value, rate,
+            usermodel: model, prevalue: prevalue);
+        updateData.fold((l) => Get.snackbar('Error', l.toString()), (r) {
+          UserRatingModel mdl = userRatingModel;
+          mdl.star = rate;
+          userRatingModel = mdl;
+          prevalue = mdl.star;
+          userRatingModelList.add(mdl);
+          userRatingModelList.remove(userRatingModel);
+          Get.snackbar('Successful', r.toString());
+        });
+      } else {
+        Either<String, String> updateData =
+            await _ratingRepo.insertrating(id, model.userId, rate);
+        updateData.fold((l) => Get.snackbar('Error', l.toString()), (r) {
+          userRatingModelList
+              .add(UserRatingModel(userId: docId.value, star: rate));
+          Get.snackbar('Successful', r.toString());
+        });
+      }
+      ratingchange.toggle();
+    }
+  }
+
+  writeUserReview(UserModel usermodel) {}
 
   void _updateConnectionState(ConnectivityResult result) {
     switch (result) {
@@ -56,6 +136,7 @@ class HomeController extends GetxController {
 
   @override
   void onInit() {
+    loadingUserRating();
     super.onInit();
     userlistshown = true.obs;
 
