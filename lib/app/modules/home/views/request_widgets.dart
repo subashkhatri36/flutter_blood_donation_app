@@ -9,6 +9,7 @@ import 'package:flutter_blood_donation_app/app/core/model/user_models.dart';
 import 'package:flutter_blood_donation_app/app/modules/home/views/post_comments/post_comment.dart';
 import 'package:flutter_blood_donation_app/app/utlis/size_config.dart';
 import 'package:get/get.dart';
+import 'package:share/share.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../controllers/home_controller.dart';
@@ -220,40 +221,8 @@ class _LikeButtonState extends State<LikeButton> {
       child: Row(children: [
         TextButton(
             onPressed: () {
-              // print(widget.request.likes.length);
-              // print(userController.requestData.indexOf(request));
-              // LikeModel like =
-              //     LikeModel(userid: request.userid, liked: true);
-              // if (widget.request.likes.contains(widget.request.userid)) {
-              //   //setState(() {
-              //   widget.request.likes.remove(widget.request.userid);
-              //   print(widget.request.likes.toString());
-              //   //
-              // firebaseFirestore
-              //     .collection('request')
-              //     .doc(widget.request.id)
-              //     .update({
-              //   'likes': jsonEncode(widget.request.likes),
-              // });
-              // } else {
-              //   // setState(() {
               widget.request.likes.add(widget.request.userid);
-              //   print(widget.request.likes);
-              // });
-              // firebaseFirestore
-              //     .collection('request')
-              //     .doc(widget.request.id)
-              //     .update({
-              //   'likes': jsonEncode(widget.request.likes),
-              //  });
-              // }
-              // request.likes.forEach((element) {
-              //   if (element.userid ==
-              //       userController.myinfo.value.userId) {
-              //     int index = request.likes.indexOf(element);
-              //   }
-              // });
-              // print(widget.request.likes.length);
+
               firebaseFirestore
                   .collection('request')
                   .doc(widget.request.id)
@@ -301,7 +270,20 @@ class _LikeButtonState extends State<LikeButton> {
         ),
         Spacer(),
         TextButton(
-          onPressed: () {},
+          onPressed: () {
+            RenderBox box = context.findRenderObject();
+            Share.share(
+                'Blood Donor Needed\n\n' +
+                    'Blood Group: ${widget.request.bloodgroup}\nName: ${widget.request.name} \nAddress: ${widget.request.address}\nContact: ${widget.request.contactno}\n->Please Contact in given number if your bloodgroup match to this blood group or else share it.\nYour small help will save someone\'s life.Thank you.\n\n Rakta Daan Mobile App download from play store.',
+                subject:
+                    'https://post.healthline.com/wp-content/uploads/2020/09/Blood_Donation-732X549-thumbnail.jpg',
+                sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
+            // userController.urlFileShare(
+            //     'https://healthengine.com.au/info/assets/blood-cells-1024x576.jpg',
+            //     context,
+            //     'Blood Group ${widget.request.bloodgroup} \Name : ${widget.request.name} \nAddress: ${widget.request.photoUrl}',
+            //     'Blood Donor Needed');
+          },
           child: Row(
             children: [
               Icon(Icons.share, color: grey),

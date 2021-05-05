@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:connectivity/connectivity.dart';
 import 'package:dartz/dartz.dart';
@@ -16,6 +17,9 @@ import 'package:flutter_blood_donation_app/app/core/repositories/rating_reposito
 import 'package:flutter_blood_donation_app/app/core/repositories/users_repo.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:share/share.dart';
 
 class HomeController extends GetxController {
   RatingRepo _ratingRepo = new RatingRepositiories();
@@ -173,6 +177,34 @@ class HomeController extends GetxController {
       default:
         Get.snackbar("Network Error", "Failed to connect ot network");
     }
+  }
+
+  Future<Null> urlFileShare(String urlvalue, BuildContext context,
+      String subject, String text) async {
+    Share.share('check out my website https://example.com',
+        subject: 'Look what I made!');
+    // final RenderBox box = context.findRenderObject();
+
+    // Share.share(text,
+    //     subject: subject,
+    //     sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
+
+    // if (Platform.isAndroid) {
+    //   // var url = urlvalue;
+    //   Uri uri = Uri.parse(urlvalue);
+    //   var response = await get(uri);
+    //   final documentDirectory = (await getExternalStorageDirectory()).path;
+    //   File imgFile = new File('$documentDirectory/raktadaan.png');
+    //   imgFile.writeAsBytesSync(response.bodyBytes);
+    //   Share.shareFiles(['$documentDirectory/raktadaan.png'],
+    //       subject: subject,
+    //       text: text,
+    //       sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
+    // } else {
+    //   Share.share(text,
+    //       subject: subject,
+    //       sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
+    // }
   }
 
   @override

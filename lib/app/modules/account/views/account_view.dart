@@ -225,7 +225,7 @@ class RequestViewWidget extends StatelessWidget {
                     flex: 3,
                     child: CustomButton(
                       btnColor: Colors.white,
-                      label: 'VIEW',
+                      label: 'VIEW ALL',
                       labelColor: Theme.of(context).backgroundColor,
                       onPressed: () {
                         Get.to(() => ViewallrequestView(),
@@ -458,6 +458,7 @@ class AccountHeaderWidget extends StatelessWidget {
         width: MediaQuery.of(context).size.width,
         height: Defaults.paddinglarge * 9,
         decoration: BoxDecoration(
+            // color: Colors.grey,
             image: DecorationImage(
                 image: accountController.isImageNetwork.value
                     ? NetworkImage(accountController.userImage.value)
@@ -466,7 +467,7 @@ class AccountHeaderWidget extends StatelessWidget {
                             accountController.image,
                           )
                         : AssetImage(
-                            'assets/images/logoapp.png',
+                            'assets/images/bannerImage.jpeg',
                           ),
                 fit: BoxFit.cover)),
         child: BackdropFilter(
