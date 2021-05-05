@@ -45,16 +45,11 @@ class _CustomMapState extends State<CustomMap> {
   Timer timer;
 
   void startTimer() {
-    //print('timer started');
-    // setState(() {
-    //   _start = 10;
-    // });
-    const sec = Duration(seconds: 4);
+    const sec = Duration(seconds: 8);
     timer = Timer(sec, () {
       setState(() {
         pinPillPosition = -100;
       });
-      // print('timer stopped');
     });
   }
 
@@ -253,7 +248,13 @@ class _CustomMapState extends State<CustomMap> {
                         items: [
                           ...bloodgroup.map((e) => DropdownMenuItem(
                                 value: e,
-                                child: Container(child: Text(e)),
+                                child: Text(
+                                  e,
+                                  style: largeText.copyWith(
+                                      color: Colors.grey[600],
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 24),
+                                ),
                               ))
                         ]),
                   ],
@@ -289,7 +290,7 @@ class _CustomMapState extends State<CustomMap> {
                                   backgroundColor: Colors.red,
                                   radius: 10,
                                   child: Text(
-                                    'AB+',
+                                    selectedbloodgroup,
                                     style: TextStyle(
                                         color: Colors.white, fontSize: 10),
                                   )),
@@ -298,13 +299,20 @@ class _CustomMapState extends State<CustomMap> {
                         ],
                       ),
                     ),
-                    title: Text(e.name),
+                    title: Text(e.name.capitalize,
+                        style: TextStyle(
+                          color: Colors.grey[600],
+                          fontWeight: FontWeight.w700,
+                        )),
                     subtitle: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(userController
-                              .userlist[e.donorindex].userAddress),
-                          Text("${(e.distance / 1000).toStringAsFixed(2)}Km"),
+                          Text(
+                              userController.userlist[e.donorindex].userAddress,
+                              style: mediumText.copyWith(
+                                  fontWeight: FontWeight.w600)),
+                          Text("${(e.distance / 1000).toStringAsFixed(2)}Km",
+                              style: TextStyle(color: Colors.grey[600])),
                         ]),
                     trailing: Column(children: [
                       InkWell(
@@ -347,13 +355,16 @@ class _CustomMapState extends State<CustomMap> {
               ],
             ),
           ),
-        AnimatedPositioned(
-            bottom: pinPillPosition,
-            right: 0,
-            left: 0,
-            duration: Duration(milliseconds: 200),
-            child:
-                pinPillPosition != -100 ? OntapUser(selectedUser) : Text('')),
+        Container(
+          width: SizeConfig.screenWidth - 40,
+          child: AnimatedPositioned(
+              bottom: pinPillPosition,
+              right: 0,
+              left: 0,
+              duration: Duration(milliseconds: 200),
+              child:
+                  pinPillPosition != -100 ? OntapUser(selectedUser) : Text('')),
+        ),
         // Center(child: Text('Text("$pinPillPosition")')),
       ],
     );
@@ -410,160 +421,85 @@ class OntapUser extends StatelessWidget {
       onTap: () {
         Get.to(DonorProfile(user: user));
       },
-      child: FittedBox(
-        child: Container(
-            margin: const EdgeInsets.only(bottom: 30, left: 20, right: 70),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(30),
-              color: Colors.white.withOpacity(.9),
-            ),
-            width: SizeConfig.screenWidth,
-            height: 90,
-            child: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-              SizedBox(width: 5),
+      child: Container(
+          margin: const EdgeInsets.only(bottom: 30, left: 20, right: 70),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(30),
+            color: Colors.red.withOpacity(.5),
+          ),
+          width: SizeConfig.screenWidth,
+          height: 90,
+          child: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+            SizedBox(width: 5),
+            Stack(children: [
               CircleAvatar(
                 radius: 30,
                 backgroundImage:
                     NetworkImage(user.photoUrl == '' ? noimage : user.photoUrl),
               ),
-              SizedBox(width: 10),
-              Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    FittedBox(
-                      child: Container(
-                        width: 110,
-                        child: Text(
-                          user.username,
+              Positioned(
+                  top: 0,
+                  left: 0,
+                  child: CircleAvatar(
+                    backgroundColor: Colors.white,
+                    radius: 12,
+                    child: CircleAvatar(
+                        radius: 10,
+                        backgroundColor: Colors.redAccent[400],
+                        child: Text(user.bloodgroup)),
+                  ))
+            ]),
+            SizedBox(width: 10),
+            Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  FittedBox(
+                    child: Container(
+                      width: 110,
+                      child: Text(user.username.capitalize,
                           overflow: TextOverflow.clip,
-                          style: smallText,
-                        ),
-                      ),
+                          style: largeText.copyWith(
+                              color: Colors.grey[800],
+                              fontWeight: FontWeight.bold)),
                     ),
-                    Text(
-                      user.userAddress,
+                  ),
+                  Text(user.userAddress,
+                      style: smallText.copyWith(
+                          color: Colors.grey[600],
+                          fontWeight: FontWeight.w600)),
+                  Text(
+                    user.bloodgroup,
+                    style: TextStyle(
+                        color: Colors.red, fontWeight: FontWeight.bold),
+                  ),
+                ]),
+            Spacer(),
+            Padding(
+              padding: const EdgeInsets.only(right: 18.0),
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    CircleAvatar(
+                        backgroundColor: Colors.grey[300],
+                        child: Icon(Icons.more_horiz,
+                            color: Colors.grey[700], size: 18)),
+                    SizedBox(
+                      width: 20,
                     ),
-                    Text(
-                      user.bloodgroup,
-                      style: TextStyle(
-                          color: Colors.red, fontWeight: FontWeight.bold),
-                    ),
+                    InkWell(
+                      onTap: () {
+                        _launchCaller();
+                      },
+                      child: CircleAvatar(
+                          backgroundColor: Colors.green[200],
+                          child: Icon(Icons.phone,
+                              color: Colors.green[700], size: 15)),
+                    )
                   ]),
-              Spacer(),
-              Padding(
-                padding: const EdgeInsets.only(right: 18.0),
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      CircleAvatar(
-                          backgroundColor: Colors.grey[300],
-                          child: Icon(Icons.more_horiz,
-                              color: Colors.grey[700], size: 18)),
-                      SizedBox(
-                        width: 20,
-                      ),
-                      InkWell(
-                        onTap: () {
-                          _launchCaller();
-                        },
-                        child: CircleAvatar(
-                            backgroundColor: Colors.green[200],
-                            child: Icon(Icons.phone,
-                                color: Colors.green[700], size: 15)),
-                      )
-                    ]),
-              ),
-              SizedBox(width: Defaults.paddingnormal),
-            ])),
-      ),
+            ),
+            SizedBox(width: Defaults.paddingnormal),
+          ])),
     );
   }
 }
-
-// class CustomMap extends StatelessWidget {
-//   final controller = Get.find<HomeController>();
-//   final List<Widget> _children = [
-//     Container(),
-//     GoogleMap(
-//         mapType: MapType.hybrid,
-//         // initialCameraPosition: _kGooglePlex,
-//         onMapCreated: (GoogleMapController controller) {
-//           // controller.animateCamera(CameraUpdate)
-//           //  _controller.complete(controller);
-//         },
-//         initialCameraPosition: CameraPosition(
-//             bearing: 192.8334901395799,
-//             target: LatLng(37.43296265331129, -122.08832357078792),
-//             tilt: 59.440717697143555,
-//             zoom: 19.151926040649414)),
-//     Container(),
-//     Container(),
-//   ];
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Obx(
-//       () => Scaffold(
-//         body: IndexedStack(
-//           index: controller.selectedIndex.value,
-//           children: _children,
-//         ),
-//         // bottomNavigationBar: BottomNavigationBar(
-//         //   elevation: 0,
-//         //   currentIndex: controller.count.value,
-//         //   onTap: (v) {
-//         //     controller.count.value = v;
-//         //     if (v == 1) controller.ismap.toggle();
-//         //   },
-//         //   items: [
-//         //     BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Request'),
-//         //     controller.ismap.value
-//         //         ? BottomNavigationBarItem(
-//         //             icon: CircleAvatar(
-//         //                 backgroundColor: controller.count.value == 1
-//         //                     ? Colors.blue
-//         //                     : Colors.grey,
-//         //                 child: Icon(Icons.map)),
-//         //             label: 'Map')
-//         //         : BottomNavigationBarItem(
-//         //             icon: CircleAvatar(
-//         //                 backgroundColor: controller.count.value == 1
-//         //                     ? Colors.blue
-//         //                     : Colors.grey,
-//         //                 child: Icon(Icons.list)),
-//         //             label: 'List'),
-//         //     BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Account')
-//         //   ],
-//         // ),
-//       ),
-//     );
-//   }
-// }
-
-// class KeepAlivePage extends StatefulWidget {
-//   KeepAlivePage({
-//     Key key,
-//     @required this.child,
-//   }) : super(key: key);
-
-//   final Widget child;
-
-//   @override
-//   _KeepAlivePageState createState() => _KeepAlivePageState();
-// }
-
-// class _KeepAlivePageState extends State<KeepAlivePage>
-//     with AutomaticKeepAliveClientMixin {
-//   @override
-//   Widget build(BuildContext context) {
-//     /// Dont't forget this
-//     super.build(context);
-
-//     return widget.child;
-//   }
-
-//   @override
-//   // TODO: implement wantKeepAlive
-//   bool get wantKeepAlive => true;
-// }

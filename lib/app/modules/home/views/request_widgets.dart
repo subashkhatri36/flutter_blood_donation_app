@@ -136,54 +136,39 @@ class UserRequest extends StatelessWidget {
                   Spacer(),
                   Padding(
                     padding: const EdgeInsets.only(right: 10.0),
-                    child: Container(
-                      width: 50,
-                      alignment: Alignment.center,
-                      //padding: EdgeInsets.only(),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        color: Colors.purple,
-                      ),
-
-                      height: 30,
-                      child: InkWell(
-                        onTap: () async {
-                          _launchCaller(userController
-                              .userlist[userController
-                                  .getUserByUserid(request.userid)]
-                              .phoneNo);
-                          // String url =
-                          //     "tel:${userController.userlist[userController.getUserByUserid(request.userid)].phoneNo}";
-                          // if (await canLaunch(url)) {
-                          //   await launch(url);
-                          // } else {
-                          //   print(canLaunch(url));
-                          // }
-                        },
+                    child: InkWell(
+                      onTap: () {
+                        _launchCaller(
+                            "${userController.userlist[userController.userlist.indexOf(userController.getUserByUserid(request.userid))].phoneNo}");
+                      },
+                      child: Container(
+                        width: 50,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          color: Colors.purple,
+                        ),
+                        height: 30,
                         child: Text(
                           'Call',
                           style: TextStyle(color: Colors.white),
                         ),
                       ),
                     ),
-
-                    // CustomButton(
-                    //     label: 'Help',
-                    //     labelColor: Colors.white,
-                    //     btnColor: Colors.purple,
-                    //     borderRadius: 5)
                   ),
                 ]),
           ),
           Row(
             children: [
               CircleAvatar(
+                  backgroundColor:
+                      Theme.of(context).primaryColor.withOpacity(.5),
                   radius: 10,
                   child: Icon(
                     Icons.thumb_up_alt_rounded,
                     size: 10,
                   )),
-              Text(request.likes.length.toString())
+              //Text(request.likes.length.toString())
               // Text(
               //   'Sudarshan and 4 other',
               //   textAlign: TextAlign.start,
@@ -220,62 +205,17 @@ class _LikeButtonState extends State<LikeButton> {
       child: Row(children: [
         TextButton(
             onPressed: () {
-              // print(widget.request.likes.length);
-              // print(userController.requestData.indexOf(request));
-              // LikeModel like =
-              //     LikeModel(userid: request.userid, liked: true);
-              // if (widget.request.likes.contains(widget.request.userid)) {
-              //   //setState(() {
-              //   widget.request.likes.remove(widget.request.userid);
-              //   print(widget.request.likes.toString());
-              //   //
-              // firebaseFirestore
-              //     .collection('request')
-              //     .doc(widget.request.id)
-              //     .update({
-              //   'likes': jsonEncode(widget.request.likes),
-              // });
-              // } else {
-              //   // setState(() {
-              widget.request.likes.add(widget.request.userid);
-              //   print(widget.request.likes);
-              // });
-              // firebaseFirestore
-              //     .collection('request')
-              //     .doc(widget.request.id)
-              //     .update({
-              //   'likes': jsonEncode(widget.request.likes),
-              //  });
-              // }
-              // request.likes.forEach((element) {
-              //   if (element.userid ==
-              //       userController.myinfo.value.userId) {
-              //     int index = request.likes.indexOf(element);
-              //   }
-              // });
-              // print(widget.request.likes.length);
-              firebaseFirestore
-                  .collection('request')
-                  .doc(widget.request.id)
-                  .delete()
-                  .whenComplete(() => print('completed'));
+              // userController.getlikes(widget.request.id);
+              userController.sendlike(widget.request.id);
+              //userController.getlikes(widget.request.id);
+              
             },
             child: Row(
               children: [
-                // CircleAvatar(
-                //     radius: 10,
-                //     child: Icon(
-                //       Icons.thumb_up_rounded,
-                //       size: 12,
-                //     )),
-                // Text(widget.request.likes.length.toString()),
                 SizedBox(
                   width: 4,
                 ),
-                Icon(Icons.thumb_up,
-                    color: widget.request.likes.contains(widget.request.userid)
-                        ? Colors.blue
-                        : Colors.grey),
+                Icon(Icons.thumb_up, color: Colors.grey),
                 SizedBox(
                   width: 5,
                 ),

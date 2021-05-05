@@ -3,8 +3,10 @@ import 'dart:async';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_blood_donation_app/app/constant/const.dart';
+import 'package:flutter_blood_donation_app/app/core/model/like.dart';
 import 'package:flutter_blood_donation_app/app/core/model/request_model.dart';
 import 'package:flutter_blood_donation_app/app/core/model/user_models.dart';
+import 'package:flutter_blood_donation_app/app/core/repositories/like_repo.dart';
 import 'package:flutter_blood_donation_app/app/core/repositories/post_repo.dart';
 import 'package:flutter_blood_donation_app/app/core/repositories/users_repo.dart';
 import 'package:geolocator/geolocator.dart';
@@ -23,7 +25,8 @@ class HomeController extends GetxController {
   var userlist = List<UserModel>.empty(growable: true).obs;
   var requestData = List<RequestModel>.empty(growable: true).obs;
   var userlistshown = false.obs;
- // var mapController = GoogleMapController();
+  var like = List<int>.empty(growable: true).obs;
+  // var mapController = GoogleMapController();
   var ismap = true.obs;
   Future<void> initConnectivity() async {
     ConnectivityResult result;
@@ -109,6 +112,26 @@ class HomeController extends GetxController {
   signout() async {
     await auth.signOut();
     Get.offNamed('/login');
+  }
+
+  getComment() {}
+  getlikes(String postid) {
+    List<LikeModel> like = likeRepo.getlikes(postid);
+    return like;
+  }
+
+  sendlike(String postid) {
+    List<LikeModel> like = getlikes(postid);
+    like.forEach((element) {
+      if (element.userid == userController.myinfo.value.userId) {
+        LikeModel like = LikeModel(
+            postid: postid, userid: userController.myinfo.value.userId);
+      } else {
+        LikeModel like = LikeModel(
+            postid: postid, userid: userController.myinfo.value.userId);
+        likeRepo.sendlike(like);
+      }
+    });
   }
 }
 

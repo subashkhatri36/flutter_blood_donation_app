@@ -86,8 +86,8 @@ class HomeView extends GetView<HomeController> {
                   // Get.snackbar(v, v);
                   if (v == '/login') {
                     FirebaseAuth.instance.signOut();
+                    Get.offAll(LoginView(), binding: LoginBinding());
                   }
-                  Get.offAll(LoginView(), binding: LoginBinding());
                 }, itemBuilder: (context) {
                   return List.generate(menuItem.length, (i) {
                     return menuItem[i];

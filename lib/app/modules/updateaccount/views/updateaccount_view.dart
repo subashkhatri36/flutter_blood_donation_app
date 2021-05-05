@@ -1,8 +1,13 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_blood_donation_app/app/Widgets/CustomButton.dart';
 import 'package:flutter_blood_donation_app/app/Widgets/custome_text_field.dart';
 import 'package:flutter_blood_donation_app/app/constant/defaults.dart';
 import 'package:flutter_blood_donation_app/app/modules/account/controllers/account_controller.dart';
+import 'package:flutter_blood_donation_app/app/modules/home/controllers/home_controller.dart';
+import 'package:flutter_blood_donation_app/app/modules/request/controllers/request_controller.dart';
+import 'package:flutter_blood_donation_app/app/utlis/size_config.dart';
 import 'package:flutter_blood_donation_app/app/utlis/validators.dart';
 
 import 'package:get/get.dart';
@@ -120,18 +125,18 @@ class UpdateaccountView extends GetView<UpdateaccountController> {
                   //     ),
                   TextFormField(
                     onChanged: (v) {
-                      updateController.getcoordinateAddress(v);
-                      updateController.mapController.animateCamera(
-                        CameraUpdate.newCameraPosition(
-                          CameraPosition(
-                            bearing: 270.0,
-                            target: LatLng(updateController.mylatitude.value,
-                                updateController.mylongitude.value),
-                            tilt: 30.0,
-                            zoom: 14,
-                          ),
-                        ),
-                      );
+                      // updateController.getcoordinateAddress(v);
+                      // updateController.mapController.animateCamera(
+                      //   CameraUpdate.newCameraPosition(
+                      //     CameraPosition(
+                      //       bearing: 270.0,
+                      //       target: LatLng(updateController.mylatitude.value,
+                      //           updateController.mylongitude.value),
+                      //       tilt: 30.0,
+                      //       zoom: 14,
+                      //     ),
+                      //   ),
+                      // );
                     },
                     obscureText: false,
                     controller: controller.addressController,
@@ -240,5 +245,132 @@ class UpdateaccountView extends GetView<UpdateaccountController> {
             ),
           ),
         ));
+  }
+}
+
+class CustomGoogleMap extends StatefulWidget {
+  const CustomGoogleMap({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  _CustomGoogleMapState createState() => _CustomGoogleMapState();
+}
+
+class _CustomGoogleMapState extends State<CustomGoogleMap> {
+  Uint8List _imageBytes;
+  GoogleMapController mapController;
+  
+  final markers = Set<Marker>.of([
+    Marker(
+      markerId: MarkerId('marker_1'),
+      position: LatLng(
+          userController.mylatitude.value, userController.mylongitude.value),
+      consumeTapEvents: true,
+      infoWindow: InfoWindow(
+        title: 'Blood Request location',
+        snippet: "My location",
+      ),
+      onTap: () {
+        print("Marker tapped");
+      },
+    ),
+  ]);
+  @override
+  Widget build(BuildContext context) {
+    return _imageBytes == null
+        ? Stack(
+            children: [
+              Center(
+                child: Container(
+                  height: SizeConfig.screenHeight / 2,
+                  child: GoogleMap(
+                    initialCameraPosition: CameraPosition(
+                      target: LatLng(userController.mylatitude.value,
+                          userController.mylongitude.value),
+                      zoom: 0.0,
+                    ),
+                    markers: markers,
+                    mapType: MapType.normal,
+                    onTap: (location) {
+                      setState(() {
+                        markers.add(
+                          Marker(
+                            markerId: MarkerId('marker_1'),
+                            position:
+                                LatLng(location.latitude, location.longitude),
+                            consumeTapEvents: true,
+                            infoWindow: InfoWindow(
+                              title: 'Blood Request location',
+                              snippet: "My location",
+                            ),
+                            onTap: () {
+                              print("Marker tapped");
+                            },
+                          ),
+                        );
+                      });
+                    },
+                    onCameraMove: (cameraUpdate) =>
+                        print('onCameraMove: $cameraUpdate'),
+                    compassEnabled: true,
+                    onMapCreated: (controller) {
+                      setState(() {
+                        mapController = controller;
+                      });
+                    
+                      Future.delayed(Duration(seconds: 2)).then(
+                        (_) {
+                          controller.animateCamera(
+                            CameraUpdate.newCameraPosition(
+                              CameraPosition(
+                                bearing: 270.0,
+                                target: LatLng(userController.mylatitude.value,
+                                    userController.mylongitude.value),
+                                tilt: 30.0,
+                                zoom: 14,
+                              ),
+                            ),
+                          );
+                          //   controller.getVisibleRegion().then(
+                          //       (bounds) => print("bounds: ${bounds.toString()}"));
+                        },
+                      );
+                      // _mapController = controller;
+                    },
+                  ),
+                ),
+              ),
+              Positioned(
+                  bottom: 20,
+                  left: 40,
+                  child: TextButton(
+                    onPressed: () async {
+                      await mapController.takeSnapshot().then((value) {
+                        setState(() {
+                          _imageBytes = value;
+                        });
+                     
+                        Get.back();
+                      });
+                      //  print(reqController.data.value);
+                    },
+                    style: TextButton.styleFrom(
+                        backgroundColor: Colors.redAccent,
+                        primary: Colors.white),
+                    child: Text('Capture map'),
+                  )),
+              // Positioned(
+              //   left: 20,
+              //   top: 20,
+              //   child: Container(
+              //       width: SizeConfig.screenWidth - 100,
+              //       child: TextFormField(
+              //         decoration: InputDecoration(),
+              //       )),
+              // ),
+            ],
+          )
+        : Image.memory(_imageBytes);
   }
 }

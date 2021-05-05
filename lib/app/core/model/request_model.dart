@@ -12,24 +12,21 @@ class RequestModel {
   String detail;
   String photoUrl;
   String userphotoUrl;
-  List likes = []; // = [];
-  int comment;
   String status;
-  RequestModel(
-      {this.id,
-      this.userid,
-      this.name,
-      this.bloodgroup,
-      this.detail,
-      this.address,
-      this.timestamp,
-      this.photoUrl,
-      this.userphotoUrl,
-      this.contactno,
-      this.city = 'Kathmandu',
-      this.status,
-      this.likes,
-      this.comment});
+  RequestModel({
+    this.id,
+    this.userid,
+    this.name,
+    this.bloodgroup,
+    this.detail,
+    this.address,
+    this.timestamp,
+    this.photoUrl,
+    this.userphotoUrl,
+    this.contactno,
+    this.city = 'Kathmandu',
+    this.status,
+  });
 
   RequestModel.fromJson(Map<String, dynamic> json) {
     this.id = json['id'];
@@ -40,8 +37,6 @@ class RequestModel {
     this.timestamp = Timestamp.now();
     this.userid = json['userid'];
     this.contactno = json['contactno'];
-    this.likes = json['likes'];
-    //this.likes=json['likes'];
   }
   RequestModel.fromDocumentSnapshot(DocumentSnapshot json) {
     this.id = json.id;
@@ -55,15 +50,6 @@ class RequestModel {
     this.photoUrl = json.data()['photoUrl'];
     this.userphotoUrl = json.data()['userPhotourl'];
     this.status = json.data()['status'] ?? 'sent';
-    // List data = jsonDecode(json.data()['likes']).toList();
-    // print(data.toString());
-    this.likes = [];
-
-    // data.forEach((element) {
-
-    // })
-    // this.likes = jsonDecode(json.data()['likes']) ?? [];
-    this.comment = 0; //json.data()['comment'] ?? 0;
   }
 
   Map<String, dynamic> toJson() {
@@ -76,9 +62,9 @@ class RequestModel {
     data['photoUrl'] = this.photoUrl;
     data['timestamp'] = Timestamp.now();
     data['userPhotourl'] = this.userphotoUrl;
-    data['likes'] = this.likes;
+
     data['status'] = this.status;
-    data['comment'] = 0;
+
     return data;
   }
 }

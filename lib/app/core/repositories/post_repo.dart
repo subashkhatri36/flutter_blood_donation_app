@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_blood_donation_app/app/constant/const.dart';
 import 'package:flutter_blood_donation_app/app/core/model/request_model.dart';
+import 'package:flutter_blood_donation_app/app/modules/home/controllers/home_controller.dart';
 import 'package:get/get.dart';
 
 class PostsRepo {
@@ -27,16 +28,25 @@ class PostsRepo {
         .map((QuerySnapshot query) {
       List<RequestModel> requests = [];
       query.docs.forEach((element) {
-        print(element.data()['likes']);
-        // if (element.data()['likes'] != null || element.data()['likes'] == null)
-        //    firebaseFirestore
-        //       .collection('likes')
-        //       .doc(element.id)
-        //       .update({'likes': jsonEncode([])});
-        //print(element.id);
         requests.add(RequestModel.fromDocumentSnapshot(element));
       });
 
+      return requests;
+    });
+  }
+
+  mybloodrequest() {
+    return repo
+        .where('userid', isEqualTo: userController.myinfo.value.userId)
+        .snapshots()
+        .map((event) {
+      List<RequestModel> requests = [];
+      event.docs.forEach((element) {
+        requests.add(RequestModel.fromDocumentSnapshot(element));
+      });
+      // requests.sort(
+      //   (a, b) => b.timestamp.compareTo(a.timestamp),
+      // );
       return requests;
     });
   }

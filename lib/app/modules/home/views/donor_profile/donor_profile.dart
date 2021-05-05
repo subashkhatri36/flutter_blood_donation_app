@@ -10,6 +10,24 @@ import 'package:flutter_blood_donation_app/app/utlis/size_config.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+void sendSMS(String no) async {
+  String url = "sms:$no";
+  if (await canLaunch(url)) {
+    await launch(url);
+  } else {
+    throw 'Could not launch $url';
+  }
+}
+
+call(String no) async {
+  String url = "tel:$no";
+  if (await canLaunch(url)) {
+    await launch(url);
+  } else {
+    throw 'Could not launch $url';
+  }
+}
+
 class DonorProfile extends StatelessWidget {
   DonorProfile({this.user});
   final UserModel user;
@@ -22,6 +40,7 @@ class DonorProfile extends StatelessWidget {
           Container(
             child: Column(
               children: [
+                // Text("${user.twostar.toString()}"),
                 ListTile(
                   contentPadding: EdgeInsets.only(left: 10),
                   title: Text(
@@ -41,6 +60,18 @@ class DonorProfile extends StatelessWidget {
                 'All Donations',
                 style: largeText.copyWith(
                     fontWeight: FontWeight.w800, color: Colors.grey[700]),
+              ),
+              SizedBox(width: 10),
+              Container(
+                padding: EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                    color: Colors.grey,
+                    borderRadius: BorderRadius.circular(20)),
+                child: Text('4 times',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    )),
               )
             ]),
             subtitle: Text('Wednesday , August 4 ,2019'),
@@ -135,7 +166,7 @@ class ReviewPage extends StatelessWidget {
                 Spacer(),
                 InkWell(
                   onTap: () {
-                    Get.to(HomeView());
+                    Get.off(HomeView());
                   },
                   child: Text(
                     'Post'.toUpperCase(),
@@ -209,11 +240,11 @@ class DonorProfileHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        height: 250,
+        height: 300,
         child: Stack(
           children: [
             Container(
-                height: 240,
+                height: 300,
                 width: double.infinity,
                 child: Image.network(user.photoUrl, fit: BoxFit.cover)),
 
@@ -287,19 +318,31 @@ class DonorProfileHeader extends StatelessWidget {
                                   fontWeight: FontWeight.w600),
                             ),
                             SizedBox(width: 5),
-                            CircleAvatar(
-                                radius: 15,
-                                backgroundColor: Colors.white.withOpacity(.5),
-                                child: Icon(Icons.phone,
-                                    color: Colors.redAccent[400], size: 15)),
+                            InkWell(
+                              onTap: () {
+                                print('phone');
+                                call(user.phoneNo);
+                              },
+                              child: CircleAvatar(
+                                  radius: 15,
+                                  backgroundColor: Colors.white.withOpacity(.5),
+                                  child: Icon(Icons.phone,
+                                      color: Colors.redAccent[400], size: 15)),
+                            ),
                             SizedBox(
                               width: 5,
                             ),
-                            CircleAvatar(
-                                radius: 15,
-                                backgroundColor: Colors.white.withOpacity(.5),
-                                child: Icon(Icons.message,
-                                    color: Colors.redAccent[400], size: 15))
+                            InkWell(
+                              onTap: () {
+                                print('sms');
+                                sendSMS(user.phoneNo);
+                              },
+                              child: CircleAvatar(
+                                  radius: 15,
+                                  backgroundColor: Colors.white.withOpacity(.5),
+                                  child: Icon(Icons.message,
+                                      color: Colors.redAccent[400], size: 15)),
+                            )
                           ]),
                       SizedBox(
                         height: 10,
@@ -308,8 +351,8 @@ class DonorProfileHeader extends StatelessWidget {
                   )),
             ),
             Positioned(
-              top: 20,
-              right: 8,
+              bottom: 20,
+              right: 15,
               width: SizeConfig.screenWidth / 2,
               child: Container(
                   padding: EdgeInsets.only(top: 20, left: 8),
@@ -334,6 +377,9 @@ class DonorProfileHeader extends StatelessWidget {
                               Icons.info_outline,
                               color: Colors.white,
                               size: 20,
+                            ),
+                            SizedBox(
+                              width: 5,
                             )
                           ]),
                       SizedBox(height: 5),
@@ -386,8 +432,8 @@ class DonorProfileHeader extends StatelessWidget {
                                       height: 7,
                                     ),
                                     Container(
-                                      width:
-                                          .50 * SizeConfig.screenWidth / 2 - 50,
+                                      width: .5 *
+                                          (SizeConfig.screenWidth / 2 - 50),
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(20),
                                         color: Colors.redAccent[400],
