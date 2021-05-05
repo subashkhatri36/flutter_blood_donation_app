@@ -7,7 +7,6 @@ import 'package:get/get.dart';
 
 import 'app/routes/app_pages.dart';
 
-//AIzaSyAYYYAaAm5p6UXOv0vyKElcarUaWMgQvzI
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 

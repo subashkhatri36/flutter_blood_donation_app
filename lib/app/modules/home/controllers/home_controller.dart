@@ -19,9 +19,6 @@ import 'package:flutter_blood_donation_app/app/core/repositories/rating_reposito
 import 'package:flutter_blood_donation_app/app/core/repositories/users_repo.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:share/share.dart';
 
 class HomeController extends GetxController {
   LikeRepo _likeRepo = new LikeRepositiories();

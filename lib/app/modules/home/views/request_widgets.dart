@@ -43,10 +43,10 @@ class UserRequest extends StatelessWidget {
                 SizedBox(width: 10),
                 InkWell(
                   onTap: () {
-                    UserModel user =
-                        userController.getUserByUserid(request.userid);
-                    //print(user.username);
-                    Get.to(DonorProfile(user: user));
+                    // UserModel user =
+                    //     userController.getUserByUserid(request.userid);
+                    // //print(user.username);
+                    // Get.to(DonorProfile(user: user));
                   },
                   child: CircleAvatar(
                     radius: 25,
