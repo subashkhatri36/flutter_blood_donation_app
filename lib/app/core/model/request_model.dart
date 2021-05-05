@@ -12,9 +12,10 @@ class RequestModel {
   String detail;
   String photoUrl;
   String userphotoUrl;
-  List likes = []; // = [];
+  int like;
+// List likes = []; // = [];
   int comment;
-  String status;
+  // String status;
   RequestModel(
       {this.id,
       this.userid,
@@ -27,8 +28,7 @@ class RequestModel {
       this.userphotoUrl,
       this.contactno,
       this.city = 'Kathmandu',
-      this.status,
-      this.likes,
+      this.like = 0,
       this.comment});
 
   RequestModel.fromJson(Map<String, dynamic> json) {
@@ -40,7 +40,7 @@ class RequestModel {
     this.timestamp = Timestamp.now();
     this.userid = json['userid'];
     this.contactno = json['contactno'];
-    this.likes = json['likes'];
+
     //this.likes=json['likes'];
   }
   RequestModel.fromDocumentSnapshot(DocumentSnapshot json) {
@@ -54,15 +54,8 @@ class RequestModel {
     this.timestamp = json.data()['timestamp'];
     this.photoUrl = json.data()['photoUrl'];
     this.userphotoUrl = json.data()['userPhotourl'];
-    this.status = json.data()['status'] ?? 'sent';
-    // List data = jsonDecode(json.data()['likes']).toList();
-    // print(data.toString());
-    this.likes = [];
+    this.like = json.data()['like'];
 
-    // data.forEach((element) {
-
-    // })
-    // this.likes = jsonDecode(json.data()['likes']) ?? [];
     this.comment = 0; //json.data()['comment'] ?? 0;
   }
 
@@ -76,8 +69,8 @@ class RequestModel {
     data['photoUrl'] = this.photoUrl;
     data['timestamp'] = Timestamp.now();
     data['userPhotourl'] = this.userphotoUrl;
-    data['likes'] = this.likes;
-    data['status'] = this.status;
+    data['like'] = this.like;
+
     data['comment'] = 0;
     return data;
   }

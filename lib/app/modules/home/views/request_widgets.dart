@@ -153,13 +153,6 @@ class UserRequest extends StatelessWidget {
                               .userlist[userController
                                   .getUserByUserid(request.userid)]
                               .phoneNo);
-                          // String url =
-                          //     "tel:${userController.userlist[userController.getUserByUserid(request.userid)].phoneNo}";
-                          // if (await canLaunch(url)) {
-                          //   await launch(url);
-                          // } else {
-                          //   print(canLaunch(url));
-                          // }
                         },
                         child: Text(
                           'Call',
@@ -167,12 +160,6 @@ class UserRequest extends StatelessWidget {
                         ),
                       ),
                     ),
-
-                    // CustomButton(
-                    //     label: 'Help',
-                    //     labelColor: Colors.white,
-                    //     btnColor: Colors.purple,
-                    //     borderRadius: 5)
                   ),
                 ]),
           ),
@@ -184,12 +171,7 @@ class UserRequest extends StatelessWidget {
                     Icons.thumb_up_alt_rounded,
                     size: 10,
                   )),
-              Text(request.likes.length.toString())
-              // Text(
-              //   'Sudarshan and 4 other',
-              //   textAlign: TextAlign.start,
-              //   style: smallText.copyWith(color: Colors.grey),
-              // ),
+              Text(request.like.toString())
             ],
           ),
           SizedBox(width: 5),
@@ -221,30 +203,23 @@ class _LikeButtonState extends State<LikeButton> {
       child: Row(children: [
         TextButton(
             onPressed: () {
-              widget.request.likes.add(widget.request.userid);
-
-              firebaseFirestore
-                  .collection('request')
-                  .doc(widget.request.id)
-                  .delete()
-                  .whenComplete(() => print('completed'));
+              userController.insertLike(
+                  postId: widget.request.id, likeuserId: widget.request.userid);
             },
             child: Row(
               children: [
-                // CircleAvatar(
-                //     radius: 10,
-                //     child: Icon(
-                //       Icons.thumb_up_rounded,
-                //       size: 12,
-                //     )),
-                // Text(widget.request.likes.length.toString()),
                 SizedBox(
                   width: 4,
                 ),
-                Icon(Icons.thumb_up,
-                    color: widget.request.likes.contains(widget.request.userid)
-                        ? Colors.blue
-                        : Colors.grey),
+                Obx(() => userController.presslike.isTrue
+                    ? Icon(Icons.thumb_up,
+                        color: userController.checklikes(widget.request.id)
+                            ? Colors.blue
+                            : Colors.grey)
+                    : Icon(Icons.thumb_up,
+                        color: userController.checklikes(widget.request.id)
+                            ? Colors.blue
+                            : Colors.grey)),
                 SizedBox(
                   width: 5,
                 ),
@@ -278,11 +253,6 @@ class _LikeButtonState extends State<LikeButton> {
                 subject:
                     'https://post.healthline.com/wp-content/uploads/2020/09/Blood_Donation-732X549-thumbnail.jpg',
                 sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
-            // userController.urlFileShare(
-            //     'https://healthengine.com.au/info/assets/blood-cells-1024x576.jpg',
-            //     context,
-            //     'Blood Group ${widget.request.bloodgroup} \Name : ${widget.request.name} \nAddress: ${widget.request.photoUrl}',
-            //     'Blood Donor Needed');
           },
           child: Row(
             children: [

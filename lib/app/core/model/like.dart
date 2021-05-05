@@ -1,17 +1,41 @@
-// class LikeModel {
-//   String userid;
-//  String postid;
-//   LikeModel({this.userid, this.postid});
+import 'dart:convert';
 
-//   LikeModel.fromJson(Map<String, dynamic> json) {
-//     this.userid = json['id'];
-//     this.postid = json['postid'];
-//   }
+import 'package:flutter/foundation.dart';
 
-//   Map<String, dynamic> toJson() {
-//     final Map<String, dynamic> data = new Map<String, dynamic>();
-//     data['id'] = this.userid;
-//     data['liked'] = this.postid;
-//     return data;
-//   }
-// }
+class LikeModel {
+  String postId;
+  String docId;
+  LikeModel({
+    @required this.postId,
+    @required this.docId,
+  });
+
+  Map<String, dynamic> toMap() {
+    return {
+      'userId': postId,
+      'docId': docId,
+    };
+  }
+
+  factory LikeModel.fromMap(Map<String, dynamic> map) {
+    return LikeModel(
+      postId: map['userId'],
+      docId: map['docId'],
+    );
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory LikeModel.fromJson(String source) =>
+      LikeModel.fromMap(json.decode(source));
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is LikeModel && other.postId == postId && other.docId == docId;
+  }
+
+  @override
+  int get hashCode => postId.hashCode ^ docId.hashCode;
+}

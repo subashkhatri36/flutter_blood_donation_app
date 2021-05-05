@@ -7,11 +7,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_blood_donation_app/app/constant/const.dart';
+import 'package:flutter_blood_donation_app/app/core/model/like.dart';
 import 'package:flutter_blood_donation_app/app/core/model/request_model.dart';
 import 'package:flutter_blood_donation_app/app/core/model/review_model.dart';
 import 'package:flutter_blood_donation_app/app/core/model/user_models.dart';
 import 'package:flutter_blood_donation_app/app/core/model/user_rating_model.dart';
 import 'package:flutter_blood_donation_app/app/core/repositories/account_repository.dart';
+import 'package:flutter_blood_donation_app/app/core/repositories/like_repo.dart';
 import 'package:flutter_blood_donation_app/app/core/repositories/post_repo.dart';
 import 'package:flutter_blood_donation_app/app/core/repositories/rating_repositories.dart';
 import 'package:flutter_blood_donation_app/app/core/repositories/users_repo.dart';
@@ -22,10 +24,16 @@ import 'package:path_provider/path_provider.dart';
 import 'package:share/share.dart';
 
 class HomeController extends GetxController {
+  LikeRepo _likeRepo = new LikeRepositiories();
   RatingRepo _ratingRepo = new RatingRepositiories();
   AccountRepo _accountRepo = AccountRepositories();
+
+  RxBool presslike = false.obs;
+
   RxList<ReviewModel> reviewmodellist;
   RxBool loadRevew = false.obs;
+
+  RxList<LikeModel> likeList;
 
   var connectionStatus = 0.obs;
   final Connectivity _connectivity = Connectivity();
@@ -179,37 +187,77 @@ class HomeController extends GetxController {
     }
   }
 
-  Future<Null> urlFileShare(String urlvalue, BuildContext context,
-      String subject, String text) async {
-    Share.share('check out my website https://example.com',
-        subject: 'Look what I made!');
-    // final RenderBox box = context.findRenderObject();
+  loadAllLikes() async {
+    var id = FirebaseAuth.instance.currentUser.uid;
+    List<LikeModel> model = [];
+    if (id != null) {
+      Either<String, List<LikeModel>> datalike =
+          await _likeRepo.getAllLikesNativeUser(id);
+      datalike.fold((l) => print('Error on getting likes'), (r) {
+        model = r.toList();
+        likeList = model.obs;
+      });
+    }
+  }
 
-    // Share.share(text,
-    //     subject: subject,
-    //     sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
+  insertLike({@required String postId, @required String likeuserId}) async {
+    var id = FirebaseAuth.instance.currentUser.uid;
+    presslike.toggle();
 
-    // if (Platform.isAndroid) {
-    //   // var url = urlvalue;
-    //   Uri uri = Uri.parse(urlvalue);
-    //   var response = await get(uri);
-    //   final documentDirectory = (await getExternalStorageDirectory()).path;
-    //   File imgFile = new File('$documentDirectory/raktadaan.png');
-    //   imgFile.writeAsBytesSync(response.bodyBytes);
-    //   Share.shareFiles(['$documentDirectory/raktadaan.png'],
-    //       subject: subject,
-    //       text: text,
-    //       sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
-    // } else {
-    //   Share.share(text,
-    //       subject: subject,
-    //       sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
-    // }
+    if (id != null) {
+      if (checklikes(postId)) {
+        String docId = getdocId(postId);
+        //delete like
+        Either<String, void> deletelike = await _likeRepo.deletelike(
+            userId: id, docId: docId, postId: postId);
+        deletelike.fold((l) => print(l.toString()), (r) {
+          likeList.remove(LikeModel(postId: postId, docId: docId));
+        });
+      } else {
+        //insert likes
+        Either<String, String> insertlike =
+            await _likeRepo.insertLike(userId: id, postId: postId);
+        insertlike.fold((l) => print(l.toString()), (r) {
+          LikeModel likemodel = new LikeModel(postId: postId, docId: r);
+          if (likeList != null)
+            likeList.add(likemodel);
+          else {
+            List<LikeModel> lmo = [];
+            lmo.add(likemodel);
+            likeList = lmo.obs;
+          }
+        });
+      }
+    }
+    presslike.toggle();
+  }
+
+  String getdocId(String postId) {
+    String like = '';
+    if (likeList != null) {
+      likeList.forEach((element) {
+        if (postId == element.postId) like = element.docId;
+      });
+      return like;
+    }
+    return like;
+  }
+
+  bool checklikes(String postId) {
+    bool like = false;
+    if (likeList != null) {
+      likeList.forEach((element) {
+        if (postId == element.postId) like = true;
+      });
+      return like;
+    }
+    return like;
   }
 
   @override
   void onInit() {
     loadingUserRating();
+    loadAllLikes();
     super.onInit();
     userlistshown = true.obs;
 
