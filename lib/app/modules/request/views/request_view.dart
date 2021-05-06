@@ -5,6 +5,7 @@ import 'package:flutter_blood_donation_app/app/constant/const.dart';
 import 'package:flutter_blood_donation_app/app/modules/home/controllers/home_controller.dart';
 import 'package:flutter_blood_donation_app/app/modules/request/controllers/request_controller.dart';
 import 'package:flutter_blood_donation_app/app/utlis/size_config.dart';
+import 'package:flutter_blood_donation_app/app/utlis/ui_helpers.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -18,7 +19,7 @@ class RequestView extends GetView<RequestController> {
               Get.offNamed('/home');
             },
             child: Icon(Icons.arrow_back)),
-        title: Text('RequestBlood'),
+        title: Text('Blood Request'),
       ),
       body: SingleChildScrollView(
         child: Form(
@@ -26,25 +27,25 @@ class RequestView extends GetView<RequestController> {
           child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                SizedBox(height: 40),
+                SizedBox(height: 10),
                 Padding(
                   padding: const EdgeInsets.all(15.0),
                   child: TextFormField(
                     controller: controller.phoneController,
                     validator: (v) {
                       if (v.isEmpty)
-                        return 'Enter a valid';
+                        return '* required';
                       else if (!v.isNum)
-                        return 'Enter a prover result';
+                        return 'Invalid Number';
                       else
                         return null;
                     },
                     decoration: InputDecoration(
-                        suffixIcon: InkWell(
-                            onTap: () {
-                              print('search location');
-                            },
-                            child: Icon(Icons.search)),
+                        // suffixIcon: InkWell(
+                        //     onTap: () {
+                        //       print('search location');
+                        //     },
+                        //     child: Icon(Icons.search)),
                         contentPadding: const EdgeInsets.all(8.0),
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10)),
@@ -57,18 +58,18 @@ class RequestView extends GetView<RequestController> {
                   child: Obx(
                     () => !controller.mylocation.value
                         ? TextFormField(
-                            controller: controller.userAddressController,
+                            controller: controller.locationController,
                             validator: (v) {
                               if (v.length != 0) {
                                 return null;
                               } else
-                                return 'Enter a valid location';
+                                return '* required';
                             },
                             decoration: InputDecoration(
                                 contentPadding: const EdgeInsets.all(8.0),
                                 border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(10)),
-                                labelText: 'User location and address'),
+                                labelText: 'Hospital Name'),
                           )
                         : Text(''),
                   ),
@@ -79,19 +80,18 @@ class RequestView extends GetView<RequestController> {
                   child: Obx(
                     () => !controller.mylocation.value
                         ? TextFormField(
-                            controller: controller.locationController,
+                            controller: controller.userAddressController,
                             validator: (v) {
                               if (v.length != 0) {
                                 return null;
                               } else
-                                return 'Enter a valid location';
+                                return '* required';
                             },
                             decoration: InputDecoration(
                                 contentPadding: const EdgeInsets.all(8.0),
                                 border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(10)),
-                                labelText:
-                                    'Hospital or emergency location and address'),
+                                labelText: 'Address'),
                           )
                         : Text(''),
                   ),
@@ -118,7 +118,7 @@ class RequestView extends GetView<RequestController> {
                       );
                     },
                     child: !controller.map.value
-                        ? Text('Mark your location on map')
+                        ? Text('Mark the location on the map')
                         : Container(
                             height: 200,
                             width: double.infinity,
@@ -144,37 +144,41 @@ class RequestView extends GetView<RequestController> {
                           onChanged: (v) {
                             controller.isplatelets.value = true;
                           }),
-                      Text('Platelets ',
+                      Text('Blood Plasma ',
                           style: largeText.copyWith(color: Colors.grey)),
                     ]),
                   ),
                 ),
                 SizedBox(height: 10),
                 Obx(() {
-                  return Wrap(
-                    runSpacing: 10,
-                    spacing: 10,
-                    children: [
-                      ...bloodgroup.map((e) => InkWell(
-                            onTap: () {
-                              controller.bloodgroup.value = e;
-                              print(e);
-                            },
-                            child: CircleAvatar(
-                              backgroundColor: controller.bloodgroup.value == e
-                                  ? Colors.deepOrange
-                                  : Theme.of(context).primaryColor,
-                              radius: 30,
-                              child: Text(
-                                e,
-                                style: largeText.copyWith(
-                                    fontSize: 20,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold),
+                  return Container(
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    child: Wrap(
+                      runSpacing: 10,
+                      spacing: 10,
+                      children: [
+                        ...bloodgroup.map((e) => InkWell(
+                              onTap: () {
+                                controller.bloodgroup.value = e;
+                                print(e);
+                              },
+                              child: CircleAvatar(
+                                backgroundColor:
+                                    controller.bloodgroup.value == e
+                                        ? Theme.of(context).primaryColor
+                                        : Colors.grey[500],
+                                radius: 22,
+                                child: Text(
+                                  e,
+                                  style: largeText.copyWith(
+                                      fontSize: 12,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold),
+                                ),
                               ),
-                            ),
-                          ))
-                    ],
+                            ))
+                      ],
+                    ),
                   );
                 }),
                 SizedBox(
@@ -186,16 +190,20 @@ class RequestView extends GetView<RequestController> {
                           padding: EdgeInsets.only(left: 20, right: 20),
                           width: double.infinity,
                           child: TextButton(
-                            onPressed: () {
+                            onPressed: () async {
                               if (controller.requestformKey.currentState
-                                      .validate() &&
-                                  controller.map.value) {
-                                controller.sendrequest();
+                                  .validate()) {
+                                // if (controller.map.value) {
+                                UIHelpers.showLoading();
+                                await controller.sendrequest();
+                                UIHelpers.dismiss();
+                                UIHelpers.showToast(
+                                    "Blood request submitted successfully");
                                 Get.back();
-                              } else
-                                Get.snackbar('Error', 'Form not valid');
+                                // }else{}
+                              }
                             },
-                            child: Text('Continue'),
+                            child: Text('Request'),
                             style: TextButton.styleFrom(
                                 primary: Colors.white,
                                 backgroundColor:
@@ -208,7 +216,7 @@ class RequestView extends GetView<RequestController> {
                   height: 10,
                 ),
                 Text(
-                  'These Services are free of cost. do not pay anyone',
+                  'These Services are free of cost. Do not pay anyone.',
                   style: smallText.copyWith(color: grey),
                 ),
                 SizedBox(
