@@ -90,8 +90,12 @@ class UserRequest extends StatelessWidget {
               height: 200,
               width: double.infinity,
               color: Colors.grey,
-              child: Image.memory(base64Decode(request.photoUrl),
-                  fit: BoxFit.cover)
+              child: request.photoUrl == ''
+                  ? Image.network(
+                      'https://cached.imagescaler.hbpl.co.uk/resize/scaleWidth/815/cached.offlinehbpl.hbpl.co.uk/news/OMC/BLOODBAG-20191114025209465.jpeg',
+                      fit: BoxFit.cover)
+                  : Image.memory(base64Decode(request.photoUrl),
+                      fit: BoxFit.cover)
               // child: CustomMap(zoomEnabled: false, compassEnabled: false),
               ),
           SizedBox(height: 10),
@@ -171,7 +175,7 @@ class UserRequest extends StatelessWidget {
                     Icons.thumb_up_alt_rounded,
                     size: 10,
                   )),
-              Text(request.like.toString())
+              Text(request.like.abs().toString())
             ],
           ),
           SizedBox(width: 5),

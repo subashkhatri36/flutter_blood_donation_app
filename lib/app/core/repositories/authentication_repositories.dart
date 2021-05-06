@@ -50,7 +50,7 @@ class Authentication implements AuthenticationRepo {
 
       // String id = '';
       bool complete = false;
-      bool rcompete = false;
+      //  bool rcompete = false;
       UserCredential user = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(
               email: model.email, password: password)

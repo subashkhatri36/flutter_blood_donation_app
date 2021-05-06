@@ -160,16 +160,17 @@ class RequestsHome extends StatelessWidget {
 //map fix blood group sort
 //user blood group
     return Obx(
-      () => homeController.requestData.length != 0
+      () => (homeController.requestData?.length ?? 0) != 0
           ? ListView.builder(
               physics: BouncingScrollPhysics(),
-              itemCount: homeController.requestData.length,
+              itemCount: homeController.requestData?.length ?? 0,
               itemBuilder: (BuildContext context, int index) {
                 return UserRequest(request: homeController.requestData[index]);
               },
             )
-          : CircularProgressIndicator(
-              backgroundColor: Colors.red,
+          : Center(
+              child: Text('No One Post Yet.',
+                  style: TextStyle(color: Colors.grey)),
             ),
     );
   }

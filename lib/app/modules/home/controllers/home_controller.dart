@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:connectivity/connectivity.dart';
 import 'package:dartz/dartz.dart';
@@ -44,6 +43,7 @@ class HomeController extends GetxController {
   var userlist = List<UserModel>.empty(growable: true).obs;
   var requestData = List<RequestModel>.empty(growable: true).obs;
   var userlistshown = false.obs;
+  RxBool requestload = false.obs;
 
   RxBool ratethisUser = false.obs;
   RxBool ratingchange = false.obs;
@@ -197,11 +197,14 @@ class HomeController extends GetxController {
     }
   }
 
+  bool notpress = false;
+
   insertLike({@required String postId, @required String likeuserId}) async {
     var id = FirebaseAuth.instance.currentUser.uid;
     presslike.toggle();
 
-    if (id != null) {
+    if (id != null && !notpress) {
+      notpress = true;
       if (checklikes(postId)) {
         String docId = getdocId(postId);
         //delete like
@@ -226,6 +229,7 @@ class HomeController extends GetxController {
         });
       }
     }
+    notpress = false;
     presslike.toggle();
   }
 
