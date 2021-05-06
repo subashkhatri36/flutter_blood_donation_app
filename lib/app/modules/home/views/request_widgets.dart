@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_blood_donation_app/app/constant/const.dart';
 import 'package:flutter_blood_donation_app/app/constant/timeformatting.dart';
 import 'package:flutter_blood_donation_app/app/core/model/request_model.dart';
-import 'package:flutter_blood_donation_app/app/core/model/user_models.dart';
 import 'package:flutter_blood_donation_app/app/modules/home/views/post_comments/post_comment.dart';
 import 'package:flutter_blood_donation_app/app/utlis/size_config.dart';
 import 'package:get/get.dart';
@@ -13,7 +12,6 @@ import 'package:share/share.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../controllers/home_controller.dart';
-import 'donor_profile/donor_profile.dart';
 
 class UserRequest extends StatelessWidget {
   final RequestModel request;
@@ -74,28 +72,40 @@ class UserRequest extends StatelessWidget {
               alignment: Alignment.center,
               width: double.infinity,
               color: Colors.grey,
-              child: request.photoUrl != null
-                  ? Image.memory(base64Decode(request.photoUrl),
-                      fit: BoxFit.cover)
-                  : Image.network(noimage, fit: BoxFit.cover)
+              child: request.photoUrl != '' || request.photoUrl == null
+                  ? Image.memory(
+                      base64Decode(request.photoUrl),
+                      fit: BoxFit.cover,
+                      width: 500,
+                      height: 200,
+                    )
+                  : Image.network(
+                      noimage,
+                      fit: BoxFit.fill,
+                      height: 200,
+                      width: 400,
+                    )
               // child: CustomMap(zoomEnabled: false, compassEnabled: false),
               ),
           SizedBox(height: 10),
           Container(
+            padding: EdgeInsets.symmetric(
+              horizontal: 10,
+            ),
             height: 60,
-            padding: EdgeInsets.only(left: 10),
             color: Colors.grey.withOpacity(.1),
             child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  SizedBox(width: 10),
                   Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         Text(
                           '${request.bloodgroup}',
-                          style: mediumText.copyWith(color: Colors.grey[900]),
+                          style: largeText.copyWith(
+                              color: Colors.grey[700],
+                              fontWeight: FontWeight.bold),
                         ),
                       ]),
                   SizedBox(
@@ -120,28 +130,30 @@ class UserRequest extends StatelessWidget {
                         Text('${request.address} ,Kathmandu',
                             style: smallText.copyWith(color: Colors.grey)),
                       ]),
-                  Spacer(),
-                  Padding(
-                    padding: const EdgeInsets.only(right: 10.0),
-                    child: Container(
-                      width: 50,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        color: Colors.purple,
-                      ),
-                      height: 30,
-                      child: InkWell(
-                        onTap: () async {
+                  Container(
+                    padding: EdgeInsets.all(4),
+                    width: 70,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      color: Colors.purple,
+                    ),
+                    height: 30,
+                    child: InkWell(
+                      onTap: () async {
+                        if (request.status == 'waiting')
                           _launchCaller(request.contactno);
-                        },
-                        child: Text(
-                          'Call',
-                          style: TextStyle(color: Colors.white),
-                        ),
+                      },
+                      child: Text(
+                        '${request.status == 'waiting' ? 'Call' : 'Completed'}',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w400),
                       ),
                     ),
                   ),
+                  SizedBox(width: 5)
                 ]),
           ),
           Container(

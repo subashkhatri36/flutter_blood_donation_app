@@ -1,9 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_blood_donation_app/app/constant/const.dart';
 import 'package:flutter_blood_donation_app/app/core/model/request_model.dart';
 
 import 'package:get/get.dart';
 
 import '../controllers/viewallrequest_controller.dart';
+
+List<PopupMenuItem> menuItem = [
+  // PopupMenuItem(
+  //   child: Text('Settings'),
+  //   value: '/settings',
+  // ),
+  PopupMenuItem(
+    child: Text('Completed'),
+    value: 'completed',
+  ),
+];
 
 class ViewallrequestView extends GetView<ViewallrequestController> {
   @override
@@ -19,24 +31,53 @@ class ViewallrequestView extends GetView<ViewallrequestController> {
                 ? ListView.separated(
                     itemBuilder: (context, index) {
                       RequestModel rmodel = controller.requestList[index];
+
                       return ListTile(
-                        leading: CircleAvatar(
-                          backgroundColor: Theme.of(context).primaryColor,
-                          child: Text(
-                            rmodel.bloodgroup,
-                            style: TextStyle(color: Colors.white),
+                          leading: CircleAvatar(
+                            backgroundColor: Theme.of(context).primaryColor,
+                            child: Text(
+                              rmodel.bloodgroup,
+                              style: TextStyle(color: Colors.white),
+                            ),
                           ),
-                        ),
-                        title: Text('Searching in ' + rmodel.address),
-                        subtitle: Text(rmodel.hospitaldetail),
-                        trailing: IconButton(
-                          icon: Icon(Icons.delete),
-                          onPressed: () {
-                            print(rmodel.id);
-                            controller.deleteRequest(rmodel.id, rmodel);
-                          },
-                        ),
-                      );
+                          title: Text('Searching in ' + rmodel.address),
+                          subtitle: Row(
+                            children: [
+                              Text(rmodel.hospitaldetail),
+                              SizedBox(width: 10),
+                              Text(rmodel.status)
+                            ],
+                          ),
+                          trailing: Column(children: [
+                            PopupMenuButton(
+                                child: Text('Update Status'),
+                                onSelected: (v) {
+                                  if (v == 'completed')
+                                    firebaseFirestore
+                                        .collection('request')
+                                        .doc(rmodel.id)
+                                        .update({
+                                      'status': 'completed'
+                                    }).whenComplete(() => Get.snackbar(
+                                            'Complete',
+                                            'Successfully updated'));
+                                  // print(v);
+                                  // Get.snackbar(v, v);
+                                },
+                                itemBuilder: (context) {
+                                  return List.generate(menuItem.length, (i) {
+                                    return menuItem[i];
+                                  });
+                                }),
+                            // Text('Update Status'),
+                            // InkWell(
+                            //   child: Icon(Icons.delete),
+                            //   onTap: () {
+                            //     print(rmodel.id);
+                            //     controller.deleteRequest(rmodel.id, rmodel);
+                            //   },
+                            // ),
+                          ]));
                     },
                     separatorBuilder: (context, index) {
                       return Divider();
