@@ -28,7 +28,7 @@ class ViewallrequestView extends GetView<ViewallrequestController> {
                           ),
                         ),
                         title: Text('Searching in ' + rmodel.address),
-                        subtitle: Text(rmodel.detail),
+                        subtitle: Text(rmodel.hospitaldetail),
                         trailing: IconButton(
                           icon: Icon(Icons.delete),
                           onPressed: () {

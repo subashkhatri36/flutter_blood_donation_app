@@ -12,25 +12,21 @@ class RequestView extends GetView<RequestController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        leading: InkWell(
+            onTap: () {
+              Get.offNamed('/home');
+            },
+            child: Icon(Icons.arrow_back)),
+        title: Text('RequestBlood'),
+      ),
       body: SingleChildScrollView(
         child: Form(
           key: controller.requestformKey,
           child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                AppBar(
-                  leading: InkWell(
-                      onTap: () {
-                        Get.offNamed('/home');
-                      },
-                      child: Icon(Icons.arrow_back)),
-                  title: Text('RequestBlood'),
-                ),
-                Text(
-                  'Our donors help when you need them the most',
-                  textAlign: TextAlign.center,
-                  style: smallText.copyWith(color: grey),
-                ),
+                SizedBox(height: 40),
                 Padding(
                   padding: const EdgeInsets.all(15.0),
                   child: TextFormField(
@@ -56,7 +52,28 @@ class RequestView extends GetView<RequestController> {
                   ),
                 ),
                 SizedBox(height: 10),
-
+                Padding(
+                  padding: const EdgeInsets.only(left: 15.0, right: 15),
+                  child: Obx(
+                    () => !controller.mylocation.value
+                        ? TextFormField(
+                            controller: controller.userAddressController,
+                            validator: (v) {
+                              if (v.length != 0) {
+                                return null;
+                              } else
+                                return 'Enter a valid location';
+                            },
+                            decoration: InputDecoration(
+                                contentPadding: const EdgeInsets.all(8.0),
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10)),
+                                labelText: 'User location and address'),
+                          )
+                        : Text(''),
+                  ),
+                ),
+                SizedBox(height: 20),
                 Padding(
                   padding: const EdgeInsets.only(left: 15.0, right: 15),
                   child: Obx(
@@ -79,17 +96,6 @@ class RequestView extends GetView<RequestController> {
                         : Text(''),
                   ),
                 ),
-                // Padding(
-                //   padding: const EdgeInsets.all(18.0),
-                //   child: Obx(
-                //     () => controller.mylocation.value
-                //         ? Text(
-                //             'Ranibari,Kathmandu',
-                //             style: mediumText,
-                //           )
-                //         : Container(),
-                //   ),
-                // ),
                 Obx(
                   () => TextButton(
                     onPressed: () {
@@ -121,105 +127,56 @@ class RequestView extends GetView<RequestController> {
                           ),
                   ),
                 ),
-
-                // Padding(
-                //   padding: const EdgeInsets.all(15.0),
-                //   child: TextFormField(
-                //     controller: controller.detailController,
-                //     validator: (v) {
-                //       if (v.isEmpty)
-                //         return 'Enter a valid';
-                //       else if (v.isNum)
-                //         return 'Enter a prover result';
-                //       else
-                //         return null;
-                //     },
-                //     decoration: InputDecoration(
-                //         contentPadding: const EdgeInsets.all(8.0),
-                //         border: OutlineInputBorder(
-                //             borderRadius: BorderRadius.circular(10)),
-                //         labelText: 'Contact no'),
-                //   ),
-                // ),
                 SizedBox(height: 10),
-
-                Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  Text(' Request on behalf of friend'),
-                  Obx(
-                    () => Switch(
-                      value: controller.isSwitched.value,
-                      onChanged: (value) {
-                        controller.isSwitched.value = value;
-                      },
-                      activeTrackColor: Colors.lightGreenAccent,
-                      activeColor: Colors.green,
-                    ),
+                Obx(
+                  () => Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(children: [
+                      Checkbox(
+                          value: !controller.isplatelets.value,
+                          onChanged: (v) {
+                            controller.isplatelets.value = false;
+                          }),
+                      Text('Blood ',
+                          style: largeText.copyWith(color: Colors.grey)),
+                      Checkbox(
+                          value: controller.isplatelets.value,
+                          onChanged: (v) {
+                            controller.isplatelets.value = true;
+                          }),
+                      Text('Platelets ',
+                          style: largeText.copyWith(color: Colors.grey)),
+                    ]),
                   ),
-                ]),
-                SizedBox(height: 10),
-                Obx(() => controller.isSwitched.value
-                    ? Text('Required Blood Group',
-                        style: largeText.copyWith(color: Colors.grey))
-                    : const Text('')),
+                ),
                 SizedBox(height: 10),
                 Obx(() {
-                  if (controller.isSwitched.value)
-                    return Wrap(
-                      runSpacing: 10,
-                      spacing: 10,
-                      children: [
-                        ...bloodgroup.map((e) => InkWell(
-                              onTap: () {
-                                controller.bloodgroup.value = e;
-                                print(e);
-                              },
-                              child: CircleAvatar(
-                                backgroundColor:
-                                    controller.bloodgroup.value == e
-                                        ? Colors.redAccent[400]
-                                        : Theme.of(context).primaryColor,
-                                radius: 30,
-                                child: Text(
-                                  e,
-                                  style: largeText.copyWith(
-                                      fontSize: 20,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold),
-                                ),
+                  return Wrap(
+                    runSpacing: 10,
+                    spacing: 10,
+                    children: [
+                      ...bloodgroup.map((e) => InkWell(
+                            onTap: () {
+                              controller.bloodgroup.value = e;
+                              print(e);
+                            },
+                            child: CircleAvatar(
+                              backgroundColor: controller.bloodgroup.value == e
+                                  ? Colors.deepOrange
+                                  : Theme.of(context).primaryColor,
+                              radius: 30,
+                              child: Text(
+                                e,
+                                style: largeText.copyWith(
+                                    fontSize: 20,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold),
                               ),
-                            ))
-                      ],
-
-                      //     child: GridView(
-                      //   padding: EdgeInsets.only(top: 10, left: 20, right: 20),
-                      //   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      //       crossAxisCount: 4,
-                      //       crossAxisSpacing: 30,
-                      //       mainAxisSpacing: 30),
-                      //   children: [
-                      //     for (int i = 0; i < 8; i++)
-                      //       InkWell(
-                      //         onTap: () {
-                      //           controller.bloodgroup.value = bloodgroup[i];
-                      //         },
-                      //         child: CircleAvatar(
-                      //             backgroundColor:
-                      //                 controller.bloodgroup.value == bloodgroup[i]
-                      //                     ? Colors.red
-                      //                     : Colors.grey,
-                      //             child: Text(
-                      //               bloodgroup[i],
-                      //               style: mediumText.copyWith(
-                      //                   color: Theme.of(context)
-                      //                       .scaffoldBackgroundColor),
-                      //             )),
-                      //       ),
-                      //   ],
-                      // )
-                    );
-                  return Container();
+                            ),
+                          ))
+                    ],
+                  );
                 }),
-
                 SizedBox(
                   height: 20,
                 ),
@@ -231,18 +188,20 @@ class RequestView extends GetView<RequestController> {
                           child: TextButton(
                             onPressed: () {
                               if (controller.requestformKey.currentState
-                                  .validate()) {
+                                      .validate() &&
+                                  controller.map.value) {
                                 controller.sendrequest();
-                                Get.offNamed("/home");
-                              }
+                                Get.back();
+                              } else
+                                Get.snackbar('Error', 'Form not valid');
                             },
                             child: Text('Continue'),
                             style: TextButton.styleFrom(
                                 primary: Colors.white,
-                                backgroundColor: Colors.deepOrange),
+                                backgroundColor:
+                                    Theme.of(context).primaryColor),
                           ),
                         )
-                      //phone no
                       : Text('Loading'),
                 ),
                 SizedBox(
@@ -346,18 +305,14 @@ class _CustomGoogleMapState extends State<CustomGoogleMap> {
                               ),
                             ),
                           );
-                          //   controller.getVisibleRegion().then(
-                          //       (bounds) => print("bounds: ${bounds.toString()}"));
                         },
                       );
-                      // _mapController = controller;
                     },
                   ),
                 ),
               ),
-              Positioned(
-                  bottom: 20,
-                  left: 40,
+              Align(
+                  alignment: Alignment.bottomCenter,
                   child: TextButton(
                     onPressed: () async {
                       await mapController.takeSnapshot().then((value) {
@@ -369,22 +324,12 @@ class _CustomGoogleMapState extends State<CustomGoogleMap> {
                         reqController.loading.value = false;
                         Get.back();
                       });
-                      //  print(reqController.data.value);
                     },
                     style: TextButton.styleFrom(
                         backgroundColor: Colors.redAccent,
                         primary: Colors.white),
                     child: Text('Capture map'),
                   )),
-              // Positioned(
-              //   left: 20,
-              //   top: 20,
-              //   child: Container(
-              //       width: SizeConfig.screenWidth - 100,
-              //       child: TextFormField(
-              //         decoration: InputDecoration(),
-              //       )),
-              // ),
             ],
           )
         : Image.memory(_imageBytes);

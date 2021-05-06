@@ -1,13 +1,16 @@
 import 'dart:ui';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blood_donation_app/app/constant/const.dart';
+import 'package:flutter_blood_donation_app/app/constant/themes/app_theme.dart';
 import 'package:flutter_blood_donation_app/app/core/model/user_models.dart';
 import 'package:flutter_blood_donation_app/app/modules/home/controllers/home_controller.dart';
-import 'package:flutter_blood_donation_app/app/modules/home/views/home_view.dart';
+import 'package:flutter_blood_donation_app/app/utlis/rating.dart';
 import 'package:flutter_blood_donation_app/app/utlis/size_config.dart';
 import 'package:get/get.dart';
+import 'package:percent_indicator/percent_indicator.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 void sendSMS(String no) async {
@@ -31,8 +34,13 @@ call(String no) async {
 class DonorProfile extends StatelessWidget {
   DonorProfile({this.user});
   final UserModel user;
+  final controller = Get.find<HomeController>();
+
   @override
   Widget build(BuildContext context) {
+    controller.checkUserrating(user.userId);
+    controller.loadreview(user);
+
     return Scaffold(
       body: ListView(
         children: [
@@ -76,54 +84,154 @@ class DonorProfile extends StatelessWidget {
             ]),
             subtitle: Text('Wednesday , August 4 ,2019'),
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Rate this user',
-                  style: largeText.copyWith(
-                      fontWeight: FontWeight.w800, color: Colors.grey[700]),
-                ),
-                Text(
-                  'Tell others what you think',
-                  style: smallText.copyWith(color: Colors.grey[600]),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                Row(children: [
-                  for (int i = 0; i < 5; i++)
-                    Container(
-                      padding: EdgeInsets.only(left: 10),
-                      child: Icon(
-                        Icons.star_border,
-                        color: Colors.redAccent,
-                      ),
-                    ),
-                ]),
-                SizedBox(
-                  height: 15,
-                ),
-                InkWell(
-                  onTap: () {
-                    Get.to(ReviewPage(user: user));
-                  },
-                  child: Text(
-                    'Write a review',
+          if (FirebaseAuth.instance.currentUser.uid != user.userId)
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Rate this user',
                     style: largeText.copyWith(
-                        fontWeight: FontWeight.w800,
-                        color: Colors.redAccent[400]),
+                        fontWeight: FontWeight.w800, color: Colors.grey[700]),
                   ),
-                )
-              ],
+                  Text(
+                    'Tell others what you think',
+                    style: smallText.copyWith(color: Colors.grey[600]),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Obx(() => controller.ratingchange.isTrue
+                      ? CircularProgressIndicator(
+                          backgroundColor: Colors.redAccent,
+                        )
+                      : buildStarsRating(user, userratingplace: true)),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  InkWell(
+                    onTap: () {
+                      Get.to(ReviewPage(user: user));
+                    },
+                    child: Text(
+                      'Write a review',
+                      style: largeText.copyWith(
+                          fontWeight: FontWeight.w800,
+                          color: Colors.redAccent[400]),
+                    ),
+                  ),
+                  Obx(() => controller.loadRevew.isTrue
+                      ? Container()
+                      : Container(
+                          // height: MediaQuery.of(context).size.height,
+                          child: SingleChildScrollView(
+                            child: Column(
+                              children: [
+                                if (controller.reviewmodellist != null)
+                                  if (controller.reviewmodellist.length > 0)
+                                    for (int i =
+                                            controller.reviewmodellist.length -
+                                                1;
+                                        i >
+                                            controller.reviewmodellist.length -
+                                                4;
+                                        i--)
+                                      Column(
+                                        children: [
+                                          ListTile(
+                                            leading: CircleAvatar(
+                                                radius: 20,
+                                                backgroundImage: controller
+                                                        .reviewmodellist[i]
+                                                        .photo
+                                                        .isEmpty
+                                                    ? AssetImage(
+                                                        'assets/images/logoapp.png',
+                                                      )
+                                                    : NetworkImage(controller
+                                                        .reviewmodellist[i]
+                                                        .photo)),
+                                            title: Text(controller
+                                                .reviewmodellist[i].name),
+                                            subtitle: Text(
+                                              controller
+                                                  .reviewmodellist[i].comment,
+                                              maxLines: 5,
+                                            ),
+                                          ),
+                                          Divider(),
+                                        ],
+                                      ),
+                              ],
+                            ),
+                          ),
+                        ))
+                ],
+              ),
             ),
+          SizedBox(height: 10),
+          Text(
+            'Rating and reviews',
+            style: mediumText.copyWith(
+                color: Colors.grey[600],
+                fontSize: 16,
+                fontWeight: FontWeight.bold),
           ),
+          SizedBox(height: 10),
+          ...reviews.map((e) => ReviewWidget())
         ],
       ),
     );
   }
+}
+
+Row buildStarsRating(UserModel model, {bool userratingplace = false}) {
+  final controller = Get.find<HomeController>();
+
+  return Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+    //if its a header part then
+    //
+    if (!userratingplace)
+      for (int i = 1; i < 6; i++)
+        Container(
+          child: Icon(
+            calculateAverage(model).round() >= i
+                ? Icons.star
+                : Icons.star_border,
+            color: Colors.redAccent[400],
+          ),
+        )
+    //checking user from bottom part
+    else if (controller.userRatingModel != null)
+      for (int i = 1; i < 6; i++)
+        Container(
+          child: InkWell(
+              onTap: () {
+                controller.setUserrating(i, model);
+              },
+              child: Icon(
+                controller.userRatingModel.star + 1 <= i
+                    ? Icons.star_border
+                    : Icons.star,
+                color: Colors.redAccent[400],
+              )),
+        )
+    else
+      for (int i = 1; i < 6; i++)
+        Container(
+          padding: EdgeInsets.only(left: 10),
+          child: InkWell(
+            onTap: () {
+              controller.setUserrating(i, model);
+            },
+            child: Icon(
+              Icons.star_border,
+              color: Colors.redAccent,
+            ),
+          ),
+        ),
+  ]);
 }
 
 class ReviewPage extends StatelessWidget {
@@ -134,6 +242,8 @@ class ReviewPage extends StatelessWidget {
   final UserModel user;
   @override
   Widget build(BuildContext context) {
+    final controller = Get.find<HomeController>();
+
     return Scaffold(
         appBar: AppBar(
             centerTitle: false,
@@ -166,7 +276,7 @@ class ReviewPage extends StatelessWidget {
                 Spacer(),
                 InkWell(
                   onTap: () {
-                    Get.off(HomeView());
+                    controller.writeUserReview(user);
                   },
                   child: Text(
                     'Post'.toUpperCase(),
@@ -203,17 +313,18 @@ class ReviewPage extends StatelessWidget {
                 ],
               ),
             ]),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                for (int i = 0; i < 5; i++)
-                  Container(
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                      child: Icon(Icons.star_border))
-              ],
-            ),
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.center,
+            //   children: [
+            //     for (int i = 0; i < 5; i++)
+            //       Container(
+            //           padding: EdgeInsets.symmetric(horizontal: 10),
+            //           child: Icon(Icons.star_border))
+            //   ],
+            // ),
             SizedBox(height: 30),
             TextFormField(
+                controller: controller.reviewController,
                 maxLines: 3,
                 decoration: InputDecoration(
                     hintText: 'Describe the user in detail',
@@ -307,43 +418,50 @@ class DonorProfileHeader extends StatelessWidget {
                           ),
                         ],
                       ),
-                      Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Text(
-                              "${user.userAddress.capitalize},Ktm",
-                              style: largeText.copyWith(
-                                  fontSize: 14,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w600),
-                            ),
-                            SizedBox(width: 5),
-                            InkWell(
-                              onTap: () {
-                                print('phone');
-                                call(user.phoneNo);
-                              },
-                              child: CircleAvatar(
-                                  radius: 15,
-                                  backgroundColor: Colors.white.withOpacity(.5),
-                                  child: Icon(Icons.phone,
-                                      color: Colors.redAccent[400], size: 15)),
-                            ),
-                            SizedBox(
-                              width: 5,
-                            ),
-                            InkWell(
-                              onTap: () {
-                                print('sms');
-                                sendSMS(user.phoneNo);
-                              },
-                              child: CircleAvatar(
-                                  radius: 15,
-                                  backgroundColor: Colors.white.withOpacity(.5),
-                                  child: Icon(Icons.message,
-                                      color: Colors.redAccent[400], size: 15)),
-                            )
-                          ]),
+                      Container(
+                        width: SizeConfig.screenWidth / 2,
+                        child: Wrap(runAlignment: WrapAlignment.center,
+                            //   mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Text(
+                                "${user.userAddress.capitalize},Ktm",
+                                style: largeText.copyWith(
+                                    fontSize: 14,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w600),
+                              ),
+                              SizedBox(width: 5),
+                              InkWell(
+                                onTap: () {
+                                  // print('phone');
+                                  call(user.phoneNo);
+                                },
+                                child: CircleAvatar(
+                                    radius: 15,
+                                    backgroundColor:
+                                        Colors.white.withOpacity(.5),
+                                    child: Icon(Icons.phone,
+                                        color: Colors.redAccent[400],
+                                        size: 15)),
+                              ),
+                              SizedBox(
+                                width: 5,
+                              ),
+                              InkWell(
+                                onTap: () {
+                                  print('sms');
+                                  sendSMS(user.phoneNo);
+                                },
+                                child: CircleAvatar(
+                                    radius: 15,
+                                    backgroundColor:
+                                        Colors.white.withOpacity(.5),
+                                    child: Icon(Icons.message,
+                                        color: Colors.redAccent[400],
+                                        size: 15)),
+                              )
+                            ]),
+                      ),
                       SizedBox(
                         height: 10,
                       )
@@ -367,16 +485,17 @@ class DonorProfileHeader extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              'Rating and reviews',
+                              'Ratings ',
                               style: mediumText.copyWith(
                                   color: Colors.white,
-                                  fontSize: 16,
+                                  letterSpacing: 3,
+                                  fontSize: 20,
                                   fontWeight: FontWeight.bold),
-                            ),
-                            Icon(
-                              Icons.info_outline,
-                              color: Colors.white,
-                              size: 20,
+
+                              // Icon(
+                              //   Icons.info_outline,
+                              //   color: Colors.white,
+                              //   size: 20,
                             ),
                             SizedBox(
                               width: 5,
@@ -384,24 +503,25 @@ class DonorProfileHeader extends StatelessWidget {
                           ]),
                       SizedBox(height: 5),
                       Text(
-                        '4.5',
+                        calculateAverage(user).toStringAsPrecision(2),
                         style: TextStyle(
                             color: Colors.white,
                             fontSize: 30,
                             fontWeight: FontWeight.w700),
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          for (int i = 0; i < 5; i++)
-                            Icon(Icons.star, color: Colors.redAccent[400])
-                        ],
-                      ),
+                      buildStarsRating(user),
+                      // Row(
+                      //   mainAxisAlignment: MainAxisAlignment.start,
+                      //   children: [
+                      //     for (int i = 0; i < 5; i++)
+                      //       Icon(Icons.star, color: Colors.redAccent[400])
+                      //   ],
+                      // ),
                       SizedBox(
                         height: 5,
                       ),
                       Text(
-                        '  23,423',
+                        ' ' + totalvalue(user).toInt().toString(),
                         style: TextStyle(
                             color: Colors.white, fontWeight: FontWeight.w600),
                       ),
@@ -420,28 +540,36 @@ class DonorProfileHeader extends StatelessWidget {
                             SizedBox(
                               width: 5,
                             ),
-                            Container(
-                                width: SizeConfig.screenWidth / 2 - 50,
-                                child: Stack(
-                                  children: [
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(20),
-                                        color: Colors.white,
-                                      ),
-                                      height: 7,
-                                    ),
-                                    Container(
-                                      width: .5 *
-                                          (SizeConfig.screenWidth / 2 - 50),
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(20),
-                                        color: Colors.redAccent[400],
-                                      ),
-                                      height: 7,
-                                    ),
-                                  ],
-                                )),
+                            Expanded(
+                              child: LinearPercentIndicator(
+                                lineHeight: 5.0,
+                                percent: showpercentage(i, user),
+                                backgroundColor: Colors.white,
+                                progressColor: Colors.redAccent[400],
+                              ),
+                            ),
+                            // Container(
+                            //     width: SizeConfig.screenWidth / 2 - 50,
+                            //     child: Stack(
+                            //       children: [
+                            //         Container(
+                            //           decoration: BoxDecoration(
+                            //             borderRadius: BorderRadius.circular(20),
+                            //             color: Colors.white,
+                            //           ),
+                            //           height: 7,
+                            //         ),
+                            //         Container(
+                            //           width:
+                            //               .50 * SizeConfig.screenWidth / 2 - 50,
+                            //           decoration: BoxDecoration(
+                            //             borderRadius: BorderRadius.circular(20),
+                            //             color: Colors.redAccent[400],
+                            //           ),
+                            //           height: 7,
+                            //         ),
+                            //       ],
+                            //     )),
                           ],
                         ),
                     ],
@@ -536,5 +664,114 @@ class DonorProfileHeader extends StatelessWidget {
             //   )
           ],
         ));
+  }
+}
+
+List reviews = [1, 2, 3, 4, 5, 6];
+
+class ReviewWidget extends StatelessWidget {
+  const ReviewWidget({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      // height: 120,
+      // color: Colors.deepOrange,
+      child: Column(
+        children: [
+          Row(
+            children: [
+              CircleAvatar(
+                backgroundColor: Colors.grey,
+                child: Text(
+                  'no image',
+                  style: TextStyle(
+                      fontSize: 8,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white),
+                ),
+              ),
+              SizedBox(
+                width: 10,
+              ),
+              Text(
+                'Rich Tend',
+                style: TextStyle(),
+              ),
+              Spacer(),
+              Icon(
+                Icons.more_vert,
+                color: Colors.grey[700],
+              )
+            ],
+          ),
+          SizedBox(height: 10),
+          Row(
+            children: [
+              for (int i = 0; i < 5; i++)
+                Icon(
+                  Icons.star_border,
+                  size: 14,
+                ),
+              SizedBox(width: 5),
+              Text(
+                DateTime.now().toString().substring(0, 10),
+                style: TextStyle(color: Colors.grey[600]),
+              ),
+            ],
+          ),
+          SizedBox(height: 10),
+          Text(
+            "A fearless junior policeman ( #MarkChao​ ), who can only see right and wrong is willing to do anything to uncover the truth. Meanwhile a gangster ( #HuangBo​ ), who fears death above anything else is struggling to stay out of serious trouble, his risky decisions have left his life at threat. Two people with completely different perspectives on life come together as partners in a way no one could ever imagine. Somehow, the fate of the world ends up in their hands; they have 36 hours to resolve a crisis which could destroy Harbor City…   ",
+            style: TextStyle(
+              color: Colors.grey[600],
+            ),
+            maxLines: 4,
+            overflow: TextOverflow.ellipsis,
+          ),
+          SizedBox(height: 20),
+          Row(
+            children: [
+              Text(
+                'Was this review helpful?',
+                style: TextStyle(color: Colors.grey[600], fontSize: 12),
+              ),
+              Spacer(),
+              Container(
+                padding: EdgeInsets.all(5),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: Colors.grey, width: 1)),
+                child: Text(
+                  ' Yes ',
+                  style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.grey[700],
+                      fontWeight: FontWeight.bold),
+                ),
+              ),
+              SizedBox(
+                width: 5,
+              ),
+              Container(
+                padding: EdgeInsets.all(5),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: Colors.grey, width: 1)),
+                child: Text(
+                  ' No ',
+                  style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.grey[700],
+                      fontWeight: FontWeight.bold),
+                ),
+              ),
+            ],
+          )
+        ],
+      ),
+    );
   }
 }

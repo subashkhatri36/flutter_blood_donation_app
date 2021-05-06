@@ -6,10 +6,14 @@ import 'package:get/get.dart';
 
 class PostsRepo {
   final repo = firebaseFirestore.collection('request');
-  sendRequest(req) async {
+  sendRequest(RequestModel req) async {
+    //print(req.toJson());
     await repo
         .add(req.toJson())
-        .then((value) => {print(value.id), Get.snackbar('Request', 'sent')})
+        .then((value) => {
+              //print(value.id),
+              Get.snackbar('Request', 'sent')
+            })
         .catchError(
             // ignore: return_of_invalid_type_from_catch_error
             (onError) => {
@@ -44,9 +48,7 @@ class PostsRepo {
       event.docs.forEach((element) {
         requests.add(RequestModel.fromDocumentSnapshot(element));
       });
-      // requests.sort(
-      //   (a, b) => b.timestamp.compareTo(a.timestamp),
-      // );
+      
       return requests;
     });
   }

@@ -9,9 +9,8 @@ import 'package:get/get.dart';
 class DonorDetailsController extends GetxController {
   var loading = false.obs;
   var count = 0.obs;
-  // var mylatitude = 27.0.obs;
-  // var mylongitude = 85.0.obs;
   var favourite = 0.obs;
+  var userlistshown = true.obs;
   var donorlist =
       List<UsermodelSortedtoMyLocationModel>.empty(growable: true).obs;
   var userlist = List<UserModel>.empty(growable: true).obs;
@@ -40,7 +39,7 @@ class DonorDetailsController extends GetxController {
     //     userlist.add(UserModel.fromDocumentSnapshot(element));
     //   }
     // });
-   // getDonors();
+    // getDonors();
 
     //print(userlist.length);
   }
@@ -76,15 +75,6 @@ class DonorDetailsController extends GetxController {
     List<UsermodelSortedtoMyLocationModel> mylist = [];
     List<UserModel> users = userController.userlist.toList();
     users.forEach((element) {
-      // if (element.userAddress == null) {
-      //   firebaseFirestore
-      //       .collection('User')
-      //       .doc(element.userId)
-      //       .update({'userAddress': 'Basundhara'});
-      // }
-
-      // var loc = await getcoordinatefromAddress(element.userAddress);
-      //print(loc.latitude);
       if (element.bloodgroup == bloodgroup) {
         UsermodelSortedtoMyLocationModel mod =
             UsermodelSortedtoMyLocationModel()
@@ -96,20 +86,11 @@ class DonorDetailsController extends GetxController {
                   .truncate()
               ..name = element.username
               ..donorindex = users.indexOf(element);
-
-        // distance.add(mod.distance);
-
-        mylist.add(mod);
+        if (mod.distance / 1000 < 50) mylist.add(mod);
       }
     });
-    // distance.sort();
-    // distance.forEach((element) {print(distance);});
     mylist.sort((a, b) => a.distance.compareTo(b.distance));
-    // mylist.forEach((element) {print(element.donorindex);});
-    // donorlist=mylist.obs;
-    //  donorlist.toList().sort((a, b) => a.distance.compareTo(b.distance));
-    //donorlist.forEach((element) {print(element.distance);});
-    //loading.value = false;
+
     return mylist;
   }
 
@@ -187,6 +168,8 @@ class DonorDetailsController extends GetxController {
     return s / 1000.toInt();
   }
 }
+
+final donorController = Get.put(DonorDetailsController());
 
 class UsermodelSortedtoMyLocationModel {
   int distance;

@@ -28,7 +28,7 @@ class _CustomMapState extends State<CustomMap> {
   double mylongitude;
   UserModel selectedUser;
   List<DropdownMenuItem> items = [];
-  double pinPillPosition = -100;
+  double pinPillPosition = -190;
   List<UsermodelSortedtoMyLocationModel> allusers = [];
   String selectedbloodgroup;
   List bloodicons = [
@@ -48,7 +48,7 @@ class _CustomMapState extends State<CustomMap> {
     const sec = Duration(seconds: 8);
     timer = Timer(sec, () {
       setState(() {
-        pinPillPosition = -100;
+        pinPillPosition = -190;
       });
     });
   }
@@ -100,11 +100,8 @@ class _CustomMapState extends State<CustomMap> {
           icon: mapicons[bloodgroup.indexOf(element.bloodgroup)],
           markerId: MarkerId('${element.userId}'),
           position: LatLng(element.latitude, element.longitude),
-          //consumeTapEvents: true,
-          // infoWindow: InfoWindow(
-          //     title: '${element.username}', snippet: "${element.userAddress}"),
           onTap: () {
-            print('tapp');
+            // print('tapp');
             setState(() {
               pinPillPosition = 0;
               selectedUser = element;
@@ -146,15 +143,6 @@ class _CustomMapState extends State<CustomMap> {
     super.dispose();
   }
 
-  setUser() {
-    // List<UsermodelSortedtoMyLocationModel> users =
-    //     donorController.getDonors(selectedbloodgroup);
-    //print(users.length);
-    // setState(() {
-    //   allusers = users;
-    // });
-  }
-
   createmarker(context) {
     bloodicons.forEach((element) {
       createIcon(context, element);
@@ -178,44 +166,33 @@ class _CustomMapState extends State<CustomMap> {
 
     return Stack(
       children: [
-        // InkWell(
-        //     onTap: () {
-        //       setState(() {
-        //         selectedbloodgroup = 'A+';
-        //       });
-        //     },
-        //     child: Text(selectedbloodgroup)),
-        // if (!userController.userlistshown.value)
-        // ? Container(
-        //     child: Text(selelctedbloodgruop),
-        //   )
-        GoogleMap(
-          mapType: MapType.normal,
-          initialCameraPosition: CameraPosition(
-              zoom: 16.0,
-              target: LatLng(userController.mylatitude.value,
-                  userController.mylongitude.value)),
-          myLocationEnabled: true,
-          onTap: (pos) {
-            setState(() {
-              pinPillPosition = -100;
-            });
-          },
-          // myLocationButtonEnabled: true,
-          markers: markers,
-          onMapCreated: (GoogleMapController controller) {
-            addMarker();
-            setState(() {
-              mapController = controller;
-            });
+        //if (0 != 0)
+          GoogleMap(
+            mapType: MapType.normal,
+            initialCameraPosition: CameraPosition(
+                zoom: 16.0,
+                target: LatLng(userController.mylatitude.value,
+                    userController.mylongitude.value)),
+            myLocationEnabled: true,
+            onTap: (pos) {
+              setState(() {
+                pinPillPosition = -190;
+              });
+            },
+            markers: markers,
+            onMapCreated: (GoogleMapController controller) {
+              addMarker();
+              setState(() {
+                mapController = controller;
+              });
 
-            controller.animateCamera(CameraUpdate.newCameraPosition(
-                CameraPosition(
-                    zoom: 16.0,
-                    target: LatLng(userController.mylatitude.value,
-                        userController.mylongitude.value))));
-          },
-        ),
+              controller.animateCamera(CameraUpdate.newCameraPosition(
+                  CameraPosition(
+                      zoom: 16.0,
+                      target: LatLng(userController.mylatitude.value,
+                          userController.mylongitude.value))));
+            },
+          ),
         if (userController.userlistshown.value)
           Container(
             color: Colors.white,
@@ -230,17 +207,12 @@ class _CustomMapState extends State<CustomMap> {
                           color: Colors.grey[600], fontWeight: FontWeight.bold),
                     ),
                     Spacer(),
-                    // Text(
-                    //   'SortBy:',
-                    //   style: TextStyle(
-                    //       color: Colors.grey, fontWeight: FontWeight.bold),
-                    // ),
                     DropdownButton(
                         onChanged: (v) {
                           setState(() {
                             allusers =
                                 donorController.getDonors(selectedbloodgroup);
-                            // print(allusers.length);
+
                             selectedbloodgroup = v;
                           });
                         },
@@ -266,7 +238,6 @@ class _CustomMapState extends State<CustomMap> {
                       Get.to(DonorProfile(
                           user: userController.userlist[e.donorindex]));
                     },
-                    // isThreeLine: true,
                     leading: Container(
                       width: 60,
                       child: Stack(
@@ -276,8 +247,8 @@ class _CustomMapState extends State<CustomMap> {
                             child: CircleAvatar(
                               backgroundColor: Colors.deepOrange,
                               radius: 25,
-                              backgroundImage: NetworkImage(userController
-                                  .userlist[e.donorindex].photoUrl),
+                              backgroundImage: NetworkImage(
+                                  '${userController.userlist[e.donorindex].photoUrl != '' ? userController.userlist[e.donorindex].photoUrl : noimage ?? noimage}'),
                             ),
                           ),
                           Positioned(
@@ -355,16 +326,103 @@ class _CustomMapState extends State<CustomMap> {
               ],
             ),
           ),
-        Container(
-          width: SizeConfig.screenWidth - 40,
-          child: AnimatedPositioned(
-              bottom: pinPillPosition,
-              right: 0,
-              left: 0,
-              duration: Duration(milliseconds: 200),
-              child:
-                  pinPillPosition != -100 ? OntapUser(selectedUser) : Text('')),
-        ),
+        // if (pinPillPosition == 0)
+        AnimatedPositioned(
+          duration: Duration(milliseconds: 200),
+          bottom: pinPillPosition,
+          child: Container(
+            height: 90,
+            margin: EdgeInsets.only(left: 10, bottom: 50),
+            padding: EdgeInsets.all(10),
+            width: SizeConfig.screenWidth - 120,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(90),
+              color: Colors.grey.withOpacity(.5),
+              //color: Colors.grey.withOpacity(.8),
+            ),
+            child: Row(
+              children: [
+                Stack(children: [
+                  CircleAvatar(
+                    radius: 30,
+                    backgroundImage: NetworkImage(selectedUser.photoUrl == ''
+                        ? noimage
+                        : selectedUser.photoUrl),
+                  ),
+                  Positioned(
+                      top: 0,
+                      left: 0,
+                      child: CircleAvatar(
+                        backgroundColor: Colors.white,
+                        radius: 11,
+                        child: CircleAvatar(
+                            radius: 10,
+                            backgroundColor: Colors.redAccent[400],
+                            child: Text(
+                              selectedUser.bloodgroup,
+                              style: smallText.copyWith(
+                                  fontSize: 12,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w600),
+                            )),
+                      ))
+                ]),
+                SizedBox(width: 5),
+                Container(
+                    width: SizeConfig.screenWidth - 250,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("${selectedUser.username.capitalize}",
+                            overflow: TextOverflow.clip,
+                            style: mediumText.copyWith(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600)),
+                        Text("${selectedUser.userAddress.capitalize}",
+                            style: smallText.copyWith(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600)),
+                      ],
+                    )),
+                Column(
+                  children: [
+                    CircleAvatar(
+                        radius: 15,
+                        backgroundColor: Colors.grey[300],
+                        child: Icon(Icons.more_horiz,
+                            color: Colors.grey[700], size: 18)),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    InkWell(
+                      onTap: () {
+                        phonecall(selectedUser.phoneNo);
+                      },
+                      child: CircleAvatar(
+                          radius: 15,
+                          backgroundColor: Colors.green[200],
+                          child: Icon(Icons.phone,
+                              color: Colors.green[700], size: 15)),
+                    )
+                  ],
+                )
+              ],
+            ),
+          ),
+        )
+        // if (pinPillPosition == 0)
+        //   Container(
+        //     width: SizeConfig.screenWidth - 40,
+        //     child: AnimatedPositioned(
+        //         bottom: pinPillPosition,
+        //         right: 0,
+        //         left: 0,
+        //         duration: Duration(milliseconds: 200),
+        //         child: pinPillPosition != -100
+        //             ? OntapUser(selectedUser)
+        //             : Text('')),
+        //   ),
         // Center(child: Text('Text("$pinPillPosition")')),
       ],
     );
@@ -386,6 +444,15 @@ class _CustomMapState extends State<CustomMap> {
         // print(pinPillPosition);
       },
     ));
+  }
+
+  void phonecall(String phoneNo) async {
+    String url = "tel:$phoneNo";
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 }
 

@@ -9,14 +9,7 @@ class UserReop {
         .doc(auth.currentUser.uid)
         .get();
     try {
-      if (!data.exists)
-
-      // print(data.id);
-      // if (data.data()['username'] == null)
-      //   print(data.data()[
-      //       'bloodgroud']); // if (data.data()['username'] == null || data.data()['username'])
-      {
-        // print(false);
+      if (!data.exists) {
         UserModel user = UserModel(
             userId: auth.currentUser.uid,
             userAddress: 'Balaju',
@@ -29,9 +22,7 @@ class UserReop {
             .collection('Users')
             .doc(auth.currentUser.uid)
             .set(user.toMap());
-        print('completed');
       } else {
-        // print(true);
         return UserModel.fromDocumentSnapshot(data);
       }
     } catch (e) {
@@ -67,11 +58,6 @@ class UserReop {
         .get();
     data.docs.forEach((element) async {
       try {
-        // print(element.data()['userAddress']);
-        // String str = element.data()['userAddress'];
-        // List arr = str.split('\\s');
-        // String word = arr[0];
-        //
         if (element.data()['userAddress'] == null ||
             element.data()['userAddress'] == '')
           firebaseFirestore
@@ -92,16 +78,12 @@ class UserReop {
           } catch (e) {
             print(e.toString());
           }
-          //print(data[0].latitude);
-
         } else {
           userlist.add(UserModel.fromDocumentSnapshot(element));
         }
-      } catch (e) {
-        print(e.toString());
-      }
+      } catch (e) {}
     });
-    print(userlist.length);
+
     return userlist;
   }
 }

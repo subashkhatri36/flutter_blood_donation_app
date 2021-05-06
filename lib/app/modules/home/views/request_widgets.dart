@@ -9,6 +9,7 @@ import 'package:flutter_blood_donation_app/app/core/model/user_models.dart';
 import 'package:flutter_blood_donation_app/app/modules/home/views/post_comments/post_comment.dart';
 import 'package:flutter_blood_donation_app/app/utlis/size_config.dart';
 import 'package:get/get.dart';
+import 'package:share/share.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../controllers/home_controller.dart';
@@ -40,35 +41,22 @@ class UserRequest extends StatelessWidget {
             child: Row(
               children: [
                 SizedBox(width: 10),
-                InkWell(
-                  onTap: () {
-                    UserModel user =
-                        userController.getUserByUserid(request.userid);
-                    //print(user.username);
-                    Get.to(DonorProfile(user: user));
-                  },
-                  child: CircleAvatar(
-                    radius: 25,
-                    backgroundColor: Colors.blueGrey[700],
-                    child: CircleAvatar(
-                      radius: 24,
-                      backgroundImage: NetworkImage(request.userphotoUrl == ''
-                          ? noimage
-                          : request.userphotoUrl ?? noimage),
-                      backgroundColor: Colors.grey,
-                    ),
-                  ),
+                CircleAvatar(
+                  radius: 24,
+                  backgroundImage: NetworkImage(request.userphotoUrl == ''
+                      ? noimage
+                      : request.userphotoUrl ?? noimage),
+                  backgroundColor: Colors.grey,
                 ),
                 SizedBox(width: 15),
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                   Text(
                     '${request.name.capitalize}',
-                    //capitalize(),
                     style: mediumText.copyWith(
-                        fontWeight: FontWeight.w600, color: Colors.grey[600]),
+                        fontWeight: FontWeight.w700, color: Colors.grey[700]),
                   ),
                   Text(
-                      'looking for ${request.bloodgroup}  in ${request.address}',
+                      'looking for ${request.bloodgroup} ${!request.bloodtype ? 'Blood' : 'Platelets'} in ${request.address}',
                       style: smallText.copyWith(
                           fontWeight: FontWeight.w400, color: Colors.grey[700]),
                       overflow: TextOverflow.ellipsis),
@@ -77,20 +65,19 @@ class UserRequest extends StatelessWidget {
                     style: smallText.copyWith(color: Colors.grey),
                   ),
                 ]),
-                Spacer(),
-                SizedBox(width: 10),
-                Icon(Icons.more_horiz, color: Colors.grey),
-                SizedBox(width: 10),
               ],
             ),
           ),
           SizedBox(height: 10),
           Container(
               height: 200,
+              alignment: Alignment.center,
               width: double.infinity,
               color: Colors.grey,
-              child: Image.memory(base64Decode(request.photoUrl),
-                  fit: BoxFit.cover)
+              child: request.photoUrl != null
+                  ? Image.memory(base64Decode(request.photoUrl),
+                      fit: BoxFit.cover)
+                  : Image.network(noimage, fit: BoxFit.cover)
               // child: CustomMap(zoomEnabled: false, compassEnabled: false),
               ),
           SizedBox(height: 10),
@@ -123,7 +110,7 @@ class UserRequest extends StatelessWidget {
                           Icon(Icons.location_on, size: 16, color: Colors.grey),
                           Container(
                             width: SizeConfig.screenWidth - 150,
-                            child: Text('${request.detail} Hospital',
+                            child: Text('${request.hospitaldetail} ',
                                 overflow: TextOverflow.ellipsis,
                                 style: smallText.copyWith(
                                     color: Colors.grey,
@@ -136,19 +123,18 @@ class UserRequest extends StatelessWidget {
                   Spacer(),
                   Padding(
                     padding: const EdgeInsets.only(right: 10.0),
-                    child: InkWell(
-                      onTap: () {
-                        _launchCaller(
-                            "${userController.userlist[userController.userlist.indexOf(userController.getUserByUserid(request.userid))].phoneNo}");
-                      },
-                      child: Container(
-                        width: 50,
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          color: Colors.purple,
-                        ),
-                        height: 30,
+                    child: Container(
+                      width: 50,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        color: Colors.purple,
+                      ),
+                      height: 30,
+                      child: InkWell(
+                        onTap: () async {
+                          _launchCaller(request.contactno);
+                        },
                         child: Text(
                           'Call',
                           style: TextStyle(color: Colors.white),
@@ -158,23 +144,31 @@ class UserRequest extends StatelessWidget {
                   ),
                 ]),
           ),
-          Row(
-            children: [
-              CircleAvatar(
-                  backgroundColor:
-                      Theme.of(context).primaryColor.withOpacity(.5),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 10),
+            child: Row(
+              children: [
+                CircleAvatar(
                   radius: 10,
+                  backgroundColor: Colors.grey.withOpacity(.5),
                   child: Icon(
                     Icons.thumb_up_alt_rounded,
-                    size: 10,
-                  )),
-              //Text(request.likes.length.toString())
-              // Text(
-              //   'Sudarshan and 4 other',
-              //   textAlign: TextAlign.start,
-              //   style: smallText.copyWith(color: Colors.grey),
-              // ),
-            ],
+                    color: Colors.deepOrange,
+                    size: 12,
+                  ),
+                ),
+                SizedBox(width: 5),
+                Text(
+                  '${request.like} likes',
+                  style: smallText.copyWith(color: Colors.grey[600]),
+                ),
+                Spacer(),
+                Text(
+                  '${request.comment == 0 ? 'no' : request.comment} comments',
+                  style: smallText.copyWith(color: Colors.grey[600]),
+                )
+              ],
+            ),
           ),
           SizedBox(width: 5),
           LikeButton(request: request),
@@ -205,17 +199,27 @@ class _LikeButtonState extends State<LikeButton> {
       child: Row(children: [
         TextButton(
             onPressed: () {
-              // userController.getlikes(widget.request.id);
-              userController.sendlike(widget.request.id);
-              //userController.getlikes(widget.request.id);
-              
+              // firebaseFirestore
+              //     .collection('request')
+              //     .doc(widget.request.id)
+              //     .delete();
+              userController.insertLike(
+                  postId: widget.request.id, likeuserId: widget.request.userid);
             },
             child: Row(
               children: [
                 SizedBox(
                   width: 4,
                 ),
-                Icon(Icons.thumb_up, color: Colors.grey),
+                Obx(() => userController.presslike.isTrue
+                    ? Icon(Icons.thumb_up,
+                        color: userController.checklikes(widget.request.id)
+                            ? Colors.blue
+                            : Colors.grey)
+                    : Icon(Icons.thumb_up,
+                        color: userController.checklikes(widget.request.id)
+                            ? Colors.blue
+                            : Colors.grey)),
                 SizedBox(
                   width: 5,
                 ),
@@ -241,7 +245,15 @@ class _LikeButtonState extends State<LikeButton> {
         ),
         Spacer(),
         TextButton(
-          onPressed: () {},
+          onPressed: () {
+            RenderBox box = context.findRenderObject();
+            Share.share(
+                'Blood Donor Needed\n\n' +
+                    'Blood Group: ${widget.request.bloodgroup}\nName: ${widget.request.name} \nAddress: ${widget.request.address}\nContact: ${widget.request.contactno}\n->Please Contact in given number if your bloodgroup match to this blood group or else share it.\nYour small help will save someone\'s life.Thank you.\n\n Rakta Daan Mobile App download from play store.',
+                subject:
+                    'https://post.healthline.com/wp-content/uploads/2020/09/Blood_Donation-732X549-thumbnail.jpg',
+                sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
+          },
           child: Row(
             children: [
               Icon(Icons.share, color: grey),

@@ -140,14 +140,15 @@ class _RegistrationWidgetState extends State<RegistrationWidget> {
                   label: 'REGISTER',
                   labelColor: Colors.white,
                   onPressed: () {
+                    print(loginController.loginProcess.value);
                     if (loginController.signupformKey.currentState.validate()) {
                       if (selectedState && selectedData != 'your blood group') {
                         if (!loginController.loginProcess.value) {
                           loginController.loginProcess.value = true;
                           loginController.register();
                         } else {
-                          Get.snackbar('Warning!',
-                              'Blood group is not selected\n Please Select blood Group.');
+                          Get.snackbar(
+                              'Warning!', 'Tryng to register please wait.');
                         }
                       } else
                         Get.snackbar('Warning!',

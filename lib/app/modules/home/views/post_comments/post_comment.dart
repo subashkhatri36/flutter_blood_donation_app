@@ -29,6 +29,7 @@ class PostComment extends StatelessWidget {
           curve: Curves.easeOut,
         ),
       );
+
     return Scaffold(
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -64,14 +65,19 @@ class PostComment extends StatelessWidget {
                         itemBuilder: (_, int i) {
                           //   print(postController.commentData.length);
                           return Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: postController.commentData[i].userid ==
-                                      userController.myinfo.value.userId
-                                  ? Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.end,
-                                      children: [
-                                          Column(
+                            padding: const EdgeInsets.all(8.0),
+                            child: postController.commentData[i].userid ==
+                                    userController.myinfo.value.userId
+                                ? Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                        SizedBox(
+                                          width: 10,
+                                        ),
+                                        Expanded(
+                                          child: Column(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.end,
                                             crossAxisAlignment:
@@ -83,97 +89,149 @@ class PostComment extends StatelessWidget {
                                                     color: Colors.grey[400]
                                                         .withOpacity(.4),
                                                     borderRadius:
-                                                        BorderRadius.circular(
-                                                            20)),
+                                                        BorderRadius.only(
+                                                      topLeft:
+                                                          Radius.circular(20),
+                                                      bottomLeft:
+                                                          Radius.circular(20),
+                                                      bottomRight:
+                                                          Radius.circular(20),
+                                                    )
+                                                    //BorderRadius.circular(20),
+                                                    ),
                                                 child: Text(postController
                                                     .commentData[i].comment),
                                               ),
-                                              InkWell(
-                                                onTap: () {
-                                                  print(postController
-                                                      .commentData[i].userid);
-                                                },
-                                                child: CircleAvatar(
-                                                  backgroundImage: NetworkImage(
-                                                      userController
-                                                              .getUserByUserid(
-                                                                  postController
-                                                                      .commentData[
-                                                                          i]
-                                                                      .userid)
-                                                              .photoUrl ??
-                                                          noimage),
-                                                ),
-                                              )
+                                              if (i == 0)
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          right: 8.0),
+                                                  child: Text(
+                                                    TimeFormatting
+                                                        .displayTimeAgoFromTimestamp(
+                                                      postController
+                                                          .commentData[i]
+                                                          .timestamp
+                                                          .toDate()
+                                                          .toString(),
+                                                    ),
+                                                    style: smallText.copyWith(
+                                                        color: Colors.grey),
+                                                  ),
+                                                )
                                             ],
                                           ),
-                                          //  Text('By ${userController.myinfo.value.username}',style: mediumText.copyWith(color:Colors.grey[800]),),
-                                          // if (i ==
-                                          //     postController
-                                          //             .commentData.length -
-                                          //         1)
-
-                                          if (i == 0)
-                                            Text(
-                                              TimeFormatting
-                                                  .displayTimeAgoFromTimestamp(
-                                                postController
-                                                    .commentData[i].timestamp
-                                                    .toDate()
-                                                    .toString(),
-                                              ),
-                                              style: smallText.copyWith(
-                                                  color: Colors.grey),
-                                            )
-                                        ])
-                                  : Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                          Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Container(
-                                                  padding: EdgeInsets.all(20),
-                                                  decoration: BoxDecoration(
-                                                      color: Colors.grey[400]
-                                                          .withOpacity(.4),
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              20)),
-                                                  child: Text(postController
-                                                      .commentData[i].comment)),
-                                              CircleAvatar(
-                                                backgroundImage: NetworkImage(
-                                                    userController
-                                                        .getUserByUserid(
-                                                            postController
-                                                                .commentData[i]
-                                                                .userid)
-                                                        .photoUrl),
-                                              )
-                                            ],
-                                          ),
-                                          Text(
-                                            'By ${userController.getUserByUserid(postController.commentData[i].userid).username}',
-                                            style: mediumText.copyWith(
-                                                color: Colors.grey[800]),
-                                          ),
-                                          Text(
-                                            TimeFormatting
-                                                .displayTimeAgoFromTimestamp(
-                                              postController
-                                                  .commentData[i].timestamp
-                                                  .toDate()
-                                                  .toString(),
+                                        ),
+                                        SizedBox(
+                                          width: 10,
+                                        ),
+                                        CircleAvatar(
+                                          backgroundImage: userController
+                                                  .getUserByUserid(
+                                                      postController
+                                                          .commentData[i]
+                                                          .userid)
+                                                  .photoUrl
+                                                  .isNotEmpty
+                                              ? NetworkImage(userController
+                                                  .getUserByUserid(
+                                                      postController
+                                                          .commentData[i]
+                                                          .userid)
+                                                  .photoUrl)
+                                              : AssetImage(
+                                                  'assets/images/logoapp.png'),
+                                        ),
+                                      ])
+                                : Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                        Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            CircleAvatar(
+                                              backgroundImage: NetworkImage(
+                                                  userController
+                                                          .getUserByUserid(
+                                                              postController
+                                                                  .commentData[
+                                                                      i]
+                                                                  .userid)
+                                                          .photoUrl
+                                                          .isNotEmpty
+                                                      ? userController
+                                                          .getUserByUserid(
+                                                              postController
+                                                                  .commentData[
+                                                                      i]
+                                                                  .userid)
+                                                          .photoUrl
+                                                      : noimage),
                                             ),
-                                            style: smallText.copyWith(
-                                                color: Colors.grey),
-                                          )
-                                        ]));
+                                            SizedBox(
+                                              width: 10,
+                                            ),
+                                            Expanded(
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    'By ${userController.getUserByUserid(postController.commentData[i].userid).username}',
+                                                    style: mediumText.copyWith(
+                                                        color:
+                                                            Colors.grey[800]),
+                                                  ),
+                                                  Text(
+                                                    TimeFormatting
+                                                        .displayTimeAgoFromTimestamp(
+                                                      postController
+                                                          .commentData[i]
+                                                          .timestamp
+                                                          .toDate()
+                                                          .toString(),
+                                                    ),
+                                                    style: smallText.copyWith(
+                                                        color: Colors.grey),
+                                                  ),
+                                                  SizedBox(
+                                                    height: 10,
+                                                  ),
+                                                  Container(
+                                                      padding:
+                                                          EdgeInsets.all(20),
+                                                      decoration: BoxDecoration(
+                                                        color: Colors.grey[400]
+                                                            .withOpacity(.4),
+                                                        borderRadius:
+                                                            BorderRadius.only(
+                                                          topRight:
+                                                              Radius.circular(
+                                                                  20),
+                                                          bottomLeft:
+                                                              Radius.circular(
+                                                                  20),
+                                                          bottomRight:
+                                                              Radius.circular(
+                                                                  20),
+                                                        ),
+                                                      ),
+                                                      child: Text(postController
+                                                          .commentData[i]
+                                                          .comment)),
+                                                ],
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: 10,
+                                            ),
+                                          ],
+                                        ),
+                                      ]),
+                          );
 
                           //  ListTile(
 
@@ -191,7 +249,7 @@ class PostComment extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(left: 8.0, right: 8, bottom: 8),
             child: Container(
-              height: 40,
+              height: 50,
               padding: EdgeInsets.zero,
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
@@ -206,24 +264,23 @@ class PostComment extends StatelessWidget {
                     width: 10,
                   ),
                   Expanded(
-                    child: Container(
-                      //color: Colors.grey,
-
-                      child: TextField(
-                        controller: commentText,
-                        decoration: InputDecoration(
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide(color: Colors.grey),
-                          ),
-                          prefix: null,
-                          prefixIcon: null,
-                          hintText: 'Comment here',
-                          fillColor: Colors.grey,
-                          hintStyle: smallText.copyWith(),
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10)),
+                    child: TextField(
+                      controller: commentText,
+                      maxLines: 2,
+                      decoration: InputDecoration(
+                        contentPadding:
+                            EdgeInsets.only(bottom: -10.0, left: 3, right: 3),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide(color: Colors.grey),
                         ),
+                        prefix: null,
+                        prefixIcon: null,
+                        hintText: 'Comment here',
+                        fillColor: Colors.grey,
+                        hintStyle: smallText,
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10)),
                       ),
                     ),
                   ),
@@ -249,7 +306,8 @@ class PostComment extends StatelessWidget {
                           timestamp: Timestamp.now(),
                           comment: commentText.text,
                         );
-                        commentRepo.sendComment(comment);
+                        commentRepo.sendComment(
+                            comment, postController.commentData.length + 1);
                         // firebaseFirestore.collection('request').doc(request.id).update({'comment':request.comment+1});
                         commentText.clear();
                       }

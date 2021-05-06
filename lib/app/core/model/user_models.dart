@@ -96,7 +96,6 @@ class UserModel {
       threestar: map.data()['threestar'],
       fourstar: map.data()['fourstar'],
       fivestar: map.data()['fivestar'],
-      candonate: map.data()['candonate'],
     );
   }
   String toJson() => json.encode(toMap());
