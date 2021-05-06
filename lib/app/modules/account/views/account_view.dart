@@ -18,7 +18,6 @@ import 'package:flutter_blood_donation_app/app/modules/viewallrequest/views/view
 import 'package:flutter_blood_donation_app/app/utlis/rating.dart';
 
 import 'package:get/get.dart';
-import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
 import '../controllers/account_controller.dart';
@@ -64,8 +63,10 @@ class _AccountViewState extends State<AccountView>
         body: Obx(
       () => accountController.loadigUserData.isTrue
           ? Container(
-              child: Center(child: CircularProgressIndicator()),
-            )
+              child: Center(
+              child: CircularProgressIndicator(
+                  backgroundColor: Theme.of(context).primaryColor),
+            ))
           : SingleChildScrollView(
               child: Container(
                 height: MediaQuery.of(context).size.height,

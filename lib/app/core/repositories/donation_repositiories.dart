@@ -7,6 +7,7 @@ abstract class DonationRepo {
       String userId, DonationModel donationModel);
   Future<Either<String, String>> deleteDonation(String userId, String docId);
   Future<Either<String, List<DonationModel>>> loadAllDonation(String userId);
+  Future<int> countDocumentation(String id);
 }
 
 class DonationRepositories implements DonationRepo {
@@ -78,6 +79,30 @@ class DonationRepositories implements DonationRepo {
         return left('Error while deleting');
     } catch (error) {
       return left(error.toString());
+    }
+  }
+
+  @override
+  Future<int> countDocumentation(String id) async {
+    try {
+      bool complete = false;
+      int i = 0;
+
+      await FirebaseFirestore.instance
+          .collection('User')
+          .doc(id)
+          .collection('donation')
+          .get()
+          .then((value) => value.docs.forEach((element) {
+                i++;
+              }))
+          .whenComplete(() => complete = true);
+
+      if (complete) return i;
+      return i;
+    } catch (error) {
+      print('error' + error.toString());
+      return 0;
     }
   }
 }

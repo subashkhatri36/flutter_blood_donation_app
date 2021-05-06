@@ -94,24 +94,25 @@ class _CustomMapState extends State<CustomMap> {
   }
 
   addMarker() {
+    markers.clear();
     userController.userlist.toList().forEach((element) {
-      if (element.userId != userController.myinfo.value.userId)
+      //   if (element.userId != userController.myinfo.value.userId)
+      //     markers.add(Marker(
+      //       icon: mapicons[bloodgroup.indexOf(element.bloodgroup)],
+      //       markerId: MarkerId('${element.userId}'),
+      //       position: LatLng(element.latitude, element.longitude),
+      //       onTap: () {
+      //         // print('tapp');
+      //         setState(() {
+      //           pinPillPosition = 0;
+      //           selectedUser = element;
+      //         });
+      //         startTimer();
+      //       },
+      //     ));
+      if (element.bloodgroup == selectedbloodgroup)
         markers.add(Marker(
           icon: mapicons[bloodgroup.indexOf(element.bloodgroup)],
-          markerId: MarkerId('${element.userId}'),
-          position: LatLng(element.latitude, element.longitude),
-          onTap: () {
-            // print('tapp');
-            setState(() {
-              pinPillPosition = 0;
-              selectedUser = element;
-            });
-            startTimer();
-          },
-        ));
-      else //if (element.bloodgroup == selectedbloodgroup)
-        markers.add(Marker(
-          icon: userIcon,
           markerId: MarkerId('${element.userId}'),
           position: LatLng(element.latitude, element.longitude),
           consumeTapEvents: true,
@@ -163,36 +164,36 @@ class _CustomMapState extends State<CustomMap> {
     userMarker(context, 'assets/images/defaultuser.png');
     allusers = donorController.getDonors(selectedbloodgroup);
     createmarker(context);
-
+    if (mapicons.length != 0 || bloodicons.length == 0) addMarker();
     return Stack(
       children: [
-        //if (0 != 0)
-          GoogleMap(
-            mapType: MapType.normal,
-            initialCameraPosition: CameraPosition(
-                zoom: 16.0,
-                target: LatLng(userController.mylatitude.value,
-                    userController.mylongitude.value)),
-            myLocationEnabled: true,
-            onTap: (pos) {
-              setState(() {
-                pinPillPosition = -190;
-              });
-            },
-            markers: markers,
-            onMapCreated: (GoogleMapController controller) {
-              addMarker();
-              setState(() {
-                mapController = controller;
-              });
+        // if (0 != 0)
+        GoogleMap(
+          mapType: MapType.normal,
+          initialCameraPosition: CameraPosition(
+              zoom: 5.0,
+              target: LatLng(userController.mylatitude.value,
+                  userController.mylongitude.value)),
+          myLocationEnabled: true,
+          onTap: (pos) {
+            setState(() {
+              pinPillPosition = -190;
+            });
+          },
+          markers: markers,
+          onMapCreated: (GoogleMapController controller) {
+            addMarker();
+            setState(() {
+              mapController = controller;
+            });
 
-              controller.animateCamera(CameraUpdate.newCameraPosition(
-                  CameraPosition(
-                      zoom: 16.0,
-                      target: LatLng(userController.mylatitude.value,
-                          userController.mylongitude.value))));
-            },
-          ),
+            controller.animateCamera(CameraUpdate.newCameraPosition(
+                CameraPosition(
+                    zoom: 10,
+                    target: LatLng(userController.mylatitude.value,
+                        userController.mylongitude.value))));
+          },
+        ),
         if (userController.userlistshown.value)
           Container(
             color: Colors.white,
@@ -330,87 +331,151 @@ class _CustomMapState extends State<CustomMap> {
         AnimatedPositioned(
           duration: Duration(milliseconds: 200),
           bottom: pinPillPosition,
-          child: Container(
-            height: 90,
-            margin: EdgeInsets.only(left: 10, bottom: 50),
-            padding: EdgeInsets.all(10),
-            width: SizeConfig.screenWidth - 120,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(90),
-              color: Colors.grey.withOpacity(.5),
-              //color: Colors.grey.withOpacity(.8),
-            ),
-            child: Row(
-              children: [
-                Stack(children: [
-                  CircleAvatar(
-                    radius: 30,
-                    backgroundImage: NetworkImage(selectedUser.photoUrl == ''
-                        ? noimage
-                        : selectedUser.photoUrl),
-                  ),
-                  Positioned(
-                      top: 0,
-                      left: 0,
-                      child: CircleAvatar(
-                        backgroundColor: Colors.white,
-                        radius: 11,
-                        child: CircleAvatar(
-                            radius: 10,
-                            backgroundColor: Colors.redAccent[400],
-                            child: Text(
-                              selectedUser.bloodgroup,
-                              style: smallText.copyWith(
-                                  fontSize: 12,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w600),
-                            )),
-                      ))
-                ]),
-                SizedBox(width: 5),
-                Container(
-                    width: SizeConfig.screenWidth - 250,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("${selectedUser.username.capitalize}",
-                            overflow: TextOverflow.clip,
-                            style: mediumText.copyWith(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w600)),
-                        Text("${selectedUser.userAddress.capitalize}",
-                            style: smallText.copyWith(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w600)),
-                      ],
-                    )),
-                Column(
-                  children: [
+          child: InkWell(
+            onTap: () {
+              Get.to(DonorProfile(user: selectedUser));
+            },
+            child: Container(
+              height: 90,
+              margin: EdgeInsets.only(left: 10, bottom: 50),
+              padding: EdgeInsets.all(10),
+              width: SizeConfig.screenWidth - 120,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(90),
+                color: Colors.grey.withOpacity(.8),
+                //color: Colors.grey.withOpacity(.8),
+              ),
+              child: Row(
+                children: [
+                  Stack(children: [
                     CircleAvatar(
-                        radius: 15,
-                        backgroundColor: Colors.grey[300],
-                        child: Icon(Icons.more_horiz,
-                            color: Colors.grey[700], size: 18)),
-                    SizedBox(
-                      height: 5,
+                      radius: 30,
+                      backgroundImage: NetworkImage(selectedUser.photoUrl == ''
+                          ? noimage
+                          : selectedUser.photoUrl),
                     ),
-                    InkWell(
-                      onTap: () {
-                        phonecall(selectedUser.phoneNo);
-                      },
-                      child: CircleAvatar(
+                    Positioned(
+                        top: 0,
+                        left: 0,
+                        child: CircleAvatar(
+                          backgroundColor: Colors.white,
+                          radius: 11,
+                          child: CircleAvatar(
+                              radius: 10,
+                              backgroundColor: Colors.redAccent[400],
+                              child: Text(
+                                selectedUser.bloodgroup,
+                                style: smallText.copyWith(
+                                    fontSize: 12,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w600),
+                              )),
+                        ))
+                  ]),
+                  SizedBox(width: 5),
+                  Container(
+                      width: SizeConfig.screenWidth - 250,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("${selectedUser.username.capitalize}",
+                              overflow: TextOverflow.clip,
+                              style: mediumText.copyWith(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w600)),
+                          Text("${selectedUser.userAddress.capitalize}",
+                              style: smallText.copyWith(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w600)),
+                        ],
+                      )),
+                  Column(
+                    children: [
+                      CircleAvatar(
                           radius: 15,
-                          backgroundColor: Colors.green[200],
-                          child: Icon(Icons.phone,
-                              color: Colors.green[700], size: 15)),
-                    )
-                  ],
-                )
-              ],
+                          backgroundColor: Colors.grey[300],
+                          child: Icon(Icons.more_horiz,
+                              color: Colors.grey[700], size: 18)),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      InkWell(
+                        onTap: () {
+                          phonecall(selectedUser.phoneNo);
+                        },
+                        child: CircleAvatar(
+                            radius: 15,
+                            backgroundColor: Colors.green[200],
+                            child: Icon(Icons.phone,
+                                color: Colors.green[700], size: 15)),
+                      )
+                    ],
+                  )
+                ],
+              ),
             ),
           ),
-        )
+        ),
+        if (!userController.userlistshown.value)
+          Positioned(
+            left: 0,
+            top: 0,
+            child: Container(
+              margin: EdgeInsets.only(left: 10, top: 10),
+              padding: EdgeInsets.only(left: 10),
+              height: 60,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: Colors.grey.withOpacity(.8),
+              ),
+              child: Row(children: [
+                Text(
+                  'BloodGroup :',
+                  style: largeText.copyWith(
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                      fontWeight: FontWeight.w600),
+                ),
+                SizedBox(width: 10),
+                Container(
+                  margin: EdgeInsets.only(right: 10, top: 15, bottom: 15),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 10,
+                  ),
+                  decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(.5),
+                      borderRadius: BorderRadius.circular(5)),
+                  child: DropdownButton(
+                      underline: SizedBox(),
+                      // iconSize: 42,
+                      // icon: Icon(Icons.arrow_drop_down),
+                      // style: TextStyle(color: Theme.of(context).primaryColor),
+                      onChanged: (v) {
+                        setState(() {
+                          allusers =
+                              donorController.getDonors(selectedbloodgroup);
+
+                          selectedbloodgroup = v;
+                        });
+                      },
+                      value: selectedbloodgroup,
+                      items: [
+                        ...bloodgroup.map((e) => DropdownMenuItem(
+                              value: e,
+                              child: Text(
+                                e,
+                                style: mediumText.copyWith(
+                                  color: Theme.of(context).primaryColor,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ))
+                      ]),
+                ),
+              ]),
+            ),
+          )
+
         // if (pinPillPosition == 0)
         //   Container(
         //     width: SizeConfig.screenWidth - 40,

@@ -34,7 +34,7 @@ call(String no) async {
 }
 
 class DonorProfile extends StatelessWidget {
-  final donationController = Get.put(DonationController());
+  final donationController = Get.find<DonationController>();
   DonorProfile({this.user});
   final UserModel user;
   final controller = Get.find<HomeController>();
@@ -43,6 +43,7 @@ class DonorProfile extends StatelessWidget {
   Widget build(BuildContext context) {
     controller.checkUserrating(user.userId);
     controller.loadreview(user);
+    donationController.countDocumentDonation(user.userId);
 
     return Scaffold(
       body: ListView(
@@ -85,7 +86,7 @@ class DonorProfile extends StatelessWidget {
                           borderRadius: BorderRadius.circular(20)),
                       child: Obx(
                         () => Text(
-                            '${donationController.donationList?.length ?? 0} times',
+                            '${donationController.totalDonation.value} times',
                             style: TextStyle(
                               fontSize: Defaults.fontsmall,
                               fontWeight: FontWeight.bold,
@@ -137,12 +138,15 @@ class DonorProfile extends StatelessWidget {
                       Get.to(ReviewPage(user: user));
                     },
                     child: Text(
-                      'Rating and reviews',
-                      style: mediumText.copyWith(
-                          color: Colors.grey[600],
+                      'Rating and reviews -- click here to add your review',
+                      style: TextStyle(
+                          color: Colors.redAccent[600],
                           fontSize: 16,
                           fontWeight: FontWeight.bold),
                     ),
+                  ),
+                  SizedBox(
+                    height: 15,
                   ),
                   Obx(() => controller.loadRevew.isTrue
                       ? Container()
@@ -300,7 +304,10 @@ class ReviewPage extends StatelessWidget {
               children: [
                 CircleAvatar(
                   backgroundColor: Theme.of(context).primaryColor,
-                  backgroundImage: NetworkImage(user.photoUrl),
+                  backgroundImage:
+                      user.photoUrl != null && user.photoUrl.isNotEmpty
+                          ? NetworkImage(user.photoUrl)
+                          : AssetImage('assets/images/bannerImage.jpeg'),
                 ),
                 SizedBox(
                   width: 5,
@@ -332,8 +339,10 @@ class ReviewPage extends StatelessWidget {
           children: [
             Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
               CircleAvatar(
-                backgroundImage:
-                    NetworkImage(userController.myinfo.value.photoUrl),
+                backgroundImage: userController.myinfo.value.photoUrl != null &&
+                        userController.myinfo.value.photoUrl != ''
+                    ? NetworkImage(userController.myinfo.value.photoUrl)
+                    : AssetImage('assets/images/bannerImage.jpeg'),
               ),
               SizedBox(width: 10),
               Column(

@@ -17,11 +17,16 @@ class DonationController extends GetxController {
   RxString note = ''.obs;
   RxList<DonationModel> donationList;
   RxBool showdonartotal = false.obs;
+  RxInt totalDonation = 0.obs;
 
   @override
   void onInit() {
     super.onInit();
     loadAllDonataion();
+  }
+
+  countDocumentDonation(String userId) async {
+    totalDonation.value = await _donationRepo.countDocumentation(userId);
   }
 
   loadAllDonataion() async {
