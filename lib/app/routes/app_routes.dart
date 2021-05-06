@@ -28,5 +28,5 @@ abstract class _Paths {
   static const UPDATEACCOUNT = '/updateaccount';
   static const VIEWALLREQUEST = '/viewallrequest';
   static const VIEW_ALL_REVIEWS = '/view-all-reviews';
-  static const CUSTOMMAP = '/custommap';
+  //static const CUSTOMMAP = '/custommap';
 }

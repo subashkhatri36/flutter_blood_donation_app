@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_blood_donation_app/app/constant/const.dart';
 import 'package:flutter_blood_donation_app/app/constant/timeformatting.dart';
 import 'package:flutter_blood_donation_app/app/core/model/request_model.dart';
-import 'package:flutter_blood_donation_app/app/core/model/user_models.dart';
 import 'package:flutter_blood_donation_app/app/modules/home/views/post_comments/post_comment.dart';
 import 'package:flutter_blood_donation_app/app/utlis/size_config.dart';
 import 'package:get/get.dart';
@@ -13,7 +12,6 @@ import 'package:share/share.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../controllers/home_controller.dart';
-import 'donor_profile/donor_profile.dart';
 
 class UserRequest extends StatelessWidget {
   final RequestModel request;

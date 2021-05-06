@@ -1,7 +1,5 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blood_donation_app/app/constant/defaults.dart';
-import 'package:flutter_blood_donation_app/app/modules/account/controllers/account_controller.dart';
 
 import 'package:get/get.dart';
 
