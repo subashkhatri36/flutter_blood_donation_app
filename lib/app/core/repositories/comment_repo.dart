@@ -4,26 +4,24 @@ import 'package:flutter_blood_donation_app/app/core/model/comment_model.dart';
 
 class CommentRepo {
   final repo = firebaseFirestore.collection('comments');
-  sendComment(comm) async {
-    // print(comm.toJson().toString());
-    await repo.add(comm.toJson());
-    // await repo
-    //     .add(comm.toJson())
-    //     .then((value) => {print(value.id),// Get.snackbar('Request', 'sent')
-    //   })
-    //     .catchError(
-    //         // ignore: return_of_invalid_type_from_catch_error
-    //         (onError) => {
-    //               print(onError.toString()),
-    //             //  Get.snackbar('Error', 'Failed to send request')
-    //             });
+  sendComment(CommentModel comm, int count) async {
+    await repo.add(comm.toJson()).whenComplete(() {
+      firebaseFirestore
+          .collection('request')
+          .doc(comm.postid)
+          .update({"comment": count});
+    });
   }
+
+  // getCommentlength(String postid) async {
+  //   var data = await repo.where('postid', isEqualTo: postid).get();
+  //   return data.docs.length;
+  // }
 
 //get stream of comment
   getComment(String postid) {
     return repo
         .where('postid', isEqualTo: postid)
-        // .orderBy('timestamp', descending: true)
         .snapshots()
         .map((QuerySnapshot query) {
       List<CommentModel> requests = [];

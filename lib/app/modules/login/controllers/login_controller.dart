@@ -61,8 +61,9 @@ class LoginController extends GetxController {
   void login() async {
     // try {
     print(emailController.text);
+    print(passwordController.text);
     Either<String, String> userLogin = await _authenticationRepo.userLogin(
-        emailController.text, rpasswordController.text);
+        emailController.text, passwordController.text);
     userLogin.fold(
         (l) => Get.snackbar('Error !', l, snackPosition: SnackPosition.BOTTOM),
         (r) {

@@ -4,6 +4,8 @@ import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_blood_donation_app/app/core/model/request_model.dart';
 import 'package:flutter_blood_donation_app/app/core/model/review_model.dart';
+import 'package:flutter_blood_donation_app/app/core/repositories/post_repo.dart';
+import 'package:flutter_blood_donation_app/app/modules/home/controllers/home_controller.dart';
 import 'package:get/get.dart';
 
 import 'package:flutter_blood_donation_app/app/core/model/user_models.dart';
@@ -27,6 +29,8 @@ class AccountController extends GetxController {
   File image;
   RxList commentList;
   RxList<ReviewModel> reviewList;
+  RxList<RequestModel> myrequestList =
+      List<RequestModel>.empty(growable: true).obs;
   RxBool loadComment = false.obs;
 
   RxDouble average = 0.0.obs;
@@ -39,6 +43,7 @@ class AccountController extends GetxController {
   @override
   void onInit() {
     getUserData();
+    // getMyRequest();
     getCurrentRequest();
     super.onInit();
   }
@@ -71,10 +76,14 @@ class AccountController extends GetxController {
     }
   }
 
+  getMyRequest() {
+    myrequestList.bindStream(postRepo.mybloodrequest());
+  }
+
   getCurrentRequest() async {
-    var id = FirebaseAuth.instance.currentUser.uid;
+    var id = userController.myinfo.value.userId;
     if (id != null) {
-      print('data is not null');
+      // print('data is not null');
       Either<String, RequestModel> userRequest =
           await _accountRepo.getCurrentRequest(id);
 
@@ -83,7 +92,7 @@ class AccountController extends GetxController {
         requestSendOn.value = true;
       });
     } else {
-      print('uid is null');
+      //  print('uid is null');
     }
   }
 
@@ -111,7 +120,7 @@ class AccountController extends GetxController {
         calculateAverage();
       });
     } else {
-      print('user is emapty');
+      // print('user is emapty');
     }
     loadigUserData.toggle();
   }
@@ -197,7 +206,7 @@ class AccountController extends GetxController {
         Either<String, String> uploaded =
             await _accountRepo.uploadImage(image, id);
         uploaded.fold((l) {
-          print(l);
+          //  print(l);
         }, (r) {
           userImage.value = r;
           isImageNetwork.value = true;
@@ -206,7 +215,7 @@ class AccountController extends GetxController {
 
         //_image = File(pickedFile.path); // Use if you only need a single picture
       } else {
-        print('No image selected.');
+        //print('No image selected.');
       }
       isImageUploading.value = false;
     }
@@ -220,3 +229,5 @@ class AccountController extends GetxController {
   @override
   void onClose() {}
 }
+
+final accountController = Get.put(AccountController());

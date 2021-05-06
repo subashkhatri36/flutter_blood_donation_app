@@ -81,7 +81,7 @@ class Authentication implements AuthenticationRepo {
               forceAndroidLocationManager: true)
           .then((Position position) => _currentPosition = position)
           .catchError((e) {
-        print(e);
+        // print(e);
       });
     } catch (error) {
       Get.snackbar('Info', 'Please Trun On Your Location',

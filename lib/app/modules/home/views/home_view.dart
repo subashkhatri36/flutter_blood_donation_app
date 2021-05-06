@@ -16,23 +16,6 @@ import 'request_widgets.dart';
 
 List<PopupMenuItem> menuItem = [
   // PopupMenuItem(
-  //   child: Text('Request Blood'),
-  //   value: '/request',
-  // ),
-  // PopupMenuItem(
-  //   child: Text('Home'),
-  //   value: '/home',
-  // ),
-  //
-  // PopupMenuItem(
-  //   child: Text('Donors available'),
-  //   value: '/donor-details',
-  // ),
-  // PopupMenuItem(
-  //   child: Text('Account'),
-  //   value: '/account',
-  // ),
-  // PopupMenuItem(
   //   child: Text('Settings'),
   //   value: '/settings',
   // ),
@@ -86,8 +69,8 @@ class HomeView extends GetView<HomeController> {
                   // Get.snackbar(v, v);
                   if (v == '/login') {
                     FirebaseAuth.instance.signOut();
+                    Get.offAll(LoginView(), binding: LoginBinding());
                   }
-                  Get.offAll(LoginView(), binding: LoginBinding());
                 }, itemBuilder: (context) {
                   return List.generate(menuItem.length, (i) {
                     return menuItem[i];
@@ -122,12 +105,8 @@ class HomeView extends GetView<HomeController> {
           ),
           floatingActionButton: FloatingActionButton(
             backgroundColor: controller.selectedIndex.value == 1
-                ?
-                // ? controller.userlistshown.value
-                //     ?
-                Theme.of(context).scaffoldBackgroundColor
+                ? Theme.of(context).scaffoldBackgroundColor
                 : Colors.grey[300],
-            // : Colors.grey[300],
             onPressed: () {
               controller.selectedIndex.value = 1;
               if (controller.selectedIndex.value == 1)
@@ -135,10 +114,7 @@ class HomeView extends GetView<HomeController> {
             },
             child: CircleAvatar(
               backgroundColor: controller.selectedIndex.value == 1
-                  ?
-                  // ? !controller.userlistshown.value
-                  //     ? Theme.of(context).primaryColor
-                  Theme.of(context).primaryColor
+                  ? Theme.of(context).primaryColor
                   : Colors.white,
               child: Icon(
                   controller.userlistshown.value ? Icons.list : Icons.map_sharp,

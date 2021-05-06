@@ -28,7 +28,7 @@ class _CustomMapState extends State<CustomMap> {
   double mylongitude;
   UserModel selectedUser;
   List<DropdownMenuItem> items = [];
-  double pinPillPosition = -100;
+  double pinPillPosition = -190;
   List<UsermodelSortedtoMyLocationModel> allusers = [];
   String selectedbloodgroup;
   List bloodicons = [
@@ -45,16 +45,11 @@ class _CustomMapState extends State<CustomMap> {
   Timer timer;
 
   void startTimer() {
-    //print('timer started');
-    // setState(() {
-    //   _start = 10;
-    // });
-    const sec = Duration(seconds: 4);
+    const sec = Duration(seconds: 8);
     timer = Timer(sec, () {
       setState(() {
-        pinPillPosition = -100;
+        pinPillPosition = -190;
       });
-      // print('timer stopped');
     });
   }
 
@@ -105,11 +100,8 @@ class _CustomMapState extends State<CustomMap> {
           icon: mapicons[bloodgroup.indexOf(element.bloodgroup)],
           markerId: MarkerId('${element.userId}'),
           position: LatLng(element.latitude, element.longitude),
-          //consumeTapEvents: true,
-          // infoWindow: InfoWindow(
-          //     title: '${element.username}', snippet: "${element.userAddress}"),
           onTap: () {
-            print('tapp');
+            // print('tapp');
             setState(() {
               pinPillPosition = 0;
               selectedUser = element;
@@ -151,15 +143,6 @@ class _CustomMapState extends State<CustomMap> {
     super.dispose();
   }
 
-  setUser() {
-    // List<UsermodelSortedtoMyLocationModel> users =
-    //     donorController.getDonors(selectedbloodgroup);
-    //print(users.length);
-    // setState(() {
-    //   allusers = users;
-    // });
-  }
-
   createmarker(context) {
     bloodicons.forEach((element) {
       createIcon(context, element);
@@ -183,44 +166,33 @@ class _CustomMapState extends State<CustomMap> {
 
     return Stack(
       children: [
-        // InkWell(
-        //     onTap: () {
-        //       setState(() {
-        //         selectedbloodgroup = 'A+';
-        //       });
-        //     },
-        //     child: Text(selectedbloodgroup)),
-        // if (!userController.userlistshown.value)
-        // ? Container(
-        //     child: Text(selelctedbloodgruop),
-        //   )
-        GoogleMap(
-          mapType: MapType.normal,
-          initialCameraPosition: CameraPosition(
-              zoom: 16.0,
-              target: LatLng(userController.mylatitude.value,
-                  userController.mylongitude.value)),
-          myLocationEnabled: true,
-          onTap: (pos) {
-            setState(() {
-              pinPillPosition = -100;
-            });
-          },
-          // myLocationButtonEnabled: true,
-          markers: markers,
-          onMapCreated: (GoogleMapController controller) {
-            addMarker();
-            setState(() {
-              mapController = controller;
-            });
+        //if (0 != 0)
+          GoogleMap(
+            mapType: MapType.normal,
+            initialCameraPosition: CameraPosition(
+                zoom: 16.0,
+                target: LatLng(userController.mylatitude.value,
+                    userController.mylongitude.value)),
+            myLocationEnabled: true,
+            onTap: (pos) {
+              setState(() {
+                pinPillPosition = -190;
+              });
+            },
+            markers: markers,
+            onMapCreated: (GoogleMapController controller) {
+              addMarker();
+              setState(() {
+                mapController = controller;
+              });
 
-            controller.animateCamera(CameraUpdate.newCameraPosition(
-                CameraPosition(
-                    zoom: 16.0,
-                    target: LatLng(userController.mylatitude.value,
-                        userController.mylongitude.value))));
-          },
-        ),
+              controller.animateCamera(CameraUpdate.newCameraPosition(
+                  CameraPosition(
+                      zoom: 16.0,
+                      target: LatLng(userController.mylatitude.value,
+                          userController.mylongitude.value))));
+            },
+          ),
         if (userController.userlistshown.value)
           Container(
             color: Colors.white,
@@ -235,17 +207,12 @@ class _CustomMapState extends State<CustomMap> {
                           color: Colors.grey[600], fontWeight: FontWeight.bold),
                     ),
                     Spacer(),
-                    // Text(
-                    //   'SortBy:',
-                    //   style: TextStyle(
-                    //       color: Colors.grey, fontWeight: FontWeight.bold),
-                    // ),
                     DropdownButton(
                         onChanged: (v) {
                           setState(() {
                             allusers =
                                 donorController.getDonors(selectedbloodgroup);
-                            // print(allusers.length);
+
                             selectedbloodgroup = v;
                           });
                         },
@@ -253,7 +220,13 @@ class _CustomMapState extends State<CustomMap> {
                         items: [
                           ...bloodgroup.map((e) => DropdownMenuItem(
                                 value: e,
-                                child: Container(child: Text(e)),
+                                child: Text(
+                                  e,
+                                  style: largeText.copyWith(
+                                      color: Colors.grey[600],
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 24),
+                                ),
                               ))
                         ]),
                   ],
@@ -265,7 +238,6 @@ class _CustomMapState extends State<CustomMap> {
                       Get.to(DonorProfile(
                           user: userController.userlist[e.donorindex]));
                     },
-                    // isThreeLine: true,
                     leading: Container(
                       width: 60,
                       child: Stack(
@@ -275,8 +247,8 @@ class _CustomMapState extends State<CustomMap> {
                             child: CircleAvatar(
                               backgroundColor: Colors.deepOrange,
                               radius: 25,
-                              backgroundImage: NetworkImage(userController
-                                  .userlist[e.donorindex].photoUrl),
+                              backgroundImage: NetworkImage(
+                                  '${userController.userlist[e.donorindex].photoUrl != '' ? userController.userlist[e.donorindex].photoUrl : noimage ?? noimage}'),
                             ),
                           ),
                           Positioned(
@@ -289,7 +261,7 @@ class _CustomMapState extends State<CustomMap> {
                                   backgroundColor: Colors.red,
                                   radius: 10,
                                   child: Text(
-                                    'AB+',
+                                    selectedbloodgroup,
                                     style: TextStyle(
                                         color: Colors.white, fontSize: 10),
                                   )),
@@ -298,13 +270,20 @@ class _CustomMapState extends State<CustomMap> {
                         ],
                       ),
                     ),
-                    title: Text(e.name),
+                    title: Text(e.name.capitalize,
+                        style: TextStyle(
+                          color: Colors.grey[600],
+                          fontWeight: FontWeight.w700,
+                        )),
                     subtitle: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(userController
-                              .userlist[e.donorindex].userAddress),
-                          Text("${(e.distance / 1000).toStringAsFixed(2)}Km"),
+                          Text(
+                              userController.userlist[e.donorindex].userAddress,
+                              style: mediumText.copyWith(
+                                  fontWeight: FontWeight.w600)),
+                          Text("${(e.distance / 1000).toStringAsFixed(2)}Km",
+                              style: TextStyle(color: Colors.grey[600])),
                         ]),
                     trailing: Column(children: [
                       InkWell(
@@ -347,13 +326,103 @@ class _CustomMapState extends State<CustomMap> {
               ],
             ),
           ),
+        // if (pinPillPosition == 0)
         AnimatedPositioned(
-            bottom: pinPillPosition,
-            right: 0,
-            left: 0,
-            duration: Duration(milliseconds: 200),
-            child:
-                pinPillPosition != -100 ? OntapUser(selectedUser) : Text('')),
+          duration: Duration(milliseconds: 200),
+          bottom: pinPillPosition,
+          child: Container(
+            height: 90,
+            margin: EdgeInsets.only(left: 10, bottom: 50),
+            padding: EdgeInsets.all(10),
+            width: SizeConfig.screenWidth - 120,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(90),
+              color: Colors.grey.withOpacity(.5),
+              //color: Colors.grey.withOpacity(.8),
+            ),
+            child: Row(
+              children: [
+                Stack(children: [
+                  CircleAvatar(
+                    radius: 30,
+                    backgroundImage: NetworkImage(selectedUser.photoUrl == ''
+                        ? noimage
+                        : selectedUser.photoUrl),
+                  ),
+                  Positioned(
+                      top: 0,
+                      left: 0,
+                      child: CircleAvatar(
+                        backgroundColor: Colors.white,
+                        radius: 11,
+                        child: CircleAvatar(
+                            radius: 10,
+                            backgroundColor: Colors.redAccent[400],
+                            child: Text(
+                              selectedUser.bloodgroup,
+                              style: smallText.copyWith(
+                                  fontSize: 12,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w600),
+                            )),
+                      ))
+                ]),
+                SizedBox(width: 5),
+                Container(
+                    width: SizeConfig.screenWidth - 250,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("${selectedUser.username.capitalize}",
+                            overflow: TextOverflow.clip,
+                            style: mediumText.copyWith(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600)),
+                        Text("${selectedUser.userAddress.capitalize}",
+                            style: smallText.copyWith(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600)),
+                      ],
+                    )),
+                Column(
+                  children: [
+                    CircleAvatar(
+                        radius: 15,
+                        backgroundColor: Colors.grey[300],
+                        child: Icon(Icons.more_horiz,
+                            color: Colors.grey[700], size: 18)),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    InkWell(
+                      onTap: () {
+                        phonecall(selectedUser.phoneNo);
+                      },
+                      child: CircleAvatar(
+                          radius: 15,
+                          backgroundColor: Colors.green[200],
+                          child: Icon(Icons.phone,
+                              color: Colors.green[700], size: 15)),
+                    )
+                  ],
+                )
+              ],
+            ),
+          ),
+        )
+        // if (pinPillPosition == 0)
+        //   Container(
+        //     width: SizeConfig.screenWidth - 40,
+        //     child: AnimatedPositioned(
+        //         bottom: pinPillPosition,
+        //         right: 0,
+        //         left: 0,
+        //         duration: Duration(milliseconds: 200),
+        //         child: pinPillPosition != -100
+        //             ? OntapUser(selectedUser)
+        //             : Text('')),
+        //   ),
         // Center(child: Text('Text("$pinPillPosition")')),
       ],
     );
@@ -375,6 +444,15 @@ class _CustomMapState extends State<CustomMap> {
         // print(pinPillPosition);
       },
     ));
+  }
+
+  void phonecall(String phoneNo) async {
+    String url = "tel:$phoneNo";
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 }
 
@@ -410,160 +488,85 @@ class OntapUser extends StatelessWidget {
       onTap: () {
         Get.to(DonorProfile(user: user));
       },
-      child: FittedBox(
-        child: Container(
-            margin: const EdgeInsets.only(bottom: 30, left: 20, right: 70),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(30),
-              color: Colors.white.withOpacity(.9),
-            ),
-            width: SizeConfig.screenWidth,
-            height: 90,
-            child: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-              SizedBox(width: 5),
+      child: Container(
+          margin: const EdgeInsets.only(bottom: 30, left: 20, right: 70),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(30),
+            color: Colors.red.withOpacity(.5),
+          ),
+          width: SizeConfig.screenWidth,
+          height: 90,
+          child: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+            SizedBox(width: 5),
+            Stack(children: [
               CircleAvatar(
                 radius: 30,
                 backgroundImage:
                     NetworkImage(user.photoUrl == '' ? noimage : user.photoUrl),
               ),
-              SizedBox(width: 10),
-              Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    FittedBox(
-                      child: Container(
-                        width: 110,
-                        child: Text(
-                          user.username,
+              Positioned(
+                  top: 0,
+                  left: 0,
+                  child: CircleAvatar(
+                    backgroundColor: Colors.white,
+                    radius: 12,
+                    child: CircleAvatar(
+                        radius: 10,
+                        backgroundColor: Colors.redAccent[400],
+                        child: Text(user.bloodgroup)),
+                  ))
+            ]),
+            SizedBox(width: 10),
+            Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  FittedBox(
+                    child: Container(
+                      width: 110,
+                      child: Text(user.username.capitalize,
                           overflow: TextOverflow.clip,
-                          style: smallText,
-                        ),
-                      ),
+                          style: largeText.copyWith(
+                              color: Colors.grey[800],
+                              fontWeight: FontWeight.bold)),
                     ),
-                    Text(
-                      user.userAddress,
+                  ),
+                  Text(user.userAddress,
+                      style: smallText.copyWith(
+                          color: Colors.grey[600],
+                          fontWeight: FontWeight.w600)),
+                  Text(
+                    user.bloodgroup,
+                    style: TextStyle(
+                        color: Colors.red, fontWeight: FontWeight.bold),
+                  ),
+                ]),
+            Spacer(),
+            Padding(
+              padding: const EdgeInsets.only(right: 18.0),
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    CircleAvatar(
+                        backgroundColor: Colors.grey[300],
+                        child: Icon(Icons.more_horiz,
+                            color: Colors.grey[700], size: 18)),
+                    SizedBox(
+                      width: 20,
                     ),
-                    Text(
-                      user.bloodgroup,
-                      style: TextStyle(
-                          color: Colors.red, fontWeight: FontWeight.bold),
-                    ),
+                    InkWell(
+                      onTap: () {
+                        _launchCaller();
+                      },
+                      child: CircleAvatar(
+                          backgroundColor: Colors.green[200],
+                          child: Icon(Icons.phone,
+                              color: Colors.green[700], size: 15)),
+                    )
                   ]),
-              Spacer(),
-              Padding(
-                padding: const EdgeInsets.only(right: 18.0),
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      CircleAvatar(
-                          backgroundColor: Colors.grey[300],
-                          child: Icon(Icons.more_horiz,
-                              color: Colors.grey[700], size: 18)),
-                      SizedBox(
-                        width: 20,
-                      ),
-                      InkWell(
-                        onTap: () {
-                          _launchCaller();
-                        },
-                        child: CircleAvatar(
-                            backgroundColor: Colors.green[200],
-                            child: Icon(Icons.phone,
-                                color: Colors.green[700], size: 15)),
-                      )
-                    ]),
-              ),
-              SizedBox(width: Defaults.paddingnormal),
-            ])),
-      ),
+            ),
+            SizedBox(width: Defaults.paddingnormal),
+          ])),
     );
   }
 }
-
-// class CustomMap extends StatelessWidget {
-//   final controller = Get.find<HomeController>();
-//   final List<Widget> _children = [
-//     Container(),
-//     GoogleMap(
-//         mapType: MapType.hybrid,
-//         // initialCameraPosition: _kGooglePlex,
-//         onMapCreated: (GoogleMapController controller) {
-//           // controller.animateCamera(CameraUpdate)
-//           //  _controller.complete(controller);
-//         },
-//         initialCameraPosition: CameraPosition(
-//             bearing: 192.8334901395799,
-//             target: LatLng(37.43296265331129, -122.08832357078792),
-//             tilt: 59.440717697143555,
-//             zoom: 19.151926040649414)),
-//     Container(),
-//     Container(),
-//   ];
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Obx(
-//       () => Scaffold(
-//         body: IndexedStack(
-//           index: controller.selectedIndex.value,
-//           children: _children,
-//         ),
-//         // bottomNavigationBar: BottomNavigationBar(
-//         //   elevation: 0,
-//         //   currentIndex: controller.count.value,
-//         //   onTap: (v) {
-//         //     controller.count.value = v;
-//         //     if (v == 1) controller.ismap.toggle();
-//         //   },
-//         //   items: [
-//         //     BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Request'),
-//         //     controller.ismap.value
-//         //         ? BottomNavigationBarItem(
-//         //             icon: CircleAvatar(
-//         //                 backgroundColor: controller.count.value == 1
-//         //                     ? Colors.blue
-//         //                     : Colors.grey,
-//         //                 child: Icon(Icons.map)),
-//         //             label: 'Map')
-//         //         : BottomNavigationBarItem(
-//         //             icon: CircleAvatar(
-//         //                 backgroundColor: controller.count.value == 1
-//         //                     ? Colors.blue
-//         //                     : Colors.grey,
-//         //                 child: Icon(Icons.list)),
-//         //             label: 'List'),
-//         //     BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Account')
-//         //   ],
-//         // ),
-//       ),
-//     );
-//   }
-// }
-
-// class KeepAlivePage extends StatefulWidget {
-//   KeepAlivePage({
-//     Key key,
-//     @required this.child,
-//   }) : super(key: key);
-
-//   final Widget child;
-
-//   @override
-//   _KeepAlivePageState createState() => _KeepAlivePageState();
-// }
-
-// class _KeepAlivePageState extends State<KeepAlivePage>
-//     with AutomaticKeepAliveClientMixin {
-//   @override
-//   Widget build(BuildContext context) {
-//     /// Dont't forget this
-//     super.build(context);
-
-//     return widget.child;
-//   }
-
-//   @override
-//   // TODO: implement wantKeepAlive
-//   bool get wantKeepAlive => true;
-// }

@@ -9,39 +9,41 @@ class RequestModel {
   Timestamp timestamp;
   String city;
   String address;
-  String detail;
+  String hospitaldetail;
   String photoUrl;
   String userphotoUrl;
+  bool bloodtype;
   int like;
-// List likes = []; // = [];
+  String status;
+
   int comment;
-  // String status;
+
   RequestModel(
       {this.id,
       this.userid,
       this.name,
       this.bloodgroup,
-      this.detail,
+      this.hospitaldetail,
       this.address,
       this.timestamp,
+      this.bloodtype,
       this.photoUrl,
       this.userphotoUrl,
+      this.status,
       this.contactno,
       this.city = 'Kathmandu',
       this.like = 0,
-      this.comment});
+      this.comment = 0});
 
   RequestModel.fromJson(Map<String, dynamic> json) {
     this.id = json['id'];
     this.name = json['name'];
     this.bloodgroup = json['bloodgroup'];
-    this.detail = json['detail'];
+    this.hospitaldetail = json['detail'];
     this.address = json['address'];
     this.timestamp = Timestamp.now();
     this.userid = json['userid'];
     this.contactno = json['contactno'];
-
-    //this.likes=json['likes'];
   }
   RequestModel.fromDocumentSnapshot(DocumentSnapshot json) {
     this.id = json.id;
@@ -49,14 +51,15 @@ class RequestModel {
     this.contactno = json.data()['contactno'];
     this.name = json.data()['name'];
     this.bloodgroup = json.data()['bloodgroup'];
-    this.detail = json.data()['detail'];
+    this.hospitaldetail = json.data()['detail'];
     this.address = json.data()['address'];
     this.timestamp = json.data()['timestamp'];
     this.photoUrl = json.data()['photoUrl'];
     this.userphotoUrl = json.data()['userPhotourl'];
     this.like = json.data()['like'];
-
-    this.comment = 0; //json.data()['comment'] ?? 0;
+    this.comment = json.data()['comment'];
+    this.bloodtype = json.data()['bloodtype'] ?? false;
+    this.status = json.data()['status'];
   }
 
   Map<String, dynamic> toJson() {
@@ -65,13 +68,16 @@ class RequestModel {
     data['name'] = this.name;
     data['bloodgroup'] = this.bloodgroup;
     data['address'] = this.address;
-    data['detail'] = this.detail;
+    data['detail'] = this.hospitaldetail;
     data['photoUrl'] = this.photoUrl;
     data['timestamp'] = Timestamp.now();
-    data['userPhotourl'] = this.userphotoUrl;
     data['like'] = this.like;
+    data['bloodtype'] = this.bloodtype;
+    data['status'] = this.status;
+    data['comment'] = this.comment;
+    data['contactno'] = this.contactno;
+    data['userPhotourl'] = this.userphotoUrl;
 
-    data['comment'] = 0;
     return data;
   }
 }

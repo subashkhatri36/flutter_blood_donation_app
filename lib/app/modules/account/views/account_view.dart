@@ -3,8 +3,12 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_blood_donation_app/app/Widgets/CustomButton.dart';
 import 'package:flutter_blood_donation_app/app/constant/defaults.dart';
+import 'package:flutter_blood_donation_app/app/core/model/donation_model.dart';
 import 'package:flutter_blood_donation_app/app/modules/ViewAllReviews/bindings/view_all_reviews_binding.dart';
 import 'package:flutter_blood_donation_app/app/modules/ViewAllReviews/views/view_all_reviews_view.dart';
+import 'package:flutter_blood_donation_app/app/modules/donation/bindings/donation_binding.dart';
+import 'package:flutter_blood_donation_app/app/modules/donation/controllers/donation_controller.dart';
+import 'package:flutter_blood_donation_app/app/modules/donation/views/donation_view.dart';
 import 'package:flutter_blood_donation_app/app/modules/request/bindings/request_binding.dart';
 import 'package:flutter_blood_donation_app/app/modules/request/views/request_view.dart';
 import 'package:flutter_blood_donation_app/app/modules/updateaccount/bindings/updateaccount_binding.dart';
@@ -14,6 +18,7 @@ import 'package:flutter_blood_donation_app/app/modules/viewallrequest/views/view
 import 'package:flutter_blood_donation_app/app/utlis/rating.dart';
 
 import 'package:get/get.dart';
+import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
 import '../controllers/account_controller.dart';
@@ -25,6 +30,7 @@ class AccountView extends StatefulWidget {
 
 class _AccountViewState extends State<AccountView>
     with SingleTickerProviderStateMixin {
+  final donationController = Get.put(DonationController());
   final controller = Get.find<AccountController>();
   TabController _controller;
   List<Widget> list = [
@@ -52,6 +58,7 @@ class _AccountViewState extends State<AccountView>
   @override
   Widget build(BuildContext context) {
     final accountController = Get.find<AccountController>();
+    // print(accountController.model.bloodgroup);
 
     return Scaffold(
         body: Obx(
@@ -130,7 +137,7 @@ class _AccountViewState extends State<AccountView>
                                       )),
                               ),
                               //2
-                              SingleChildScrollView(child: Donation()),
+                              Donation(accountController.model.bloodgroup),
                               //3
                               SingleChildScrollView(
                                 child: Container(
@@ -158,12 +165,16 @@ class _AccountViewState extends State<AccountView>
 }
 
 class Donation extends StatelessWidget {
+  Donation(this.id);
+  final id;
+
   @override
   Widget build(BuildContext context) {
+    final donationController = Get.find<DonationController>();
     return Container(
       margin: EdgeInsets.all(Defaults.paddingmiddle),
       decoration: BoxDecoration(border: Border.all(color: Colors.grey)),
-      height: 200,
+      height: MediaQuery.of(context).size.height,
       child: Column(
         children: [
           Container(
@@ -172,21 +183,128 @@ class Donation extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  'Donation',
-                  style: TextStyle(fontSize: Defaults.fontheading),
-                ),
-                Text(
-                  'View All',
-                  style: TextStyle(fontSize: Defaults.fontheading),
+                Text('Donation',
+                    style: TextStyle(
+                        fontSize: Defaults.fontheading, color: Colors.white)),
+                InkWell(
+                  onTap: () {
+                    Get.to(DonationView(),
+                        binding: DonationBinding(), arguments: id);
+                  },
+                  child: Container(
+                    padding: EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                        border: Border.all(color: Colors.white),
+                        borderRadius: BorderRadius.circular(20)),
+                    child: Text(
+                      'Add Donation',
+                      style: TextStyle(
+                          fontSize: Defaults.fontnormal, color: Colors.white),
+                    ),
+                  ),
                 ),
               ],
             ),
           ),
-          Text('No Donation Yet.')
+          SizedBox(
+            height: 10,
+          ),
+          Obx(
+            () => donationController.isloading.isFalse
+                ? donationController.donationList.length > 0
+                    ? AllDonationview(
+                        donationController: donationController,
+                        del: true,
+                      )
+                    : Text('No Donation Yet.')
+                : Container(
+                    child: CircularProgressIndicator(
+                    backgroundColor: Colors.red,
+                  )),
+          ),
         ],
       ),
     );
+  }
+}
+
+class AllDonationview extends StatelessWidget {
+  const AllDonationview({
+    Key key,
+    @required this.donationController,
+    this.del = false,
+  }) : super(key: key);
+  final bool del;
+
+  final DonationController donationController;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.separated(
+        shrinkWrap: true,
+        itemBuilder: (context, index) {
+          DonationModel model = donationController.donationList[index];
+          return ListTile(
+            leading: CircleAvatar(
+              backgroundColor: Theme.of(context).primaryColor,
+              foregroundColor: Colors.white,
+              child: Text(model.bloodtype),
+            ),
+            title: Text(
+              'Donated to ' + model.person + '.',
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: Defaults.fontsubheading),
+            ),
+            subtitle: Text('${model.details} --On ${model.date}'),
+            trailing: del
+                ? IconButton(
+                    icon: Icon(Icons.delete),
+                    onPressed: () {
+                      return showDialog(
+                        context: context,
+                        barrierDismissible: false, // user must tap button!
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text('Delete Dialog'),
+                            content: SingleChildScrollView(
+                              child: ListBody(
+                                children: <Widget>[
+                                  Text(
+                                      'Are you Sure to delete your donation info.'),
+                                ],
+                              ),
+                            ),
+                            actions: <Widget>[
+                              TextButton(
+                                child: Text('Cancel'),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                              TextButton(
+                                child: Text('Delete'),
+                                onPressed: () {
+                                  donationController.deleteDonation(model);
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    })
+                : Icon(null),
+          );
+        },
+        separatorBuilder: (context, index) {
+          return Divider();
+        },
+        itemCount: del == false
+            ? (donationController.donationList?.length ?? 0) > 2
+                ? 2
+                : donationController.donationList?.length ?? 0
+            : donationController.donationList?.length ?? 0);
   }
 }
 
@@ -218,6 +336,7 @@ class RequestViewWidget extends StatelessWidget {
                       'Current Request',
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
+                          color: Colors.grey,
                           fontSize: Defaults.fontheading),
                     ),
                   ),
@@ -244,6 +363,22 @@ class RequestViewWidget extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+                    // Obx(
+                    //   () => Column(
+                    //     children: [
+                    //       ...accountController.myrequestList.map(
+                    //         (element) => ListTile(
+                    //           leading: CircleAvatar(),
+                    //           title: Text('My request'),
+                    //           subtitle: Text(
+                    //               TimeFormatting.displayTimeAgoFromTimestamp(
+                    //                   element.timestamp.toDate().toString())),
+                    //           trailing: Text(element.status),
+                    //         ),
+                    //       ),
+                    //     ],
+                    //   ),
+                    // ),
                     Text(
                       'Searching For',
                       style: TextStyle(

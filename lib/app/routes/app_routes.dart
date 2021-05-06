@@ -13,6 +13,7 @@ abstract class Routes {
   static const UPDATEACCOUNT = _Paths.UPDATEACCOUNT;
   static const VIEWALLREQUEST = _Paths.VIEWALLREQUEST;
   static const VIEW_ALL_REVIEWS = _Paths.VIEW_ALL_REVIEWS;
+  static const DONATION = _Paths.DONATION;
 }
 
 abstract class _Paths {
@@ -29,4 +30,5 @@ abstract class _Paths {
   static const VIEWALLREQUEST = '/viewallrequest';
   static const VIEW_ALL_REVIEWS = '/view-all-reviews';
   //static const CUSTOMMAP = '/custommap';
+  static const DONATION = '/donation';
 }

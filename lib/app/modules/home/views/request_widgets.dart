@@ -39,35 +39,22 @@ class UserRequest extends StatelessWidget {
             child: Row(
               children: [
                 SizedBox(width: 10),
-                InkWell(
-                  onTap: () {
-                    // UserModel user =
-                    //     userController.getUserByUserid(request.userid);
-                    // //print(user.username);
-                    // Get.to(DonorProfile(user: user));
-                  },
-                  child: CircleAvatar(
-                    radius: 25,
-                    backgroundColor: Colors.blueGrey[700],
-                    child: CircleAvatar(
-                      radius: 24,
-                      backgroundImage: NetworkImage(request.userphotoUrl == ''
-                          ? noimage
-                          : request.userphotoUrl ?? noimage),
-                      backgroundColor: Colors.grey,
-                    ),
-                  ),
+                CircleAvatar(
+                  radius: 24,
+                  backgroundImage: NetworkImage(request.userphotoUrl == ''
+                      ? noimage
+                      : request.userphotoUrl ?? noimage),
+                  backgroundColor: Colors.grey,
                 ),
                 SizedBox(width: 15),
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                   Text(
                     '${request.name.capitalize}',
-                    //capitalize(),
                     style: mediumText.copyWith(
-                        fontWeight: FontWeight.w600, color: Colors.grey[600]),
+                        fontWeight: FontWeight.w700, color: Colors.grey[700]),
                   ),
                   Text(
-                      'looking for ${request.bloodgroup}  in ${request.address}',
+                      'looking for ${request.bloodgroup} ${!request.bloodtype ? 'Blood' : 'Platelets'} in ${request.address}',
                       style: smallText.copyWith(
                           fontWeight: FontWeight.w400, color: Colors.grey[700]),
                       overflow: TextOverflow.ellipsis),
@@ -76,24 +63,19 @@ class UserRequest extends StatelessWidget {
                     style: smallText.copyWith(color: Colors.grey),
                   ),
                 ]),
-                Spacer(),
-                SizedBox(width: 10),
-                Icon(Icons.more_horiz, color: Colors.grey),
-                SizedBox(width: 10),
               ],
             ),
           ),
           SizedBox(height: 10),
           Container(
               height: 200,
+              alignment: Alignment.center,
               width: double.infinity,
               color: Colors.grey,
-              child: request.photoUrl == ''
-                  ? Image.network(
-                      'https://cached.imagescaler.hbpl.co.uk/resize/scaleWidth/815/cached.offlinehbpl.hbpl.co.uk/news/OMC/BLOODBAG-20191114025209465.jpeg',
+              child: request.photoUrl != null && request.photoUrl != ''
+                  ? Image.memory(base64Decode(request.photoUrl),
                       fit: BoxFit.cover)
-                  : Image.memory(base64Decode(request.photoUrl),
-                      fit: BoxFit.cover)
+                  : Image.network(noimage, fit: BoxFit.cover)
               // child: CustomMap(zoomEnabled: false, compassEnabled: false),
               ),
           SizedBox(height: 10),
@@ -126,7 +108,7 @@ class UserRequest extends StatelessWidget {
                           Icon(Icons.location_on, size: 16, color: Colors.grey),
                           Container(
                             width: SizeConfig.screenWidth - 150,
-                            child: Text('${request.detail} Hospital',
+                            child: Text('${request.hospitaldetail} ',
                                 overflow: TextOverflow.ellipsis,
                                 style: smallText.copyWith(
                                     color: Colors.grey,
@@ -142,19 +124,14 @@ class UserRequest extends StatelessWidget {
                     child: Container(
                       width: 50,
                       alignment: Alignment.center,
-                      //padding: EdgeInsets.only(),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20),
                         color: Colors.purple,
                       ),
-
                       height: 30,
                       child: InkWell(
                         onTap: () async {
-                          _launchCaller(userController
-                              .userlist[userController
-                                  .getUserByUserid(request.userid)]
-                              .phoneNo);
+                          _launchCaller(request.contactno);
                         },
                         child: Text(
                           'Call',
@@ -165,16 +142,20 @@ class UserRequest extends StatelessWidget {
                   ),
                 ]),
           ),
-          Row(
-            children: [
-              CircleAvatar(
-                  radius: 10,
-                  child: Icon(
-                    Icons.thumb_up_alt_rounded,
-                    size: 10,
-                  )),
-              Text(request.like.abs().toString())
-            ],
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 10),
+            child: Row(
+              children: [
+                CircleAvatar(
+                    radius: 10,
+                    backgroundColor: Colors.grey.withOpacity(.5),
+                    child: Icon(
+                      Icons.thumb_up_alt_rounded,
+                      size: 10,
+                    )),
+                Text(request.like.abs().toString())
+              ],
+            ),
           ),
           SizedBox(width: 5),
           LikeButton(request: request),
@@ -205,6 +186,10 @@ class _LikeButtonState extends State<LikeButton> {
       child: Row(children: [
         TextButton(
             onPressed: () {
+              // firebaseFirestore
+              //     .collection('request')
+              //     .doc(widget.request.id)
+              //     .delete();
               userController.insertLike(
                   postId: widget.request.id, likeuserId: widget.request.userid);
             },

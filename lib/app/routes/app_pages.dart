@@ -4,6 +4,8 @@ import 'package:flutter_blood_donation_app/app/modules/ViewAllReviews/bindings/v
 import 'package:flutter_blood_donation_app/app/modules/ViewAllReviews/views/view_all_reviews_view.dart';
 import 'package:flutter_blood_donation_app/app/modules/account/bindings/account_binding.dart';
 import 'package:flutter_blood_donation_app/app/modules/account/views/account_view.dart';
+import 'package:flutter_blood_donation_app/app/modules/donation/bindings/donation_binding.dart';
+import 'package:flutter_blood_donation_app/app/modules/donation/views/donation_view.dart';
 import 'package:flutter_blood_donation_app/app/modules/home/bindings/home_binding.dart';
 import 'package:flutter_blood_donation_app/app/modules/home/views/home_view.dart';
 import 'package:flutter_blood_donation_app/app/modules/login/bindings/login_binding.dart';
@@ -74,6 +76,11 @@ class AppPages {
       name: _Paths.VIEW_ALL_REVIEWS,
       page: () => ViewAllReviewsView(),
       binding: ViewAllReviewsBinding(),
+    ),
+    GetPage(
+      name: _Paths.DONATION,
+      page: () => DonationView(),
+      binding: DonationBinding(),
     ),
   ];
 }

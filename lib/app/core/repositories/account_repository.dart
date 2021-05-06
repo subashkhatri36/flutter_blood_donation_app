@@ -67,7 +67,7 @@ class AccountRepositories implements AccountRepo {
           .doc(docId)
           .delete()
           .whenComplete(() => complete = true);
-      print(complete);
+      // print(complete);
       if (complete) {
         return right(true);
       } else {
@@ -140,7 +140,7 @@ class AccountRepositories implements AccountRepo {
       else
         return left('Something went wrong while fetching data');
     } catch (erro) {
-      print(erro);
+      // print(erro);
       return left('Error While Fetching User Data');
     }
   }

@@ -14,7 +14,7 @@ import '../../home/controllers/home_controller.dart';
 
 class RequestController extends GetxController {
   var loading = false.obs;
-  var isSwitched = false.obs;
+  var isplatelets = false.obs;
   var count = 0.obs;
   var formyself = false.obs;
   var mylocation = false.obs;
@@ -23,7 +23,8 @@ class RequestController extends GetxController {
   var data = Uint8List(0).obs;
   GoogleMapController mapController;
   File imagep;
-
+  var map = false.obs;
+  var isimageSelected = false.obs;
   var imagePath = ''.obs;
   var selectedImageSize = ''.obs;
   captureImage() async {
@@ -32,34 +33,34 @@ class RequestController extends GetxController {
   }
 
   //blood request controller
-  final detailController = TextEditingController();
-  final locationController = TextEditingController()
+  final phoneController = TextEditingController()
+    ..text = userController.myinfo.value.phoneNo;
+  final locationController = TextEditingController();
+  //..text = userController.myinfo.value.userAddress;
+  final userAddressController = TextEditingController()
     ..text = userController.myinfo.value.userAddress;
+
   GlobalKey<FormState> requestformKey = GlobalKey<FormState>();
   Future<void> sendrequest() async {
     loading.value = true;
-    print(userController.myinfo.value.photoUrl);
     RequestModel req = RequestModel(
         name: userController.myinfo.value.username,
         userid: userController.myinfo.value.userId,
-        contactno: userController.myinfo.value.phoneNo,
         userphotoUrl: userController.myinfo.value.photoUrl,
-        address: mylocation.value
-            ? locationController.text
-            : userController.myinfo.value.userAddress,
-        detail: detailController.text,
-        bloodgroup: isSwitched.value
-            ? bloodgroup.value
-            : userController.myinfo.value.bloodgroup,
+        address: userAddressController.text,
+        contactno: phoneController.text,
+        bloodgroup: bloodgroup.value,
+        bloodtype: isplatelets.value,
+        status: 'waiting',
+        hospitaldetail: locationController.text,
         photoUrl: base64Encode(data.value));
 
     //sending request
     try {
       await PostsRepo().sendRequest(req);
 
-      clearController();
+      // clearController();
 
-     
       loading = false.obs;
     } on PlatformException catch (err) {
       Get.snackbar(err.code, err.message);
@@ -70,7 +71,7 @@ class RequestController extends GetxController {
   }
 
   clearController() {
-    detailController.clear();
+    phoneController.clear();
     locationController.clear();
   }
 

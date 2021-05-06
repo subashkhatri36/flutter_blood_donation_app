@@ -313,6 +313,26 @@ class HomeController extends GetxController {
     await auth.signOut();
     Get.offNamed('/login');
   }
+
+  // getComment() {}
+  // getlikes(String postid) {
+  //   List<LikeModel> like = likeRepo.getlikes(postid);
+  //   return like;
+  // }
+
+  // sendlike(String postid) {
+  //   List<LikeModel> like = getlikes(postid);
+  //   like.forEach((element) {
+  //     if (element.userid == userController.myinfo.value.userId) {
+  //       LikeModel like = LikeModel(
+  //           postid: postid, userid: userController.myinfo.value.userId);
+  //     } else {
+  //       LikeModel like = LikeModel(
+  //           postid: postid, userid: userController.myinfo.value.userId);
+  //       likeRepo.sendlike(like);
+  //     }
+  //   });
+  //}
 }
 
 final userController = Get.find<HomeController>();

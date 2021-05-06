@@ -11,6 +11,8 @@ class CustomTextField extends StatelessWidget {
   final bool obscureText;
   final validator;
   final bool round;
+  final keyboardtype;
+  final inputformatter;
 
   const CustomTextField(
       {Key key,
@@ -23,11 +25,15 @@ class CustomTextField extends StatelessWidget {
       this.prefixIcon,
       this.validator,
       this.round,
-      this.label})
+      this.label,
+      this.inputformatter,
+      this.keyboardtype})
       : super(key: key);
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+        inputFormatters: inputformatter ?? [],
+        keyboardType: keyboardtype ?? TextInputType.text,
         validator: validator,
         controller: controller,
         obscureText: obscureText,

@@ -306,7 +306,8 @@ class PostComment extends StatelessWidget {
                           timestamp: Timestamp.now(),
                           comment: commentText.text,
                         );
-                        commentRepo.sendComment(comment);
+                        commentRepo.sendComment(
+                            comment, postController.commentData.length + 1);
                         // firebaseFirestore.collection('request').doc(request.id).update({'comment':request.comment+1});
                         commentText.clear();
                       }
