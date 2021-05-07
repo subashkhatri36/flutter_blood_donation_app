@@ -7,6 +7,8 @@ import 'package:flutter_blood_donation_app/app/modules/donation/controllers/dona
 import 'package:flutter_blood_donation_app/app/modules/home/views/custom_map.dart';
 import 'package:flutter_blood_donation_app/app/modules/login/bindings/login_binding.dart';
 import 'package:flutter_blood_donation_app/app/modules/login/views/login_view.dart';
+import 'package:flutter_blood_donation_app/app/modules/setting/bindings/setting_binding.dart';
+import 'package:flutter_blood_donation_app/app/modules/setting/views/setting_view.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -67,6 +69,11 @@ class HomeView extends GetView<HomeController> {
                       Get.offNamed('/request');
                     },
                     child: Icon(Icons.add_location_alt_rounded)),
+                InkWell(
+                    onTap: () {
+                      Get.to(SettingView(), binding: SettingBinding());
+                    },
+                    child: Icon(Icons.settings)),
                 PopupMenuButton(onSelected: (v) {
                   // Get.snackbar(v, v);
                   if (v == '/login') {

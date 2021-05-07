@@ -14,6 +14,7 @@ abstract class Routes {
   static const VIEWALLREQUEST = _Paths.VIEWALLREQUEST;
   static const VIEW_ALL_REVIEWS = _Paths.VIEW_ALL_REVIEWS;
   static const DONATION = _Paths.DONATION;
+  static const SETTING = _Paths.SETTING;
 }
 
 abstract class _Paths {
@@ -31,4 +32,5 @@ abstract class _Paths {
   static const VIEW_ALL_REVIEWS = '/view-all-reviews';
   //static const CUSTOMMAP = '/custommap';
   static const DONATION = '/donation';
+  static const SETTING = '/setting';
 }

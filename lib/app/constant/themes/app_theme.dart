@@ -12,7 +12,6 @@ class Themes {
     primaryColor: lightBackgroundColor,
     accentColor: lightAccentColor,
     backgroundColor: lightBackgroundColor,
-    
     scaffoldBackgroundColor: Colors.white,
     visualDensity: VisualDensity.adaptivePlatformDensity,
   );
