@@ -53,46 +53,53 @@ class UserRequest extends StatelessWidget {
                     style: mediumText.copyWith(
                         fontWeight: FontWeight.w700, color: Colors.grey[700]),
                   ),
-                  Text(
-                      'looking for ${request.bloodgroup} ${!request.bloodtype ? 'Blood' : 'Platelets'} in ${request.address}',
+                  Container(
+                    padding: EdgeInsets.symmetric(vertical: 3),
+                    width: MediaQuery.of(context).size.width - 100,
+                    child: Text(
+                      '${request.bloodgroup} ${!request.bloodtype ? 'Blood' : 'Blood Plasma'} needed in ${request.hospitaldetail}',
                       style: smallText.copyWith(
                           fontWeight: FontWeight.w400, color: Colors.grey[700]),
-                      overflow: TextOverflow.ellipsis),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
                   Text(
                     " ${request.timestamp != null ? TimeFormatting.displayTimeAgoFromTimestamp(request.timestamp.toDate().toString()) : ''}",
-                    style: smallText.copyWith(color: Colors.grey),
+                    style: smallText.copyWith(color: Colors.grey, fontSize: 12),
                   ),
                 ]),
               ],
             ),
           ),
           SizedBox(height: 10),
-          Container(
-              height: 200,
-              alignment: Alignment.center,
-              width: double.infinity,
-              color: Colors.grey,
-              child: request.photoUrl != '' || request.photoUrl == null
-                  ? Image.memory(
-                      base64Decode(request.photoUrl),
-                      fit: BoxFit.cover,
-                      width: 500,
-                      height: 200,
-                    )
-                  : Image.network(
-                      noimage,
-                      fit: BoxFit.fill,
-                      height: 200,
-                      width: 400,
-                    )
-              // child: CustomMap(zoomEnabled: false, compassEnabled: false),
-              ),
-          SizedBox(height: 10),
+          if (request.photoUrl != '' || request.photoUrl == null)
+            Container(
+                height: 200,
+                alignment: Alignment.center,
+                width: double.infinity,
+                color: Colors.grey,
+                child: request.photoUrl != '' || request.photoUrl == null
+                    ? Image.memory(
+                        base64Decode(request.photoUrl),
+                        fit: BoxFit.cover,
+                        width: 500,
+                        height: 200,
+                      )
+                    : Image.network(
+                        noimage,
+                        fit: BoxFit.fill,
+                        height: 200,
+                        width: 400,
+                      )
+                // child: CustomMap(zoomEnabled: false, compassEnabled: false),
+                ),
+          // SizedBox(height: 10),
           Container(
             padding: EdgeInsets.symmetric(
               horizontal: 10,
+              vertical: 5,
             ),
-            height: 60,
+            height: 65,
             color: Colors.grey.withOpacity(.1),
             child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -104,39 +111,53 @@ class UserRequest extends StatelessWidget {
                         Text(
                           '${request.bloodgroup}',
                           style: largeText.copyWith(
-                              color: Colors.grey[700],
+                              color: Colors.red.shade900,
                               fontWeight: FontWeight.bold),
                         ),
                       ]),
                   SizedBox(
-                    width: 15,
+                    width: 10,
                   ),
                   Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        Text('Blood Donors Needed'),
+                        Text(
+                            '${!request.bloodtype ? 'Blood' : 'Blood Plasma'} Donors Needed'),
                         Row(children: [
                           Icon(Icons.location_on, size: 16, color: Colors.grey),
+                          SizedBox(
+                            width: 5,
+                          ),
                           Container(
                             width: SizeConfig.screenWidth - 150,
                             child: Text('${request.hospitaldetail} ',
+                                maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                                 style: smallText.copyWith(
                                     color: Colors.grey,
                                     fontWeight: FontWeight.w400)),
                           ),
                         ]),
-                        Text('${request.address} ,Kathmandu',
-                            style: smallText.copyWith(color: Colors.grey)),
+                        Container(
+                          width: SizeConfig.screenWidth - 135,
+                          child: Text('${request.address} ',
+                              overflow: TextOverflow.ellipsis,
+                              style: smallText.copyWith(
+                                  color: Colors.grey,
+                                  fontWeight: FontWeight.w400)),
+                        ),
                       ]),
+                  SizedBox(
+                    width: 10,
+                  ),
                   Container(
-                    padding: EdgeInsets.all(4),
-                    width: 70,
+                    // padding: EdgeInsets.all(4),
+                    width: 50,
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      color: Colors.purple,
+                      shape: BoxShape.circle,
+                      color: Colors.red.shade900,
                     ),
                     height: 30,
                     child: InkWell(
@@ -144,16 +165,20 @@ class UserRequest extends StatelessWidget {
                         if (request.status == 'waiting')
                           _launchCaller(request.contactno);
                       },
-                      child: Text(
-                        '${request.status == 'waiting' ? 'Call' : 'Completed'}',
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w400),
+                      child: Icon(
+                        request.status == 'waiting' ? Icons.call : Icons.check,
+                        color: Colors.white,
+                        size: 18,
                       ),
+                      // child: Text(
+                      //   '${request.status == 'waiting' ? 'Call' : 'Completed'}',
+                      //   style: TextStyle(
+                      //       color: Colors.white,
+                      //       fontSize: 12,
+                      //       fontWeight: FontWeight.w400),
+                      // ),
                     ),
                   ),
-                  SizedBox(width: 5)
                 ]),
           ),
           Container(
@@ -200,10 +225,6 @@ class _LikeButtonState extends State<LikeButton> {
       child: Row(children: [
         TextButton(
             onPressed: () {
-              // firebaseFirestore
-              //     .collection('request')
-              //     .doc(widget.request.id)
-              //     .delete();
               userController.insertLike(
                   postId: widget.request.id, likeuserId: widget.request.userid);
             },
@@ -224,7 +245,8 @@ class _LikeButtonState extends State<LikeButton> {
                 SizedBox(
                   width: 5,
                 ),
-                Text('LIKE', style: smallText.copyWith(color: Colors.grey)),
+                Text('LIKE (${widget.request?.like ?? 0})',
+                    style: smallText.copyWith(color: Colors.grey)),
               ],
             )),
         Spacer(),
@@ -240,7 +262,8 @@ class _LikeButtonState extends State<LikeButton> {
               SizedBox(
                 width: 5,
               ),
-              Text('COMMENTS', style: smallText.copyWith(color: grey)),
+              Text('COMMENTS (${widget.request?.comment ?? 0})',
+                  style: smallText.copyWith(color: grey)),
             ],
           ),
         ),

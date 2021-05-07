@@ -99,7 +99,7 @@ class HomeView extends GetView<HomeController> {
                     icon: Icon(Icons.home), label: 'Requests'),
                 BottomNavigationBarItem(
                     icon: Icon(Icons.clear),
-                    label: controller.userlistshown.value ? 'Map' : 'Users'),
+                    label: controller.userlistshown.value ? 'Map' : 'List'),
                 BottomNavigationBarItem(
                     icon: Icon(Icons.person), label: 'Account'),
               ],
@@ -119,7 +119,7 @@ class HomeView extends GetView<HomeController> {
                   ? Theme.of(context).primaryColor
                   : Colors.white,
               child: Icon(
-                  controller.userlistshown.value ? Icons.list : Icons.map_sharp,
+                  controller.userlistshown.value ? Icons.map_sharp : Icons.list,
                   color: controller.userlistshown.value
                       ? Colors.grey
                       : Colors.white),

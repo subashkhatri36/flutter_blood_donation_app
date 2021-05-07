@@ -21,6 +21,7 @@ environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
+  flutter_easyloading: 3.0.0
   flutter:
     sdk: flutter
   cloud_firestore: ^1.0.5
