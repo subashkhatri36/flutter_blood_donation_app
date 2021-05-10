@@ -12,10 +12,14 @@ class DonationController extends GetxController {
   TextEditingController personController = new TextEditingController();
   TextEditingController detailsController = new TextEditingController();
   Rx<DonationModel> donationmodel;
+  RxString nodata = 'No Data'.obs;
   RxBool isloading = false.obs;
   RxString bloodgroup = ''.obs;
   RxString note = ''.obs;
-  RxList<DonationModel> donationList=List<DonationModel>.empty(growable: true).obs;
+
+  RxList<DonationModel> donationList;
+  RxList<DonationModel> donationListSpecial;
+  // List<DonationModel>.empty(growable: true).obs;
   RxBool showdonartotal = false.obs;
   RxInt totalDonation = 0.obs;
 
@@ -27,18 +31,21 @@ class DonationController extends GetxController {
 
   countDocumentDonation(String userId) async {
     totalDonation.value = await _donationRepo.countDocumentation(userId);
+    if (totalDonation.value < 1) {
+      donationmodel = null;
+    }
   }
 
-  loadAllDonataion() async {
+  loadDonation(String userId) async {
+    donationmodel = null;
     isloading.toggle();
-    var id = FirebaseAuth.instance.currentUser.uid;
     List<DonationModel> model = [];
     if (id != null) {
       Either<String, List<DonationModel>> data =
-          await _donationRepo.loadAllDonation(id);
+          await _donationRepo.loadAllDonation(userId);
       data.fold((l) => print(l.toString()), (r) {
         model = r.toList();
-        donationList = model.obs;
+        donationListSpecial = model.obs;
         checklastDonation();
       });
     }
@@ -46,10 +53,31 @@ class DonationController extends GetxController {
     print(isloading.value);
   }
 
+  loadAllDonataion() async {
+    donationmodel = null;
+    isloading.toggle();
+    var id = FirebaseAuth.instance.currentUser.uid;
+    List<DonationModel> model = [];
+    if (id != null) {
+      Either<String, List<DonationModel>> data =
+          await _donationRepo.loadAllDonation(id);
+      data.fold((l) => print(l.toString()), (r) {
+        if (r != null) {
+          model = r.toList();
+          donationList = model.obs;
+          checklastDonation();
+        }
+      });
+    }
+    isloading.toggle();
+    print(isloading.value);
+  }
+
   checklastDonation() {
-    donationList.forEach((element) {
-      donationmodel = element.obs;
-    });
+    if (donationListSpecial != null)
+      donationListSpecial.forEach((element) {
+        donationmodel = element.obs;
+      });
   }
 
   saveDonation() async {

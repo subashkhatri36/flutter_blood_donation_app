@@ -241,71 +241,80 @@ class AllDonationview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.separated(
-        shrinkWrap: true,
-        itemBuilder: (context, index) {
-          DonationModel model = donationController.donationList[index];
-          return ListTile(
-            leading: CircleAvatar(
-              backgroundColor: Theme.of(context).primaryColor,
-              foregroundColor: Colors.white,
-              child: Text("${model.bloodtype}"),
-            ),
-            title: Text(
-              'Donated to ' + model.person + '.',
-              style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: Defaults.fontsubheading),
-            ),
-            subtitle: Text('${model.details} --On ${model.date}'),
-            trailing: del
-                ? IconButton(
-                    icon: Icon(Icons.delete),
-                    onPressed: () {
-                      return showDialog(
-                        context: context,
-                        barrierDismissible: false, // user must tap button!
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: Text('Delete Dialog'),
-                            content: SingleChildScrollView(
-                              child: ListBody(
-                                children: <Widget>[
-                                  Text(
-                                      'Are you Sure to delete your donation info.'),
-                                ],
+    var value;
+    if (del == false)
+      value = donationController.donationListSpecial;
+    else
+      value = donationController.donationList;
+
+    if (value != null)
+      return ListView.separated(
+          shrinkWrap: true,
+          itemBuilder: (context, index) {
+            DonationModel model = value[index];
+            return ListTile(
+              leading: CircleAvatar(
+                backgroundColor: Theme.of(context).primaryColor,
+                foregroundColor: Colors.white,
+                child: Text("${model.bloodtype}"),
+              ),
+              title: Text(
+                'Donated to ' + model.person + '.',
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: Defaults.fontsubheading),
+              ),
+              subtitle: Text('${model.details} --On ${model.date}'),
+              trailing: del
+                  ? IconButton(
+                      icon: Icon(Icons.delete),
+                      onPressed: () {
+                        return showDialog(
+                          context: context,
+                          barrierDismissible: false, // user must tap button!
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: Text('Delete Dialog'),
+                              content: SingleChildScrollView(
+                                child: ListBody(
+                                  children: <Widget>[
+                                    Text(
+                                        'Are you Sure to delete your donation info.'),
+                                  ],
+                                ),
                               ),
-                            ),
-                            actions: <Widget>[
-                              TextButton(
-                                child: Text('Cancel'),
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                              ),
-                              TextButton(
-                                child: Text('Delete'),
-                                onPressed: () {
-                                  donationController.deleteDonation(model);
-                                  Navigator.of(context).pop();
-                                },
-                              ),
-                            ],
-                          );
-                        },
-                      );
-                    })
-                : Icon(null),
-          );
-        },
-        separatorBuilder: (context, index) {
-          return Divider();
-        },
-        itemCount: del == false
-            ? (donationController.donationList?.length ?? 0) > 2
-                ? 2
-                : donationController.donationList?.length ?? 0
-            : donationController.donationList?.length ?? 0);
+                              actions: <Widget>[
+                                TextButton(
+                                  child: Text('Cancel'),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                                TextButton(
+                                  child: Text('Delete'),
+                                  onPressed: () {
+                                    donationController.deleteDonation(model);
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      })
+                  : Icon(null),
+            );
+          },
+          separatorBuilder: (context, index) {
+            return Divider();
+          },
+          itemCount: del == false
+              ? (donationController.donationListSpecial?.length ?? 0) > 2
+                  ? 2
+                  : donationController.donationList?.length ?? 0
+              : donationController.donationList?.length ?? 0);
+    else
+      Text(donationController.nodata.value);
   }
 }
 

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_blood_donation_app/app/constant/defaults.dart';
-import 'package:flutter_blood_donation_app/app/core/model/RangeSliderData%20.dart';
 import 'package:flutter_blood_donation_app/app/modules/home/controllers/home_controller.dart';
 
 import 'package:get/get.dart';
@@ -60,8 +59,8 @@ class _SettingViewState extends State<SettingView> {
                           setState(() {
                             controller.minkilo.value =
                                 _lowerValue = newLowerValue;
-                                userController.distance.value=newUpperValue;
-                                // print(userController.distance.value);
+                            userController.distance.value = newUpperValue;
+                            // print(userController.distance.value);
                             controller.maxkilo.value =
                                 _upperValue = newUpperValue;
                           });
@@ -84,28 +83,6 @@ class _SettingViewState extends State<SettingView> {
                     )
                   ],
                 ),
-              ),
-              SizedBox(
-                height: Defaults.paddingbig * 8,
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      color: Theme.of(context).backgroundColor,
-                    ),
-                    child: TextButton(
-                      onPressed: () {},
-                      child: Text(
-                        'Log Out',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    )),
-              ),
-              SizedBox(
-                height: Defaults.paddingbig,
               ),
             ],
           ),

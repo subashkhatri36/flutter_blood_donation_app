@@ -43,6 +43,7 @@ class DonorProfile extends StatelessWidget {
   Widget build(BuildContext context) {
     controller.checkUserrating(user.userId);
     controller.loadreview(user);
+    donationController.loadDonation(user.userId);
     donationController.countDocumentDonation(user.userId);
 
     return Scaffold(
@@ -60,8 +61,10 @@ class DonorProfile extends StatelessWidget {
                     style: largeText.copyWith(
                         fontWeight: FontWeight.w800, color: Colors.grey[700]),
                   ),
-                  // subtitle: Obx(() => Text(
-                  //     'Donate to -${donationController.donationmodel.value.person} on ${donationController.donationmodel.value.date}.')),
+                  subtitle: Obx(() => Text(donationController.donationmodel !=
+                          null
+                      ? 'Donate to -${donationController.donationmodel.value.person} on ${donationController.donationmodel.value.date}.'
+                      : donationController.nodata.value)),
                 ),
               ],
             ),
@@ -69,7 +72,8 @@ class DonorProfile extends StatelessWidget {
           Obx(() => donationController.showdonartotal.isFalse
               ? ListTile(
                   onTap: () {
-                    donationController.showdonartotal.toggle();
+                    if (donationController.donationmodel != null)
+                      donationController.showdonartotal.toggle();
                   },
                   contentPadding: EdgeInsets.only(left: 10),
                   title: Row(children: [
@@ -79,7 +83,6 @@ class DonorProfile extends StatelessWidget {
                           fontWeight: FontWeight.w800, color: Colors.grey[700]),
                     ),
                     SizedBox(width: 10),
-
                     Container(
                       padding: EdgeInsets.all(4),
                       decoration: BoxDecoration(
@@ -96,12 +99,17 @@ class DonorProfile extends StatelessWidget {
                       ),
                     )
                   ]),
-                  // subtitle: Obx(() => Text(//("${donationController.donationmodel}")),
-                  //      'Donate to -${donationController.donationmodel.value.person!=null?donationController.donationmodel.value.person:''} on ${donationController.donationmodel.value.person!=null?donationController.donationmodel.value.date:''}.')),
+                  subtitle: Obx(() => Text(donationController.donationmodel !=
+                          null
+                      ?
+                      //("${donationController.donationmodel}")),
+                      'Donate to -${donationController.donationmodel.value.person} on ${donationController.donationmodel.value.person}.'
+                      : donationController.nodata.value)),
                 )
               : InkWell(
                   onTap: () {
-                    donationController.showdonartotal.toggle();
+                    if (donationController.donationmodel != null)
+                      donationController.showdonartotal.toggle();
                   },
                   child:
                       AllDonationview(donationController: donationController))),
@@ -141,7 +149,7 @@ class DonorProfile extends StatelessWidget {
                     child: Text(
                       'Reviews -- add your review',
                       style: TextStyle(
-                          color: Colors.redAccent[600],
+                          color: Colors.redAccent[900],
                           fontSize: 16,
                           fontWeight: FontWeight.bold),
                     ),
@@ -623,55 +631,3 @@ class DonorProfileHeader extends StatelessWidget {
 }
 
 List reviews = [1, 2, 3, 4, 5, 6];
-
-// class ReviewWidget extends StatelessWidget {
-//   const ReviewWidget({
-//     Key key,
-//   }) : super(key: key);
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container(
-//       child: Column(
-//         children: [
-//           Row(
-//             children: [
-//               CircleAvatar(
-//                 backgroundColor: Colors.grey,
-//                 child: Text(
-//                   'no image',
-//                   style: TextStyle(
-//                       fontSize: 8,
-//                       fontWeight: FontWeight.bold,
-//                       color: Colors.white),
-//                 ),
-//               ),
-//               SizedBox(
-//                 width: 10,
-//               ),
-//               Text(
-//                 'Rich Tend',
-//                 style: TextStyle(),
-//               ),
-//               Spacer(),
-//               Icon(
-//                 Icons.more_vert,
-//                 color: Colors.grey[700],
-//               )
-//             ],
-//           ),
-//           SizedBox(height: 10),
-//           Text(
-//             "A fearless junior policeman ( #MarkChao​ ), who can only see right and wrong is willing to do anything to uncover the truth. Meanwhile a gangster ( #HuangBo​ ), who fears death above anything else is struggling to stay out of serious trouble, his risky decisions have left his life at threat. Two people with completely different perspectives on life come together as partners in a way no one could ever imagine. Somehow, the fate of the world ends up in their hands; they have 36 hours to resolve a crisis which could destroy Harbor City…   ",
-//             style: TextStyle(
-//               color: Colors.grey[600],
-//             ),
-//             maxLines: 4,
-//             overflow: TextOverflow.ellipsis,
-//           ),
-//           SizedBox(height: 20),
-//         ],
-//       ),
-//     );
-//   }
-// }
