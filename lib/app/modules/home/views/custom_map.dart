@@ -94,7 +94,7 @@ class _CustomMapState extends State<CustomMap> {
   }
 
   addMarker() {
-    markers.clear();
+   
     userController.userlist.toList().forEach((element) {
       //   if (element.userId != userController.myinfo.value.userId)
       //     markers.add(Marker(
@@ -110,7 +110,7 @@ class _CustomMapState extends State<CustomMap> {
       //         startTimer();
       //       },
       //     ));
-      if (element.bloodgroup == selectedbloodgroup)
+      if (element.bloodgroup == selectedbloodgroup&&mapicons.length>0)
         markers.add(Marker(
           icon: mapicons[bloodgroup.indexOf(element.bloodgroup)],
           markerId: MarkerId('${element.userId}'),
@@ -135,7 +135,7 @@ class _CustomMapState extends State<CustomMap> {
 
     markers = Set.from([]);
     //  setUser();
-    selectedbloodgroup = userController.myinfo.value.bloodgroup;
+    selectedbloodgroup = userController.myinfo.value.bloodgroup??bloodgroup[0];
     selectedUser = userController.myinfo.value;
   }
 
@@ -161,10 +161,11 @@ class _CustomMapState extends State<CustomMap> {
 
   @override
   Widget build(BuildContext context) {
-    userMarker(context, 'assets/images/defaultuser.png');
-    allusers = donorController.getDonors(selectedbloodgroup);
     createmarker(context);
-    if (mapicons.length != 0 || bloodicons.length == 0) addMarker();
+    // userMarker(context, 'assets/images/defaultuser.png');
+    allusers = donorController.getDonors(selectedbloodgroup);
+    
+    if (mapicons.length != 0 || bloodicons.length != 0) addMarker();
     return Stack(
       children: [
         //  if (0 != 0)
@@ -211,10 +212,11 @@ class _CustomMapState extends State<CustomMap> {
                     DropdownButton(
                         onChanged: (v) {
                           setState(() {
+                           
+
+                            selectedbloodgroup = v; 
                             allusers =
                                 donorController.getDonors(selectedbloodgroup);
-
-                            selectedbloodgroup = v;
                           });
                         },
                         value: selectedbloodgroup,
@@ -222,7 +224,7 @@ class _CustomMapState extends State<CustomMap> {
                           ...bloodgroup.map((e) => DropdownMenuItem(
                                 value: e,
                                 child: Text(
-                                  e,
+                                  "$e",
                                   style: largeText.copyWith(
                                       color: Colors.grey[600],
                                       fontWeight: FontWeight.w700,
