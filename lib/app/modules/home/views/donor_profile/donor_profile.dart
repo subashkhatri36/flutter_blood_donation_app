@@ -138,7 +138,7 @@ class DonorProfile extends StatelessWidget {
                       Get.to(ReviewPage(user: user));
                     },
                     child: Text(
-                      'Rating and reviews -- click here to add your review',
+                      'Reviews -- add your review',
                       style: TextStyle(
                           color: Colors.redAccent[600],
                           fontSize: 16,
@@ -156,14 +156,10 @@ class DonorProfile extends StatelessWidget {
                             child: Column(
                               children: [
                                 if (controller.reviewmodellist != null)
-                                  if (controller.reviewmodellist.length > 0)
-                                    for (int i =
-                                            controller.reviewmodellist.length -
-                                                1;
-                                        i >
-                                            controller.reviewmodellist.length -
-                                                4;
-                                        i--)
+                                  if (controller.reviewmodellist.length > 1)
+                                    for (int i = 0;
+                                        i < controller.reviewmodellist.length;
+                                        i++)
                                       Column(
                                         children: [
                                           Container(
