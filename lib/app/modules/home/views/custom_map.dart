@@ -167,7 +167,7 @@ class _CustomMapState extends State<CustomMap> {
     if (mapicons.length != 0 || bloodicons.length == 0) addMarker();
     return Stack(
       children: [
-        // if (0 != 0)
+        //  if (0 != 0)
         GoogleMap(
           mapType: MapType.normal,
           initialCameraPosition: CameraPosition(

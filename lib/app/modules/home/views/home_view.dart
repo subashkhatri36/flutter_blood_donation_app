@@ -69,11 +69,11 @@ class HomeView extends GetView<HomeController> {
                       Get.offNamed('/request');
                     },
                     child: Icon(Icons.add_location_alt_rounded)),
-                InkWell(
-                    onTap: () {
+                IconButton(
+                    onPressed: () {
                       Get.to(SettingView(), binding: SettingBinding());
                     },
-                    child: Icon(Icons.settings)),
+                    icon: Icon(Icons.settings)),
                 PopupMenuButton(onSelected: (v) {
                   // Get.snackbar(v, v);
                   if (v == '/login') {
