@@ -31,7 +31,7 @@ class UserRequest extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 15),
       child: Container(
         width: double.infinity,
-        color: Colors.white,
+       decoration:BoxDecoration( color: Colors.white,borderRadius: BorderRadius.only(topLeft:Radius.circular(5))),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           SizedBox(height: 10),
           Container(
@@ -50,18 +50,20 @@ class UserRequest extends StatelessWidget {
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                   Text(
                     '${request.name.capitalize}',
-                    style: mediumText.copyWith(
-                        fontWeight: FontWeight.w700, color: Colors.grey[700]),
-                  ),
+                     style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700,
+                              color: Colors.grey[800]),
+                        ),
                   Container(
                     padding: EdgeInsets.symmetric(vertical: 3),
                     width: MediaQuery.of(context).size.width - 100,
                     child: Text(
                       '${request.bloodgroup} ${!request.bloodtype ? 'Blood' : 'Blood Plasma'} needed in ${request.hospitaldetail}',
-                      style: smallText.copyWith(
-                          fontWeight: FontWeight.w400, color: Colors.grey[700]),
-                      overflow: TextOverflow.ellipsis,
-                    ),
+                       style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              color: Colors.grey[700]),
+                        ),
                   ),
                   Text(
                     " ${request.timestamp != null ? TimeFormatting.displayTimeAgoFromTimestamp(request.timestamp.toDate().toString()) : ''}",
@@ -123,7 +125,7 @@ class UserRequest extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         Text(
-                            '${!request.bloodtype ? 'Blood' : 'Blood Plasma'} Donors Needed'),
+                            '${!request.bloodtype ? 'Blood' : 'Blood Plasma'} Donors Needed',style: mediumText.copyWith(color:Colors.grey[700])),
                         Row(children: [
                           Icon(Icons.location_on, size: 16, color: Colors.grey),
                           SizedBox(
@@ -134,9 +136,7 @@ class UserRequest extends StatelessWidget {
                             child: Text('${request.hospitaldetail} ',
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
-                                style: smallText.copyWith(
-                                    color: Colors.grey,
-                                    fontWeight: FontWeight.w400)),
+                             style: smallText.copyWith(color:Colors.grey[700])),
                           ),
                         ]),
                         Container(

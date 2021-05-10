@@ -249,7 +249,7 @@ class AllDonationview extends StatelessWidget {
             leading: CircleAvatar(
               backgroundColor: Theme.of(context).primaryColor,
               foregroundColor: Colors.white,
-              child: Text(model.bloodtype),
+              child: Text("${model.bloodtype}"),
             ),
             title: Text(
               'Donated to ' + model.person + '.',

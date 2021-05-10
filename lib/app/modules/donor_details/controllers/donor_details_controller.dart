@@ -86,7 +86,7 @@ class DonorDetailsController extends GetxController {
                   .truncate()
               ..name = element.username
               ..donorindex = users.indexOf(element);
-        if (mod.distance / 1000 < 50) mylist.add(mod);
+        if (mod.distance / 1000 < userController.distance.value) mylist.add(mod);
       }
     });
     mylist.sort((a, b) => a.distance.compareTo(b.distance));

@@ -15,7 +15,7 @@ class DonationController extends GetxController {
   RxBool isloading = false.obs;
   RxString bloodgroup = ''.obs;
   RxString note = ''.obs;
-  RxList<DonationModel> donationList;
+  RxList<DonationModel> donationList=List<DonationModel>.empty(growable: true).obs;
   RxBool showdonartotal = false.obs;
   RxInt totalDonation = 0.obs;
 

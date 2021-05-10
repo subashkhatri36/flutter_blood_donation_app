@@ -60,8 +60,8 @@ class DonorProfile extends StatelessWidget {
                     style: largeText.copyWith(
                         fontWeight: FontWeight.w800, color: Colors.grey[700]),
                   ),
-                  subtitle: Obx(() => Text(
-                      'Donate to -${donationController.donationmodel.value.person} on ${donationController.donationmodel.value.date}.')),
+                  // subtitle: Obx(() => Text(
+                  //     'Donate to -${donationController.donationmodel.value.person} on ${donationController.donationmodel.value.date}.')),
                 ),
               ],
             ),
@@ -79,6 +79,7 @@ class DonorProfile extends StatelessWidget {
                           fontWeight: FontWeight.w800, color: Colors.grey[700]),
                     ),
                     SizedBox(width: 10),
+
                     Container(
                       padding: EdgeInsets.all(4),
                       decoration: BoxDecoration(
@@ -95,8 +96,8 @@ class DonorProfile extends StatelessWidget {
                       ),
                     )
                   ]),
-                  subtitle: Obx(() => Text(
-                      'Donate to -${donationController.donationmodel.value.person} on ${donationController.donationmodel.value.date}.')),
+                  // subtitle: Obx(() => Text(//("${donationController.donationmodel}")),
+                  //      'Donate to -${donationController.donationmodel.value.person!=null?donationController.donationmodel.value.person:''} on ${donationController.donationmodel.value.person!=null?donationController.donationmodel.value.date:''}.')),
                 )
               : InkWell(
                   onTap: () {

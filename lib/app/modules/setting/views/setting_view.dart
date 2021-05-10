@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_blood_donation_app/app/constant/defaults.dart';
 import 'package:flutter_blood_donation_app/app/core/model/RangeSliderData%20.dart';
+import 'package:flutter_blood_donation_app/app/modules/home/controllers/home_controller.dart';
 
 import 'package:get/get.dart';
 
@@ -16,7 +17,7 @@ class _SettingViewState extends State<SettingView> {
   final controller = Get.put(SettingController());
 
   double _lowerValue = 10.0;
-  double _upperValue = 20.0;
+  double _upperValue = 10.0;
 
   @override
   Widget build(BuildContext context) {
@@ -59,6 +60,8 @@ class _SettingViewState extends State<SettingView> {
                           setState(() {
                             controller.minkilo.value =
                                 _lowerValue = newLowerValue;
+                                userController.distance.value=newUpperValue;
+                                // print(userController.distance.value);
                             controller.maxkilo.value =
                                 _upperValue = newUpperValue;
                           });
