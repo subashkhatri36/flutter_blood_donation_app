@@ -267,11 +267,11 @@ class _CustomMapState extends State<CustomMap> {
                                 radius: 12,
                                 child: CircleAvatar(
                                     backgroundColor: Colors.red,
-                                    radius: 10,
+                                    radius: 8,
                                     child: Text(
                                       "$selectedbloodgroup",
                                       style: TextStyle(
-                                          color: Colors.white, fontSize: 10),
+                                          color: Colors.white, fontSize: 8),
                                     )),
                               ),
                             )
