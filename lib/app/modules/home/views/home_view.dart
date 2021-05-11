@@ -9,6 +9,7 @@ import 'package:flutter_blood_donation_app/app/modules/login/bindings/login_bind
 import 'package:flutter_blood_donation_app/app/modules/login/views/login_view.dart';
 import 'package:flutter_blood_donation_app/app/modules/setting/bindings/setting_binding.dart';
 import 'package:flutter_blood_donation_app/app/modules/setting/views/setting_view.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -74,17 +75,25 @@ class HomeView extends GetView<HomeController> {
                       Get.to(SettingView(), binding: SettingBinding());
                     },
                     icon: Icon(Icons.settings)),
-                PopupMenuButton(onSelected: (v) {
-                  // Get.snackbar(v, v);
-                  if (v == '/login') {
-                    FirebaseAuth.instance.signOut();
-                    Get.offAll(LoginView(), binding: LoginBinding());
-                  }
-                }, itemBuilder: (context) {
-                  return List.generate(menuItem.length, (i) {
-                    return menuItem[i];
-                  });
-                }),
+                IconButton(
+                    onPressed: () {
+                      authResult.signOut();
+                      Get.offNamed('/login');
+                    },
+                    icon: Icon(Icons.logout))
+                // PopupMenuButton(onSelected: (v) {
+                //   // Get.snackbar(v, v);
+                //   if (v == '/login') {
+                //     FirebaseAuth.instance.signOut();
+                //     Get.offAll(LoginView(), binding: LoginBinding());
+                //   }
+                // },
+                // child: Icon(Icons.signout),
+                //  itemBuilder: (context) {
+                //   return List.generate(menuItem.length, (i) {
+                //     return menuItem[i];
+                //   });
+                // }),
               ]),
           body: buildBody(context),
           bottomNavigationBar: BottomAppBar(
@@ -118,8 +127,9 @@ class HomeView extends GetView<HomeController> {
                 : Colors.grey[300],
             onPressed: () {
               controller.selectedIndex.value = 1;
-              if (controller.selectedIndex.value == 1)
+              if (controller.selectedIndex.value == 1) {
                 controller.userlistshown.toggle();
+              }
             },
             child: CircleAvatar(
               backgroundColor: controller.selectedIndex.value == 1
@@ -150,7 +160,16 @@ class RequestsHome extends StatelessWidget {
               physics: BouncingScrollPhysics(),
               itemCount: homeController.requestData?.length ?? 0,
               itemBuilder: (BuildContext context, int index) {
-                return UserRequest(request: homeController.requestData[index]);
+                if (Geolocator.distanceBetween( 
+                        homeController.mylatitude.value,
+                        homeController.mylongitude.value,
+                        homeController.requestData[index].latitude,
+                        homeController.requestData[index].longitude) <=
+                    homeController.distance * 1000)
+                  return UserRequest(
+                      request: homeController.requestData[index]);
+
+                return null;
               },
             )
           : Center(

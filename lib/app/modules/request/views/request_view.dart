@@ -103,7 +103,6 @@ class RequestView extends GetView<RequestController> {
                         Scaffold(
                           body: controller.imagePath.value == ''
                               ? Container(
-                                  // height: 200,
                                   child: CustomGoogleMap(),
                                 )
                               : Container(
@@ -190,12 +189,13 @@ class RequestView extends GetView<RequestController> {
                           padding: EdgeInsets.only(left: 20, right: 20),
                           width: double.infinity,
                           child: TextButton(
-                            onPressed: () async {
-                              if (controller.requestformKey.currentState
+                            onPressed: () {
+                              if (!controller.requestonProgress.value) if (controller
+                                  .requestformKey.currentState
                                   .validate()) {
                                 // if (controller.map.value) {
                                 UIHelpers.showLoading();
-                                await controller.sendrequest();
+                                controller.sendrequest();
                                 UIHelpers.dismiss();
                                 UIHelpers.showToast(
                                     "Blood request submitted successfully");
@@ -203,7 +203,9 @@ class RequestView extends GetView<RequestController> {
                                 // }else{}
                               }
                             },
-                            child: Text('Request'),
+                            child: Text(controller.requestonProgress.value
+                                ? 'Request already on progress\nCancel or MarK Completed your previous request first'
+                                : 'Request'),
                             style: TextButton.styleFrom(
                                 primary: Colors.white,
                                 backgroundColor:
@@ -258,6 +260,14 @@ class _CustomGoogleMapState extends State<CustomGoogleMap> {
     ),
   ]);
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    // reqController.selectedlatitude=userController.mylatitude;
+    // reqController.selectedlongitude=userController.mylongitude;
+  }
+
+  @override
   Widget build(BuildContext context) {
     return _imageBytes == null
         ? Stack(
@@ -274,6 +284,9 @@ class _CustomGoogleMapState extends State<CustomGoogleMap> {
                     markers: markers,
                     mapType: MapType.normal,
                     onTap: (location) {
+                      reqController.selectedlatitude.value = location.latitude;
+                      reqController.selectedlongitude.value =
+                          location.longitude;
                       setState(() {
                         markers.add(
                           Marker(

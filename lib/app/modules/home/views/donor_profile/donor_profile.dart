@@ -454,13 +454,40 @@ class DonorProfileHeader extends StatelessWidget {
             ),
             Container(
               //color: Colors.grey[500].withOpacity(.5),
-              padding: const EdgeInsets.only(left: 5.0),
+              padding: const EdgeInsets.only(left: 10.0),
               child: Align(
                   alignment: Alignment.bottomLeft,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.end,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      Row(children: [
+                        
+                        InkWell(
+                          onTap: () {
+                            call(user.phoneNo);
+                          },
+                          child: CircleAvatar(
+                              radius: 15,
+                              backgroundColor: Colors.white.withOpacity(.5),
+                              child: Icon(Icons.phone,
+                                  color: Colors.redAccent[400], size: 15)),
+                        ),
+                        SizedBox(
+                          width: 5,
+                        ),
+                        InkWell(
+                          onTap: () {
+                            print('sms');
+                            sendSMS(user.phoneNo);
+                          },
+                          child: CircleAvatar(
+                              radius: 15,
+                              backgroundColor: Colors.white.withOpacity(.5),
+                              child: Icon(Icons.message,
+                                  color: Colors.redAccent[400], size: 15)),
+                        )
+                      ]),
                       SizedBox(
                         height: 5,
                       ),
@@ -487,35 +514,35 @@ class DonorProfileHeader extends StatelessWidget {
                                     fontWeight: FontWeight.w600),
                               ),
                               SizedBox(width: 5),
-                              InkWell(
-                                onTap: () {
-                                  // print('phone');
-                                  call(user.phoneNo);
-                                },
-                                child: CircleAvatar(
-                                    radius: 15,
-                                    backgroundColor:
-                                        Colors.white.withOpacity(.5),
-                                    child: Icon(Icons.phone,
-                                        color: Colors.redAccent[400],
-                                        size: 15)),
-                              ),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              InkWell(
-                                onTap: () {
-                                  print('sms');
-                                  sendSMS(user.phoneNo);
-                                },
-                                child: CircleAvatar(
-                                    radius: 15,
-                                    backgroundColor:
-                                        Colors.white.withOpacity(.5),
-                                    child: Icon(Icons.message,
-                                        color: Colors.redAccent[400],
-                                        size: 15)),
-                              )
+                              // InkWell(
+                              //   onTap: () {
+                              //     // print('phone');
+                              //     call(user.phoneNo);
+                              //   },
+                              //   child: CircleAvatar(
+                              //       radius: 15,
+                              //       backgroundColor:
+                              //           Colors.white.withOpacity(.5),
+                              //       child: Icon(Icons.phone,
+                              //           color: Colors.redAccent[400],
+                              //           size: 15)),
+                              // ),
+                              // SizedBox(
+                              //   width: 5,
+                              // ),
+                              // InkWell(
+                              //   onTap: () {
+                              //     print('sms');
+                              //     sendSMS(user.phoneNo);
+                              //   },
+                              //   child: CircleAvatar(
+                              //       radius: 15,
+                              //       backgroundColor:
+                              //           Colors.white.withOpacity(.5),
+                              //       child: Icon(Icons.message,
+                              //           color: Colors.redAccent[400],
+                              //           size: 15)),
+                              // )
                             ]),
                       ),
                       SizedBox(

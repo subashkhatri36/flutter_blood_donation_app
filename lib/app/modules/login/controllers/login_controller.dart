@@ -100,7 +100,7 @@ class LoginController extends GetxController {
   }
 
   signout() async {
-    await auth.signOut();
+    await authResult.signOut();
   }
 
   @override

@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blood_donation_app/app/constant/const.dart';
@@ -10,7 +9,6 @@ import 'package:flutter_blood_donation_app/app/utlis/size_config.dart';
 import 'package:get/get.dart';
 import 'package:share/share.dart';
 import 'package:url_launcher/url_launcher.dart';
-
 import '../controllers/home_controller.dart';
 
 class UserRequest extends StatelessWidget {
@@ -31,7 +29,9 @@ class UserRequest extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 15),
       child: Container(
         width: double.infinity,
-       decoration:BoxDecoration( color: Colors.white,borderRadius: BorderRadius.only(topLeft:Radius.circular(5))),
+        decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.only(topLeft: Radius.circular(5))),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           SizedBox(height: 10),
           Container(
@@ -50,20 +50,19 @@ class UserRequest extends StatelessWidget {
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                   Text(
                     '${request.name.capitalize}',
-                     style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w700,
-                              color: Colors.grey[800]),
-                        ),
+                    style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.grey[800]),
+                  ),
                   Container(
                     padding: EdgeInsets.symmetric(vertical: 3),
                     width: MediaQuery.of(context).size.width - 100,
                     child: Text(
                       '${request.bloodgroup} ${!request.bloodtype ? 'Blood' : 'Blood Plasma'} needed in ${request.hospitaldetail}',
-                       style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              color: Colors.grey[700]),
-                        ),
+                      style: TextStyle(
+                          fontWeight: FontWeight.w600, color: Colors.grey[700]),
+                    ),
                   ),
                   Text(
                     " ${request.timestamp != null ? TimeFormatting.displayTimeAgoFromTimestamp(request.timestamp.toDate().toString()) : ''}",
@@ -125,20 +124,26 @@ class UserRequest extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         Text(
-                            '${!request.bloodtype ? 'Blood' : 'Blood Plasma'} Donors Needed',style: mediumText.copyWith(color:Colors.grey[700])),
-                        Row(children: [
-                          Icon(Icons.location_on, size: 16, color: Colors.grey),
-                          SizedBox(
-                            width: 5,
-                          ),
-                          Container(
-                            width: SizeConfig.screenWidth - 150,
-                            child: Text('${request.hospitaldetail} ',
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                             style: smallText.copyWith(color:Colors.grey[700])),
-                          ),
-                        ]),
+                            '${!request.bloodtype ? 'Blood' : 'Blood Plasma'} Donors Needed',
+                            style:
+                                mediumText.copyWith(color: Colors.grey[700])),
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Icon(Icons.location_on,
+                                  size: 16, color: Colors.grey),
+                              SizedBox(
+                                width: 5,
+                              ),
+                              Container(
+                                width: SizeConfig.screenWidth - 150,
+                                child: Text('${request.hospitaldetail} ',
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: smallText.copyWith(
+                                        color: Colors.grey[700])),
+                              ),
+                            ]),
                         Container(
                           width: SizeConfig.screenWidth - 135,
                           child: Text('${request.address} ',
@@ -181,21 +186,21 @@ class UserRequest extends StatelessWidget {
                   ),
                 ]),
           ),
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 10),
-            child: Row(
-              children: [
-                CircleAvatar(
-                    radius: 10,
-                    backgroundColor: Colors.grey.withOpacity(.5),
-                    child: Icon(
-                      Icons.thumb_up_alt_rounded,
-                      size: 10,
-                    )),
-                Text(request.like.abs().toString())
-              ],
-            ),
-          ),
+          // Container(
+          //   padding: EdgeInsets.symmetric(horizontal: 10),
+          //   child: Row(
+          //     children: [
+          //       CircleAvatar(
+          //           radius: 10,
+          //           backgroundColor: Colors.grey.withOpacity(.5),
+          //           child: Icon(
+          //             Icons.thumb_up_alt_rounded,
+          //             size: 10,
+          //           )),
+          //       Text(request.like.abs().toString())
+          //     ],
+          //   ),
+          // ),
           SizedBox(width: 5),
           LikeButton(request: request),
         ]),

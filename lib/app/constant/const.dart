@@ -6,7 +6,7 @@ import 'package:flutter/rendering.dart';
 
 final Future<FirebaseApp> initialization = Firebase.initializeApp();
 FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
-FirebaseAuth auth = FirebaseAuth.instance;
+FirebaseAuth authResult = FirebaseAuth.instance;
 
 final largeText = TextStyle(
   fontSize: 16,

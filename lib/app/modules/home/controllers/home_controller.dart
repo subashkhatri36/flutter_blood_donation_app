@@ -23,7 +23,7 @@ class HomeController extends GetxController {
   LikeRepo _likeRepo = new LikeRepositiories();
   RatingRepo _ratingRepo = new RatingRepositiories();
   AccountRepo _accountRepo = AccountRepositories();
-var distance=10.0.obs;
+  var distance = 10.0.obs;
   RxBool presslike = false.obs;
 
   RxList<ReviewModel> reviewmodellist;
@@ -310,7 +310,7 @@ var distance=10.0.obs;
 
   //signout
   signout() async {
-    await auth.signOut();
+    await authResult.signOut();
     Get.offNamed('/login');
   }
 
