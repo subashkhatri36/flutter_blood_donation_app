@@ -160,16 +160,11 @@ class RequestsHome extends StatelessWidget {
               physics: BouncingScrollPhysics(),
               itemCount: homeController.requestData?.length ?? 0,
               itemBuilder: (BuildContext context, int index) {
-                if (Geolocator.distanceBetween( 
-                        homeController.mylatitude.value,
-                        homeController.mylongitude.value,
-                        homeController.requestData[index].latitude,
-                        homeController.requestData[index].longitude) <=
-                    homeController.distance * 1000)
+                
                   return UserRequest(
                       request: homeController.requestData[index]);
 
-                return null;
+                //return null;
               },
             )
           : Center(

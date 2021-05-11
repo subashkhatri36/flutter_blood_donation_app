@@ -7,7 +7,7 @@ import 'package:get/get.dart';
 class PostsRepo {
   final repo = firebaseFirestore.collection('request');
   sendRequest(RequestModel req) async {
-    //print(req.toJson());
+    print(req.toJson());
     await repo
         .add(req.toJson())
         .then((value) => {
@@ -48,7 +48,7 @@ class PostsRepo {
       event.docs.forEach((element) {
         requests.add(RequestModel.fromDocumentSnapshot(element));
       });
-      
+
       return requests;
     });
   }

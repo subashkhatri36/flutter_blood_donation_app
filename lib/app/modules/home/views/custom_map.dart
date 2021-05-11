@@ -264,7 +264,7 @@ class _CustomMapState extends State<CustomMap> {
                               left: 0,
                               child: CircleAvatar(
                                 backgroundColor: Colors.white,
-                                radius: 12,
+                                radius: 8,
                                 child: CircleAvatar(
                                     backgroundColor: Colors.red,
                                     radius: 8,
@@ -335,103 +335,106 @@ class _CustomMapState extends State<CustomMap> {
                 ],
               ),
             ),
-          // if (pinPillPosition == 0)
-          AnimatedPositioned(
-            duration: Duration(milliseconds: 200),
-            bottom: pinPillPosition,
-            child: InkWell(
-              onTap: () {
-                Get.to(DonorProfile(user: selectedUser));
-              },
-              child: Container(
-                height: 70,
-                margin: EdgeInsets.only(left: 50, bottom: 50),
-                padding: EdgeInsets.all(10),
-                width: SizeConfig.screenWidth - 120,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Colors.grey.withOpacity(.9),
-                  //color: Colors.grey.withOpacity(.8),
-                ),
-                child: Row(
-                  children: [
-                    Stack(children: [
-                      CircleAvatar(
-                        radius: 25,
-                        backgroundImage: NetworkImage(
-                            selectedUser.photoUrl == ''
-                                ? noimage
-                                : selectedUser.photoUrl),
-                      ),
-                      Positioned(
-                          top: 0,
-                          left: 0,
-                          child: CircleAvatar(
-                            backgroundColor: Colors.white,
-                            radius: 11,
+          if (!userController.userlistshown.value)
+            AnimatedPositioned(
+              duration: Duration(milliseconds: 200),
+              bottom: pinPillPosition,
+              left: SizeConfig.screenWidth > SizeConfig.screenHeight
+                  ? SizeConfig.screenWidth * .5
+                  : SizeConfig.screenWidth * .15,
+              child: InkWell(
+                onTap: () {
+                  Get.to(DonorProfile(user: selectedUser));
+                },
+                child: Container(
+                  height: 70,
+                  margin: EdgeInsets.only(bottom: 50),
+                  padding: EdgeInsets.all(10),
+                  width: SizeConfig.screenWidth - 120,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.grey.withOpacity(.9),
+                    //color: Colors.grey.withOpacity(.8),
+                  ),
+                  child: Row(
+                    children: [
+                      Stack(children: [
+                        CircleAvatar(
+                          radius: 25,
+                          backgroundImage: NetworkImage(
+                              selectedUser.photoUrl == ''
+                                  ? noimage
+                                  : selectedUser.photoUrl),
+                        ),
+                        Positioned(
+                            top: 0,
+                            left: 0,
+                            child: CircleAvatar(
+                              backgroundColor: Colors.white,
+                              radius: 9,
+                              child: CircleAvatar(
+                                  radius: 8,
+                                  backgroundColor: Colors.redAccent[400],
+                                  child: Text(
+                                    selectedUser.bloodgroup,
+                                    style: smallText.copyWith(
+                                        fontSize: 8,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w600),
+                                  )),
+                            ))
+                      ]),
+                      SizedBox(width: 5),
+                      Container(
+                          width: SizeConfig.screenWidth - 250,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text("${selectedUser.username.capitalize}",
+                                  overflow: TextOverflow.clip,
+                                  style: mediumText.copyWith(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w600)),
+                              Text("${selectedUser.userAddress.capitalize}",
+                                  style: smallText.copyWith(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w600)),
+                            ],
+                          )),
+                      Spacer(),
+                      Column(
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              message(selectedUser.phoneNo);
+                            },
                             child: CircleAvatar(
                                 radius: 10,
-                                backgroundColor: Colors.redAccent[400],
-                                child: Text(
-                                  selectedUser.bloodgroup,
-                                  style: smallText.copyWith(
-                                      fontSize: 12,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w600),
-                                )),
-                          ))
-                    ]),
-                    SizedBox(width: 5),
-                    Container(
-                        width: SizeConfig.screenWidth - 250,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text("${selectedUser.username.capitalize}",
-                                overflow: TextOverflow.clip,
-                                style: mediumText.copyWith(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w600)),
-                            Text("${selectedUser.userAddress.capitalize}",
-                                style: smallText.copyWith(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w600)),
-                          ],
-                        )),
-                    Spacer(),
-                    Column(
-                      children: [
-                        InkWell(
-                          onTap: () {
-                            message(selectedUser.phoneNo);
-                          },
-                          child: CircleAvatar(
-                              radius: 10,
-                              backgroundColor: Colors.grey[300],
-                              child: Icon(Icons.message,
-                                  color: Colors.grey[700], size: 12)),
-                        ),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        InkWell(
-                          onTap: () {
-                            phonecall(selectedUser.phoneNo);
-                          },
-                          child: CircleAvatar(
-                              radius: 10,
-                              backgroundColor: Colors.green[200],
-                              child: Icon(Icons.phone,
-                                  color: Colors.green[700], size: 15)),
-                        )
-                      ],
-                    )
-                  ],
+                                backgroundColor: Colors.grey[300],
+                                child: Icon(Icons.message,
+                                    color: Colors.grey[700], size: 12)),
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          InkWell(
+                            onTap: () {
+                              phonecall(selectedUser.phoneNo);
+                            },
+                            child: CircleAvatar(
+                                radius: 10,
+                                backgroundColor: Colors.green[200],
+                                child: Icon(Icons.phone,
+                                    color: Colors.green[700], size: 15)),
+                          )
+                        ],
+                      )
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
           if (!userController.userlistshown.value)
             Positioned(
               left: 0,
