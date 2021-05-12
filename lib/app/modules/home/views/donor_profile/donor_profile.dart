@@ -160,7 +160,6 @@ class DonorProfile extends StatelessWidget {
                   Obx(() => controller.loadRevew.isTrue
                       ? Container()
                       : Container(
-                          // height: MediaQuery.of(context).size.height,
                           child: SingleChildScrollView(
                             child: Column(
                               children: [
@@ -178,19 +177,33 @@ class DonorProfile extends StatelessWidget {
                                                   children: [
                                                     CircleAvatar(
                                                         radius: 20,
-                                                        backgroundImage: controller
-                                                                .reviewmodellist[
-                                                                    i]
-                                                                .photo
-                                                                .isEmpty
-                                                            ? AssetImage(
-                                                                'assets/images/logoapp.png',
-                                                              )
-                                                            : NetworkImage(
-                                                                controller
-                                                                    .reviewmodellist[
-                                                                        i]
-                                                                    .photo)),
+                                                        backgroundImage:
+
+                                                            // controller
+                                                            //             .reviewmodellist[
+                                                            //                 i]
+                                                            //             .photo ==
+                                                            //         null
+                                                            //     ? AssetImage(
+                                                            //         'assets/images/logoapp.png',
+                                                            //       )
+                                                            //     :
+                                                            NetworkImage(controller
+                                                                            .reviewmodellist[
+                                                                                i]
+                                                                            .photo ==
+                                                                        '' ||
+                                                                    controller
+                                                                            .reviewmodellist[
+                                                                                i]
+                                                                            .photo ==
+                                                                        null
+                                                                ? noimage
+                                                                : controller
+                                                                        .reviewmodellist[
+                                                                            i]
+                                                                        .photo ??
+                                                                    noimage)),
                                                     SizedBox(
                                                       width: 10,
                                                     ),
@@ -413,7 +426,11 @@ class DonorProfileHeader extends StatelessWidget {
             Container(
                 height: 300,
                 width: double.infinity,
-                child: Image.network(user.photoUrl, fit: BoxFit.cover)),
+                child: Image.network(
+                    user.photoUrl == '' || user.photoUrl == null
+                        ? noimage
+                        : user.photoUrl,
+                    fit: BoxFit.cover)),
             BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
               child: Container(
@@ -428,9 +445,10 @@ class DonorProfileHeader extends StatelessWidget {
                           backgroundColor: Colors.white,
                           child: CircleAvatar(
                             radius: 50,
-                            backgroundImage: NetworkImage(user.photoUrl == ''
-                                ? noimage
-                                : user.photoUrl ?? noimage),
+                            backgroundImage: NetworkImage(
+                                user.photoUrl == '' || user.photoUrl == null
+                                    ? noimage
+                                    : user.photoUrl ?? noimage),
                           ),
                         ),
                         Positioned(
@@ -462,7 +480,6 @@ class DonorProfileHeader extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(children: [
-                        
                         InkWell(
                           onTap: () {
                             call(user.phoneNo);

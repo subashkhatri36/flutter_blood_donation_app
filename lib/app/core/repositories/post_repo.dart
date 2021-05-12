@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_blood_donation_app/app/constant/const.dart';
 import 'package:flutter_blood_donation_app/app/core/model/request_model.dart';
 import 'package:flutter_blood_donation_app/app/modules/home/controllers/home_controller.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 
 class PostsRepo {
@@ -54,6 +53,7 @@ class PostsRepo {
       List<RequestModel> requests = [];
       event.docs.forEach((element) {
         requests.add(RequestModel.fromDocumentSnapshot(element));
+        requests.sort((a, b) => a.timestamp.compareTo(b.timestamp));
       });
 
       return requests;

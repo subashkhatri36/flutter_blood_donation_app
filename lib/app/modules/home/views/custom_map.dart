@@ -44,14 +44,14 @@ class _CustomMapState extends State<CustomMap> {
 
   Timer timer;
 
-  void startTimer() {
-    // const sec = Duration(seconds: 8);
-    // timer = Timer(sec, () {
-    //   setState(() {
-    //     pinPillPosition = -190;
-    //   });
-    // });
-  }
+  // void startTimer() {
+  //   const sec = Duration(seconds: 8);
+  //   timer = Timer(sec, () {
+  //     setState(() {
+  //       pinPillPosition = -190;
+  //     });
+  //   });
+  // }
 
   createMarker(context, image) {
     ImageConfiguration config =
@@ -127,7 +127,7 @@ class _CustomMapState extends State<CustomMap> {
               pinPillPosition = 0;
               selectedUser = element;
             });
-            startTimer();
+            // startTimer();
           },
         ));
     });
@@ -175,7 +175,7 @@ class _CustomMapState extends State<CustomMap> {
     if (selectedbloodgroup != null)
       return Stack(
         children: [
-          //  if (0 != 0)
+          // if (0 != 0)
           GoogleMap(
             mapType: MapType.normal,
             initialCameraPosition: CameraPosition(
@@ -264,8 +264,8 @@ class _CustomMapState extends State<CustomMap> {
                               top: 0,
                               left: 0,
                               child: CircleAvatar(
-                                backgroundColor: Colors.white,
-                                radius: 8,
+                                backgroundColor: Colors.grey[200],
+                                radius: 10,
                                 child: CircleAvatar(
                                     backgroundColor: Colors.red,
                                     radius: 8,

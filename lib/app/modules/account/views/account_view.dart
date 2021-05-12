@@ -93,7 +93,7 @@ class _AccountViewState extends State<AccountView>
                             controller: _controller,
                             children: [
                               SingleChildScrollView(
-                                child: Obx(() => controller.requestSendOn.value
+                                child: Obx(() => !controller.requestSendOn.value
                                     ? RequestViewWidget()
                                     : Container(
                                         alignment: Alignment.center,

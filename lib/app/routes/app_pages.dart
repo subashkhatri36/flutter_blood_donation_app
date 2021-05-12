@@ -12,6 +12,8 @@ import 'package:flutter_blood_donation_app/app/modules/login/bindings/login_bind
 import 'package:flutter_blood_donation_app/app/modules/login/views/login_view.dart';
 import 'package:flutter_blood_donation_app/app/modules/myhistory/bindings/myhistory_binding.dart';
 import 'package:flutter_blood_donation_app/app/modules/myhistory/views/myhistory_view.dart';
+import 'package:flutter_blood_donation_app/app/modules/notifications/bindings/notifications_binding.dart';
+import 'package:flutter_blood_donation_app/app/modules/notifications/views/notifications_view.dart';
 import 'package:flutter_blood_donation_app/app/modules/request/bindings/request_binding.dart';
 import 'package:flutter_blood_donation_app/app/modules/request/views/request_view.dart';
 import 'package:flutter_blood_donation_app/app/modules/setting/bindings/setting_binding.dart';
@@ -88,6 +90,11 @@ class AppPages {
       name: _Paths.SETTING,
       page: () => SettingView(),
       binding: SettingBinding(),
+    ),
+    GetPage(
+      name: _Paths.NOTIFICATIONS,
+      page: () => NotificationsView(),
+      binding: NotificationsBinding(),
     ),
   ];
 }
