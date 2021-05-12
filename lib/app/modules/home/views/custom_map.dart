@@ -94,6 +94,7 @@ class _CustomMapState extends State<CustomMap> {
   }
 
   addMarker() {
+    markers.clear();
     userController.userlist.toList().forEach((element) {
       //   if (element.userId != userController.myinfo.value.userId)
       //     markers.add(Marker(
@@ -287,8 +288,7 @@ class _CustomMapState extends State<CustomMap> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                                userController
-                                    .userlist[e.donorindex].userAddress,
+                                "${userController.userlist[e.donorindex].userAddress}",
                                 style: mediumText.copyWith(
                                     fontWeight: FontWeight.w600)),
                             Text("${(e.distance / 1000).toStringAsFixed(2)}Km",
@@ -376,7 +376,7 @@ class _CustomMapState extends State<CustomMap> {
                                   radius: 8,
                                   backgroundColor: Colors.redAccent[400],
                                   child: Text(
-                                    selectedUser.bloodgroup,
+                                    selectedbloodgroup,
                                     style: smallText.copyWith(
                                         fontSize: 8,
                                         color: Colors.white,

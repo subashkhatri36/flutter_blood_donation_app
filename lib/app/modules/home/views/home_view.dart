@@ -1,15 +1,11 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blood_donation_app/app/constant/const.dart';
 import 'package:flutter_blood_donation_app/app/constant/defaults.dart';
 import 'package:flutter_blood_donation_app/app/modules/account/views/account_view.dart';
 import 'package:flutter_blood_donation_app/app/modules/donation/controllers/donation_controller.dart';
 import 'package:flutter_blood_donation_app/app/modules/home/views/custom_map.dart';
-import 'package:flutter_blood_donation_app/app/modules/login/bindings/login_binding.dart';
-import 'package:flutter_blood_donation_app/app/modules/login/views/login_view.dart';
 import 'package:flutter_blood_donation_app/app/modules/setting/bindings/setting_binding.dart';
 import 'package:flutter_blood_donation_app/app/modules/setting/views/setting_view.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -42,7 +38,25 @@ class HomeView extends GetView<HomeController> {
 
         break;
       case 0:
-        return RequestsHome();
+        return Obx(
+          () => (controller.requestData?.length ?? 0) != 0 &&
+                  userController.mylatitude.value != 0.0
+              ? ListView.builder(
+                  physics: BouncingScrollPhysics(),
+                  itemCount: controller.requestData?.length ?? 0,
+                  itemBuilder: (BuildContext context, int index) {
+                    return UserRequest(request: controller.requestData[index]);
+
+                    //return null;
+                  },
+                )
+              : Center(
+                  child: CircularProgressIndicator(
+                      backgroundColor: Colors.deepOrange),
+                  // child: Text('No  Post Yet.',
+                  //     style: TextStyle(color: Colors.grey)),
+                ),
+        );
         break;
 
       default:
@@ -160,9 +174,7 @@ class RequestsHome extends StatelessWidget {
               physics: BouncingScrollPhysics(),
               itemCount: homeController.requestData?.length ?? 0,
               itemBuilder: (BuildContext context, int index) {
-                
-                  return UserRequest(
-                      request: homeController.requestData[index]);
+                return UserRequest(request: homeController.requestData[index]);
 
                 //return null;
               },
