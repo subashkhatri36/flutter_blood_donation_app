@@ -189,7 +189,6 @@ class _DonorProfileState extends State<DonorProfile> {
                   Obx(() => controller.loadRevew.isTrue
                       ? Container()
                       : Container(
-                          // height: MediaQuery.of(context).size.height,
                           child: SingleChildScrollView(
                             child: Column(
                               children: [
@@ -212,19 +211,33 @@ class _DonorProfileState extends State<DonorProfile> {
                                                   children: [
                                                     CircleAvatar(
                                                         radius: 20,
-                                                        backgroundImage: controller
-                                                                .reviewmodellist[
-                                                                    i]
-                                                                .photo
-                                                                .isEmpty
-                                                            ? AssetImage(
-                                                                'assets/images/logoapp.png',
-                                                              )
-                                                            : NetworkImage(
-                                                                controller
-                                                                    .reviewmodellist[
-                                                                        i]
-                                                                    .photo)),
+                                                        backgroundImage:
+
+                                                            // controller
+                                                            //             .reviewmodellist[
+                                                            //                 i]
+                                                            //             .photo ==
+                                                            //         null
+                                                            //     ? AssetImage(
+                                                            //         'assets/images/logoapp.png',
+                                                            //       )
+                                                            //     :
+                                                            NetworkImage(controller
+                                                                            .reviewmodellist[
+                                                                                i]
+                                                                            .photo ==
+                                                                        '' ||
+                                                                    controller
+                                                                            .reviewmodellist[
+                                                                                i]
+                                                                            .photo ==
+                                                                        null
+                                                                ? noimage
+                                                                : controller
+                                                                        .reviewmodellist[
+                                                                            i]
+                                                                        .photo ??
+                                                                    noimage)),
                                                     SizedBox(
                                                       width: 10,
                                                     ),
@@ -469,7 +482,11 @@ class DonorProfileHeader extends StatelessWidget {
             Container(
                 height: 300,
                 width: double.infinity,
-                child: Image.network(controller.userModel.value.photoUrl,
+                child: Image.network(
+                    controller.userModel.value.photoUrl == '' ||
+                            controller.userModel.value.photoUrl == null
+                        ? noimage
+                        : controller.userModel.value.photoUrl,
                     fit: BoxFit.cover)),
             BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
@@ -512,14 +529,42 @@ class DonorProfileHeader extends StatelessWidget {
               ),
             ),
             Container(
-              //color: Colors.grey[500].withOpacity(.5),
-              padding: const EdgeInsets.only(left: 5.0),
+              width: MediaQuery.of(context).size.width * .4,
+              padding: const EdgeInsets.only(left: 10.0),
               child: Align(
                   alignment: Alignment.bottomLeft,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.end,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            InkWell(
+                              onTap: () {
+                                call(controller.userModel.value.phoneNo);
+                              },
+                              child: CircleAvatar(
+                                  radius: 15,
+                                  backgroundColor: Colors.white.withOpacity(.5),
+                                  child: Icon(Icons.phone,
+                                      color: Colors.redAccent[400], size: 15)),
+                            ),
+                            SizedBox(
+                              width: 5,
+                            ),
+                            InkWell(
+                              onTap: () {
+                                print('sms');
+                                sendSMS(controller.userModel.value.phoneNo);
+                              },
+                              child: CircleAvatar(
+                                  radius: 15,
+                                  backgroundColor: Colors.white.withOpacity(.5),
+                                  child: Icon(Icons.message,
+                                      color: Colors.redAccent[400], size: 15)),
+                            )
+                          ]),
                       SizedBox(
                         height: 5,
                       ),
@@ -546,35 +591,6 @@ class DonorProfileHeader extends StatelessWidget {
                                     fontWeight: FontWeight.w600),
                               ),
                               SizedBox(width: 5),
-                              InkWell(
-                                onTap: () {
-                                  // print('phone');
-                                  call(controller.userModel.value.phoneNo);
-                                },
-                                child: CircleAvatar(
-                                    radius: 15,
-                                    backgroundColor:
-                                        Colors.white.withOpacity(.5),
-                                    child: Icon(Icons.phone,
-                                        color: Colors.redAccent[400],
-                                        size: 15)),
-                              ),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              InkWell(
-                                onTap: () {
-                                  print('sms');
-                                  sendSMS(controller.userModel.value.phoneNo);
-                                },
-                                child: CircleAvatar(
-                                    radius: 15,
-                                    backgroundColor:
-                                        Colors.white.withOpacity(.5),
-                                    child: Icon(Icons.message,
-                                        color: Colors.redAccent[400],
-                                        size: 15)),
-                              )
                             ]),
                       ),
                       SizedBox(
@@ -617,13 +633,28 @@ class DonorProfileHeader extends StatelessWidget {
                             )
                           ]),
                       SizedBox(height: 5),
-                      Text(
-                        calculateAverage(controller.userModel.value)
-                            .toStringAsPrecision(2),
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 30,
-                            fontWeight: FontWeight.w700),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(
+                            calculateAverage(controller.userModel.value)
+                                .toStringAsPrecision(2),
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 30,
+                                fontWeight: FontWeight.w700),
+                          ),
+                          Text(
+                            ' (' +
+                                totalvalue(controller.userModel.value)
+                                    .toInt()
+                                    .toString() +
+                                ')',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600),
+                          ),
+                        ],
                       ),
                       Obx(() => controller.ratingchange.isTrue
                           ? Center(
@@ -634,14 +665,6 @@ class DonorProfileHeader extends StatelessWidget {
                           : buildStarsRating(controller.userModel.value)),
                       SizedBox(
                         height: 5,
-                      ),
-                      Text(
-                        ' ' +
-                            totalvalue(controller.userModel.value)
-                                .toInt()
-                                .toString(),
-                        style: TextStyle(
-                            color: Colors.white, fontWeight: FontWeight.w600),
                       ),
                       SizedBox(height: 10),
                       for (int i = 5; i > 0; i--)

@@ -69,6 +69,8 @@ class _AccountViewState extends State<AccountView>
   @override
   Widget build(BuildContext context) {
     final accountController = Get.find<AccountController>();
+    accountController.getCurrentRequest();
+    print(accountController.requestSendOn.value);
     // print(accountController.model.bloodgroup);
 
     return Scaffold(
@@ -389,22 +391,6 @@ class RequestViewWidget extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    // Obx(
-                    //   () => Column(
-                    //     children: [
-                    //       ...accountController.myrequestList.map(
-                    //         (element) => ListTile(
-                    //           leading: CircleAvatar(),
-                    //           title: Text('My request'),
-                    //           subtitle: Text(
-                    //               TimeFormatting.displayTimeAgoFromTimestamp(
-                    //                   element.timestamp.toDate().toString())),
-                    //           trailing: Text(element.status),
-                    //         ),
-                    //       ),
-                    //     ],
-                    //   ),
-                    // ),
                     Text(
                       'Searching For',
                       style: TextStyle(

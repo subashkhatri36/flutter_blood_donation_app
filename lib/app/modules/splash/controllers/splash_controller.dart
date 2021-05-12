@@ -29,7 +29,7 @@ class SplashController extends GetxController {
   }
 
   void navigate() {
-    if (auth.currentUser != null)
+    if (authResult.currentUser != null)
       Get.off(() => HomeView(), binding: HomeBinding());
     else
       Get.off(() => LoginView(), binding: LoginBinding());

@@ -7,7 +7,7 @@ import 'package:get/get.dart';
 class PostsRepo {
   final repo = firebaseFirestore.collection('request');
   sendRequest(RequestModel req) async {
-    //print(req.toJson());
+    // print(req.toJson());
     await repo
         .add(req.toJson())
         .then((value) => {
@@ -32,6 +32,12 @@ class PostsRepo {
         .map((QuerySnapshot query) {
       List<RequestModel> requests = [];
       query.docs.forEach((element) {
+        // if (Geolocator.distanceBetween(
+        //         userController.mylatitude.value,
+        //         userController.mylongitude.value,
+        //         element.data()['latitude'] ?? 00,
+        //         element.data()['longitude'] ?? 0) <=
+        //     userController.distance * 1000)
         requests.add(RequestModel.fromDocumentSnapshot(element));
       });
 
@@ -47,8 +53,9 @@ class PostsRepo {
       List<RequestModel> requests = [];
       event.docs.forEach((element) {
         requests.add(RequestModel.fromDocumentSnapshot(element));
+        requests.sort((a, b) => a.timestamp.compareTo(b.timestamp));
       });
-      
+
       return requests;
     });
   }

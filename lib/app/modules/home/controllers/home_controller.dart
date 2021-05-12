@@ -17,6 +17,7 @@ import 'package:flutter_blood_donation_app/app/core/repositories/like_repo.dart'
 import 'package:flutter_blood_donation_app/app/core/repositories/post_repo.dart';
 import 'package:flutter_blood_donation_app/app/core/repositories/rating_repositories.dart';
 import 'package:flutter_blood_donation_app/app/core/repositories/users_repo.dart';
+import 'package:flutter_blood_donation_app/app/core/services/storage_service/get_storage.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 
@@ -245,7 +246,6 @@ class HomeController extends GetxController {
       return user;
     } else
       return null;
-    reLoadStar.value = false;
   }
 
   void _updateConnectionState(ConnectivityResult result) {
@@ -347,6 +347,7 @@ class HomeController extends GetxController {
     getUsers();
 
     getmyinfo();
+    distance.value = (localStorage.read('distance')) ?? 10;
     streamRequest();
   }
 
@@ -358,7 +359,17 @@ class HomeController extends GetxController {
   @override
   void onClose() {}
   getmyinfo() async {
-    myinfo.value = await userRepo.getmyinfo();
+    var mydata = localStorage.read('myinfo');
+    if (mydata != null)
+      myinfo.value = (UserModel.fromJson(mydata));
+    else {
+      myinfo.value = await userRepo.getmyinfo();
+      localStorage.write('myinfo', myinfo.value.toJson());
+    }
+  }
+
+  writeSettings() {
+    localStorage.write('distance', distance.value);
   }
 
   getUsers() async {
@@ -391,7 +402,7 @@ class HomeController extends GetxController {
 
   //signout
   signout() async {
-    await auth.signOut();
+    await authResult.signOut();
     Get.offNamed('/login');
   }
 

@@ -74,6 +74,7 @@ class DonorDetailsController extends GetxController {
   getDonors(String bloodgroup) {
     List<UsermodelSortedtoMyLocationModel> mylist = [];
     List<UserModel> users = userController.userlist.toList();
+    if(users.length>0)
     users.forEach((element) {
       if (element.bloodgroup == bloodgroup) {
         UsermodelSortedtoMyLocationModel mod =

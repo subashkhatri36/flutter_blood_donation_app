@@ -2,8 +2,10 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_blood_donation_app/app/constant/const.dart';
 import 'package:flutter_blood_donation_app/app/core/model/request_model.dart';
 import 'package:flutter_blood_donation_app/app/core/repositories/post_repo.dart';
 import 'package:flutter_blood_donation_app/app/modules/home/controllers/home_controller.dart';
@@ -15,12 +17,15 @@ import '../../home/controllers/home_controller.dart';
 class RequestController extends GetxController {
   var loading = false.obs;
   var isplatelets = false.obs;
+  var selectedlongitude = 0.0.obs;
+  var selectedlatitude = 0.0.obs;
   var count = 0.obs;
   var formyself = false.obs;
   var mylocation = false.obs;
   var bloodgroup = 'A+'.obs;
   var userlocation = 'ranibari'.obs;
   var data = Uint8List(0).obs;
+  var requestonProgress = false.obs;
   GoogleMapController mapController;
   File imagep;
   var map = false.obs;
@@ -41,7 +46,7 @@ class RequestController extends GetxController {
     ..text = userController.myinfo.value.userAddress;
 
   GlobalKey<FormState> requestformKey = GlobalKey<FormState>();
-  Future<void> sendrequest() async {
+  sendrequest() async {
     loading.value = true;
     RequestModel req = RequestModel(
         name: userController.myinfo.value.username,
@@ -53,13 +58,15 @@ class RequestController extends GetxController {
         bloodtype: isplatelets.value,
         status: 'waiting',
         hospitaldetail: locationController.text,
+        longitude: selectedlongitude.value,
+        latitude: selectedlatitude.value,
         photoUrl: base64Encode(data.value));
 
     //sending request
     try {
       await PostsRepo().sendRequest(req);
-
-      // clearController();
+      // print(req.toJson());
+      clearController();
 
       loading = false.obs;
     } on PlatformException catch (err) {
@@ -70,14 +77,28 @@ class RequestController extends GetxController {
     }
   }
 
+  getallRequest() async {
+    var data = await firebaseFirestore
+        .collection('request')
+        .where('userid', isEqualTo: FirebaseAuth.instance.currentUser.uid)
+        .get();
+    data.docs.forEach((element) {
+      if (element.data()['status'] == 'waiting') requestonProgress.value = true;
+    });
+  }
+
   clearController() {
     phoneController.clear();
     locationController.clear();
+    userAddressController.clear();
   }
 
   @override
   void onInit() {
     super.onInit();
+    getallRequest();
+    selectedlatitude = userController.mylatitude;
+    selectedlongitude = userController.mylongitude;
   }
 
   @override

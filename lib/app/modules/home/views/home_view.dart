@@ -1,12 +1,10 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blood_donation_app/app/constant/const.dart';
 import 'package:flutter_blood_donation_app/app/constant/defaults.dart';
+import 'package:flutter_blood_donation_app/app/core/services/storage_service/get_storage.dart';
 import 'package:flutter_blood_donation_app/app/modules/account/views/account_view.dart';
 import 'package:flutter_blood_donation_app/app/modules/donation/controllers/donation_controller.dart';
 import 'package:flutter_blood_donation_app/app/modules/home/views/custom_map.dart';
-import 'package:flutter_blood_donation_app/app/modules/login/bindings/login_binding.dart';
-import 'package:flutter_blood_donation_app/app/modules/login/views/login_view.dart';
 import 'package:flutter_blood_donation_app/app/modules/setting/bindings/setting_binding.dart';
 import 'package:flutter_blood_donation_app/app/modules/setting/views/setting_view.dart';
 import 'package:get/get.dart';
@@ -41,7 +39,25 @@ class HomeView extends GetView<HomeController> {
 
         break;
       case 0:
-        return RequestsHome();
+        return Obx(
+          () => (controller.requestData?.length ?? 0) != 0 &&
+                  userController.mylatitude.value != 0.0
+              ? ListView.builder(
+                  physics: BouncingScrollPhysics(),
+                  itemCount: controller.requestData?.length ?? 0,
+                  itemBuilder: (BuildContext context, int index) {
+                    return UserRequest(request: controller.requestData[index]);
+
+                    //return null;
+                  },
+                )
+              : Center(
+                  child: CircularProgressIndicator(
+                      backgroundColor: Colors.deepOrange),
+                  // child: Text('No  Post Yet.',
+                  //     style: TextStyle(color: Colors.grey)),
+                ),
+        );
         break;
 
       default:
@@ -74,17 +90,26 @@ class HomeView extends GetView<HomeController> {
                       Get.to(SettingView(), binding: SettingBinding());
                     },
                     icon: Icon(Icons.settings)),
-                PopupMenuButton(onSelected: (v) {
-                  // Get.snackbar(v, v);
-                  if (v == '/login') {
-                    FirebaseAuth.instance.signOut();
-                    Get.offAll(LoginView(), binding: LoginBinding());
-                  }
-                }, itemBuilder: (context) {
-                  return List.generate(menuItem.length, (i) {
-                    return menuItem[i];
-                  });
-                }),
+                IconButton(
+                    onPressed: () {
+                      authResult.signOut();
+                      localStorage.clear('myinfo');
+                      Get.offNamed('/login');
+                    },
+                    icon: Icon(Icons.logout))
+                // PopupMenuButton(onSelected: (v) {
+                //   // Get.snackbar(v, v);
+                //   if (v == '/login') {
+                //     FirebaseAuth.instance.signOut();
+                //     Get.offAll(LoginView(), binding: LoginBinding());
+                //   }
+                // },
+                // child: Icon(Icons.signout),
+                //  itemBuilder: (context) {
+                //   return List.generate(menuItem.length, (i) {
+                //     return menuItem[i];
+                //   });
+                // }),
               ]),
           body: buildBody(context),
           bottomNavigationBar: BottomAppBar(
@@ -118,8 +143,9 @@ class HomeView extends GetView<HomeController> {
                 : Colors.grey[300],
             onPressed: () {
               controller.selectedIndex.value = 1;
-              if (controller.selectedIndex.value == 1)
+              if (controller.selectedIndex.value == 1) {
                 controller.userlistshown.toggle();
+              }
             },
             child: CircleAvatar(
               backgroundColor: controller.selectedIndex.value == 1
@@ -151,6 +177,8 @@ class RequestsHome extends StatelessWidget {
               itemCount: homeController.requestData?.length ?? 0,
               itemBuilder: (BuildContext context, int index) {
                 return UserRequest(request: homeController.requestData[index]);
+
+                //return null;
               },
             )
           : Center(

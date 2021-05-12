@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_blood_donation_app/app/core/model/user_models.dart';
 import 'package:flutter_blood_donation_app/app/core/repositories/account_repository.dart';
+import 'package:flutter_blood_donation_app/app/core/services/storage_service/get_storage.dart';
 import 'package:flutter_blood_donation_app/app/modules/home/controllers/home_controller.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:get/get.dart';
@@ -83,9 +84,10 @@ class UpdateaccountController extends GetxController {
           email: 'email',
           active: true);
       Either<String, String> val = await accountRepo.updateUser(id, model);
+
       val.fold((l) => print(l), (r) {
-        nameController.text = '';
-        poneController.text = '';
+        userController.myinfo.value = model;
+        localStorage.write('myinfo', userController.myinfo.value.toJson());
         Get.snackbar('Information', 'Successfully Updated',
             snackPosition: SnackPosition.BOTTOM);
         cmmplete = true;

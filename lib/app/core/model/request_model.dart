@@ -13,6 +13,8 @@ class RequestModel {
   String photoUrl;
   String userphotoUrl;
   bool bloodtype;
+  double latitude;
+  double longitude;
   int like;
   String status;
 
@@ -32,6 +34,8 @@ class RequestModel {
       this.status,
       this.contactno,
       this.city = 'Kathmandu',
+      this.longitude,
+      this.latitude,
       this.like = 0,
       this.comment = 0});
 
@@ -59,6 +63,8 @@ class RequestModel {
     this.like = json.data()['like'];
     this.comment = json.data()['comment'];
     this.bloodtype = json.data()['bloodtype'] ?? false;
+    this.latitude = json.data()['latitude'] ?? 0.0;
+    this.longitude = json.data()['longitude'] ?? 0.0;
     this.status = json.data()['status'];
   }
 
@@ -77,6 +83,8 @@ class RequestModel {
     data['comment'] = this.comment;
     data['contactno'] = this.contactno;
     data['userPhotourl'] = this.userphotoUrl;
+    data['latitude'] = this.latitude;
+    data['longitude'] = this.longitude;
 
     return data;
   }

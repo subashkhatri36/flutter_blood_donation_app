@@ -6,12 +6,12 @@ class UserReop {
   getmyinfo() async {
     var data = await firebaseFirestore
         .collection('User')
-        .doc(auth.currentUser.uid)
+        .doc(authResult.currentUser.uid)
         .get();
     try {
       if (!data.exists) {
         UserModel user = UserModel(
-            userId: auth.currentUser.uid,
+            userId: authResult.currentUser.uid,
             userAddress: 'Balaju',
             email: 'user1@gmail.com',
             phoneNo: '12345678',
@@ -20,7 +20,7 @@ class UserReop {
             bloodgroup: 'AB+');
         await firebaseFirestore
             .collection('Users')
-            .doc(auth.currentUser.uid)
+            .doc(authResult.currentUser.uid)
             .set(user.toMap());
       } else {
         return UserModel.fromDocumentSnapshot(data);
