@@ -34,13 +34,25 @@ class _AccountViewState extends State<AccountView>
   TabController _controller;
   List<Widget> list = [
     Tab(
-      text: 'Status',
+      child: Text(
+        'Status',
+        style: TextStyle(fontSize: 12),
+      ),
+      // text: 'Status',
     ),
     Tab(
-      text: 'Donation',
+      child: Text(
+        'Donation',
+        style: TextStyle(fontSize: 12),
+      ),
+      // text: 'Donation',
     ),
     Tab(
-      text: 'Rate and Review',
+      child: Text(
+        'Rate & Review',
+        style: TextStyle(fontSize: 12),
+      ),
+      // text: 'Rate and Review',
     ),
   ];
   @override
@@ -172,58 +184,60 @@ class Donation extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final donationController = Get.find<DonationController>();
-    return Container(
-      margin: EdgeInsets.all(Defaults.paddingmiddle),
-      decoration: BoxDecoration(border: Border.all(color: Colors.grey)),
-      height: MediaQuery.of(context).size.height,
-      child: Column(
-        children: [
-          Container(
-            color: Colors.grey,
-            padding: EdgeInsets.all(Defaults.paddingmiddle),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('Donation',
-                    style: TextStyle(
-                        fontSize: Defaults.fontheading, color: Colors.white)),
-                InkWell(
-                  onTap: () {
-                    Get.to(DonationView(),
-                        binding: DonationBinding(), arguments: id);
-                  },
-                  child: Container(
-                    padding: EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                        border: Border.all(color: Colors.white),
-                        borderRadius: BorderRadius.circular(20)),
-                    child: Text(
-                      'Add Donation',
+    return SingleChildScrollView(
+      child: Container(
+        margin: EdgeInsets.all(Defaults.paddingmiddle),
+        decoration: BoxDecoration(border: Border.all(color: Colors.grey)),
+        // height: MediaQuery.of(context).size.height,
+        child: Column(
+          children: [
+            Container(
+              color: Colors.grey,
+              padding: EdgeInsets.all(Defaults.paddingmiddle),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Donation',
                       style: TextStyle(
-                          fontSize: Defaults.fontnormal, color: Colors.white),
+                          fontSize: Defaults.fontheading, color: Colors.white)),
+                  InkWell(
+                    onTap: () {
+                      Get.to(DonationView(),
+                          binding: DonationBinding(), arguments: id);
+                    },
+                    child: Container(
+                      padding: EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                          border: Border.all(color: Colors.white),
+                          borderRadius: BorderRadius.circular(20)),
+                      child: Text(
+                        'Add Donation',
+                        style: TextStyle(
+                            fontSize: Defaults.fontnormal, color: Colors.white),
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          Obx(
-            () => donationController.isloading.isFalse
-                ? donationController.donationList.length > 0
-                    ? AllDonationview(
-                        donationController: donationController,
-                        del: true,
-                      )
-                    : Text('No Donation Yet.')
-                : Container(
-                    child: CircularProgressIndicator(
-                    backgroundColor: Colors.red,
-                  )),
-          ),
-        ],
+            SizedBox(
+              height: 10,
+            ),
+            Obx(
+              () => donationController.isloading.isFalse
+                  ? donationController.donationList.length > 0
+                      ? AllDonationview(
+                          donationController: donationController,
+                          del: true,
+                        )
+                      : Text('No Donation Yet.')
+                  : Container(
+                      child: CircularProgressIndicator(
+                      backgroundColor: Colors.red,
+                    )),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -250,6 +264,8 @@ class AllDonationview extends StatelessWidget {
     if (value != null)
       return ListView.separated(
           shrinkWrap: true,
+          scrollDirection: Axis.vertical,
+          physics: NeverScrollableScrollPhysics(),
           itemBuilder: (context, index) {
             DonationModel model = value[index];
             return ListTile(
@@ -264,7 +280,7 @@ class AllDonationview extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                     fontSize: Defaults.fontsubheading),
               ),
-              subtitle: Text('${model.details} --On ${model.date}'),
+              subtitle: Text('${model.details} \n${model.date}'),
               trailing: del
                   ? IconButton(
                       icon: Icon(Icons.delete),
@@ -314,7 +330,7 @@ class AllDonationview extends StatelessWidget {
                   : donationController.donationList?.length ?? 0
               : donationController.donationList?.length ?? 0);
     else
-      Text(donationController.nodata.value);
+      return Text(donationController.nodata.value);
   }
 }
 
@@ -402,9 +418,12 @@ class RequestViewWidget extends StatelessWidget {
                       child: CircleAvatar(
                         radius: Defaults.paddingbig * 2 - 4,
                         backgroundColor: Theme.of(context).backgroundColor,
-                        child: Text(userRequest.currentRequest != null
-                            ? userRequest.currentRequest.bloodgroup
-                            : 'Na'),
+                        child: Text(
+                          userRequest.currentRequest != null
+                              ? userRequest.currentRequest.bloodgroup
+                              : 'Na',
+                          style: TextStyle(color: Colors.white),
+                        ),
                       ),
                     ),
                     Container(
@@ -598,6 +617,8 @@ class AccountHeaderWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final accountController = Get.find<AccountController>();
+    Get.find<DonationController>().bloodgroup.value =
+        accountController.model.bloodgroup;
 
     return Obx(() => Container(
         width: MediaQuery.of(context).size.width,
@@ -649,9 +670,13 @@ class AccountHeaderWidget extends StatelessWidget {
                         radius: 25,
                         backgroundColor: Colors.white,
                         child: CircleAvatar(
-                            backgroundColor: Theme.of(context).backgroundColor,
-                            radius: 22,
-                            child: Text(accountController.model.bloodgroup)),
+                          backgroundColor: Theme.of(context).backgroundColor,
+                          radius: 22,
+                          child: Text(
+                            accountController.model.bloodgroup,
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ),
                       ),
                       Positioned(
                         bottom: 4,
@@ -667,7 +692,7 @@ class AccountHeaderWidget extends StatelessWidget {
                                 icon: Icon(
                                   Icons.camera,
                                   color: Colors.white,
-                                  size: 20,
+                                  size: 15,
                                 ),
                                 onPressed: () {
                                   accountController.getImage(true);

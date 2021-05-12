@@ -94,7 +94,7 @@ class LoginController extends GetxController {
     Either<String, String> userLog =
         await _authenticationRepo.userRegister(user, rpasswordController.text);
     userLog.fold((l) {
-      print(l);
+      Get.snackbar('Error !', l.toString());
     }, (r) => Get.off(HomeView(), binding: HomeBinding()));
     loginProcess.value = false;
   }

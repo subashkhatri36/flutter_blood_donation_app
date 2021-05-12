@@ -16,7 +16,7 @@ class UpdateaccountController extends GetxController {
   var mylatitude = 0.0.obs;
   var mylongitude = 0.0.obs;
   AccountRepo accountRepo = new AccountRepositories();
- GoogleMapController mapController;
+  GoogleMapController mapController;
   RxString bloodgroup = ''.obs;
   String selectedData = '';
   bool selectedstate = false;
@@ -41,7 +41,7 @@ class UpdateaccountController extends GetxController {
       nameController.text = model.username;
       poneController.text = model.phoneNo;
       addressController.text = model.userAddress;
-    //  bloodgroup.value = model.bloodgroup;
+      //  bloodgroup.value = model.bloodgroup;
       selectedData = model.bloodgroup;
       mylatitude.value = location[0].latitude;
       mylongitude.value = location[0].longitude;
@@ -58,9 +58,10 @@ class UpdateaccountController extends GetxController {
 
   getcoordinateAddress(String address) async {
     List<Location> locations = await locationFromAddress("$address,kathmandu");
-  mylatitude.value=locations[0].latitude;
-   mylongitude.value=locations[0].longitude;
+    mylatitude.value = locations[0].latitude;
+    mylongitude.value = locations[0].longitude;
   }
+
   //geocoding
   getcoordinatefromAddress(String address) async {
     List<Location> locations = await locationFromAddress("$address,kathmandu");
@@ -83,6 +84,8 @@ class UpdateaccountController extends GetxController {
           active: true);
       Either<String, String> val = await accountRepo.updateUser(id, model);
       val.fold((l) => print(l), (r) {
+        nameController.text = '';
+        poneController.text = '';
         Get.snackbar('Information', 'Successfully Updated',
             snackPosition: SnackPosition.BOTTOM);
         cmmplete = true;
