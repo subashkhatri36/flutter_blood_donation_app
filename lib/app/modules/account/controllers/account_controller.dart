@@ -44,7 +44,7 @@ class AccountController extends GetxController {
   void onInit() {
     getUserData();
     // getMyRequest();
-    getCurrentRequest();
+    //getCurrentRequest();
     super.onInit();
   }
 
@@ -81,6 +81,7 @@ class AccountController extends GetxController {
   }
 
   getCurrentRequest() async {
+    requestSendOn.value = false;
     var id = userController.myinfo.value.userId;
     if (id != null) {
       // print('data is not null');
@@ -89,10 +90,9 @@ class AccountController extends GetxController {
 
       userRequest.fold((l) => Get.snackbar('Error', l.toString()), (r) {
         currentRequest = r;
+        print(r.address + ' donation ' + r.bloodgroup);
         requestSendOn.value = true;
       });
-    } else {
-      //  print('uid is null');
     }
   }
 

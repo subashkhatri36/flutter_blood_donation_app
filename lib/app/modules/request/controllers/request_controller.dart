@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_blood_donation_app/app/constant/const.dart';
@@ -79,7 +80,7 @@ class RequestController extends GetxController {
   getallRequest() async {
     var data = await firebaseFirestore
         .collection('request')
-        .where('userid', isEqualTo: userController.myinfo.value.userId)
+        .where('userid', isEqualTo: FirebaseAuth.instance.currentUser.uid)
         .get();
     data.docs.forEach((element) {
       if (element.data()['status'] == 'waiting') requestonProgress.value = true;

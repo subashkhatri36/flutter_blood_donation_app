@@ -38,12 +38,8 @@ class Authentication implements AuthenticationRepo {
   Future<Either<String, String>> userRegister(
       UserModel model, String password) async {
     try {
-      _getCurrentLocation();
       double lat = 0.0;
       double logi = 0.0;
-
-      if (_currentPosition.latitude != null) lat = _currentPosition.latitude;
-      if (_currentPosition.longitude != null) logi = _currentPosition.longitude;
 
       model.latitude = lat;
       model.longitude = logi;
@@ -71,21 +67,6 @@ class Authentication implements AuthenticationRepo {
       }
     } catch (error) {
       return left('Error Occured while Registering User');
-    }
-  }
-
-  _getCurrentLocation() {
-    try {
-      Geolocator.getCurrentPosition(
-              desiredAccuracy: LocationAccuracy.best,
-              forceAndroidLocationManager: true)
-          .then((Position position) => _currentPosition = position)
-          .catchError((e) {
-        // print(e);
-      });
-    } catch (error) {
-      Get.snackbar('Info', 'Please Trun On Your Location',
-          snackPosition: SnackPosition.BOTTOM);
     }
   }
 }

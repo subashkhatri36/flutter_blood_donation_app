@@ -44,7 +44,7 @@ class _SettingViewState extends State<SettingView> {
               () => CupertinoSlider(
                   max: 100,
                   divisions: 10,
-                  min: 1,
+                  min: 10,
                   value: userController.distance.value,
                   onChanged: (v) {
                     userController.distance.value = v;

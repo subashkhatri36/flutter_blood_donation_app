@@ -31,7 +31,6 @@ List<PopupMenuItem> menuItem = [
 class HomeView extends GetView<HomeController> {
   final donationController = Get.put(DonationController());
   Widget buildBody(context) {
-    
     switch (controller.selectedIndex.value) {
       case 2:
         return AccountView();
@@ -96,6 +95,7 @@ class HomeView extends GetView<HomeController> {
                 IconButton(
                     onPressed: () {
                       authResult.signOut();
+                      localStorage.clear('myinfo');
                       Get.offNamed('/login');
                     },
                     icon: Icon(Icons.logout))

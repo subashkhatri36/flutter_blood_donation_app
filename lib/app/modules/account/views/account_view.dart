@@ -57,6 +57,8 @@ class _AccountViewState extends State<AccountView>
   @override
   Widget build(BuildContext context) {
     final accountController = Get.find<AccountController>();
+    accountController.getCurrentRequest();
+    print(accountController.requestSendOn.value);
     // print(accountController.model.bloodgroup);
 
     return Scaffold(
@@ -93,7 +95,7 @@ class _AccountViewState extends State<AccountView>
                             controller: _controller,
                             children: [
                               SingleChildScrollView(
-                                child: Obx(() => !controller.requestSendOn.value
+                                child: Obx(() => controller.requestSendOn.value
                                     ? RequestViewWidget()
                                     : Container(
                                         alignment: Alignment.center,
@@ -314,7 +316,7 @@ class AllDonationview extends StatelessWidget {
                   : donationController.donationList?.length ?? 0
               : donationController.donationList?.length ?? 0);
     else
-      Text(donationController.nodata.value);
+      return Text(donationController.nodata.value);
   }
 }
 
@@ -373,22 +375,6 @@ class RequestViewWidget extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    // Obx(
-                    //   () => Column(
-                    //     children: [
-                    //       ...accountController.myrequestList.map(
-                    //         (element) => ListTile(
-                    //           leading: CircleAvatar(),
-                    //           title: Text('My request'),
-                    //           subtitle: Text(
-                    //               TimeFormatting.displayTimeAgoFromTimestamp(
-                    //                   element.timestamp.toDate().toString())),
-                    //           trailing: Text(element.status),
-                    //         ),
-                    //       ),
-                    //     ],
-                    //   ),
-                    // ),
                     Text(
                       'Searching For',
                       style: TextStyle(
