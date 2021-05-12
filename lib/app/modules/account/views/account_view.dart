@@ -34,13 +34,13 @@ class _AccountViewState extends State<AccountView>
   TabController _controller;
   List<Widget> list = [
     Tab(
-      text: 'Status',
+      text: 'Requests',
     ),
     Tab(
-      text: 'Donation',
+      text: 'Donations',
     ),
     Tab(
-      text: 'Rate and Review',
+      text: 'Reviews',
     ),
   ];
   @override
@@ -125,7 +125,7 @@ class _AccountViewState extends State<AccountView>
                                               child: CustomButton(
                                                 btnColor: Theme.of(context)
                                                     .backgroundColor,
-                                                label: 'Send',
+                                                label: 'Request Now',
                                                 labelColor: Colors.white,
                                                 onPressed: () {
                                                   Get.to(() => RequestView(),
