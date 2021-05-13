@@ -268,7 +268,9 @@ Row buildStarsRating(UserModel model, {bool userratingplace = false}) {
             calculateAverage(model).round() >= i
                 ? Icons.star
                 : Icons.star_border,
-            color: Colors.redAccent[400],
+            color: calculateAverage(model).round() >= i
+                ? Colors.redAccent[400]
+                : Colors.grey,
           ),
         )
     //checking user from bottom part
@@ -593,7 +595,6 @@ class DonorProfileHeader extends StatelessWidget {
                               'Ratings ',
                               style: mediumText.copyWith(
                                   color: Colors.white,
-                                  letterSpacing: 3,
                                   fontSize: 20,
                                   fontWeight: FontWeight.bold),
 
