@@ -2,6 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_blood_donation_app/app/core/model/donation_model.dart';
+import 'package:flutter_blood_donation_app/app/core/model/user_models.dart';
 import 'package:flutter_blood_donation_app/app/core/repositories/donation_repositiories.dart';
 import 'package:get/get.dart';
 
@@ -11,6 +12,7 @@ class DonationController extends GetxController {
   TextEditingController dateController = new TextEditingController();
   TextEditingController personController = new TextEditingController();
   TextEditingController detailsController = new TextEditingController();
+
   Rx<DonationModel> donationmodel;
   RxString nodata = 'No Data'.obs;
   RxBool isloading = false.obs;
@@ -22,6 +24,7 @@ class DonationController extends GetxController {
   // List<DonationModel>.empty(growable: true).obs;
   RxBool showdonartotal = false.obs;
   RxInt totalDonation = 0.obs;
+  // Rx<UserModel> usermodel;
 
   @override
   void onInit() {

@@ -89,15 +89,17 @@ class HomeController extends GetxController {
     bool status = false;
     if (userRatingModelList != null) {
       userRatingModelList.forEach((element) {
-        if (userId == element.userId) {
+        if (userId == element.docId) {
           status = true;
           docId.value = element.docId;
           userRatingModel =
-              new UserRatingModel(userId: element.userId, star: element.star);
+              new UserRatingModel(docId: element.docId, star: element.star);
         }
       });
+      return status;
+    } else {
+      return status;
     }
-    return status;
   }
 
   int prevalue;
@@ -114,29 +116,33 @@ class HomeController extends GetxController {
 
         Either<String, String> updateData = await _ratingRepo.updateRating(
             id, docId.value, rate,
-            usermodel: model, prevalue: prevalue);
+            userId: model.userId, prevalue: prevalue);
 
         updateData.fold((l) => Get.snackbar('Error', l.toString()), (r) {
           UserRatingModel mdl = userRatingModel;
           mdl.star = rate;
           userRatingModel = mdl;
+
           updateLocalStar(prevalue, rate, 'update');
           prevalue = mdl.star;
           userRatingModelList.add(mdl);
+          //  updateLocalStar(prevalue, rate, '');
           userRatingModelList.remove(userRatingModel);
-          Get.snackbar('Successful', r.toString());
+          Get.snackbar('Successful', 'Updated Successfully');
         });
       } else {
         Either<String, String> updateData =
             await _ratingRepo.insertrating(id, model.userId, rate);
         updateData.fold((l) => Get.snackbar('Error', l.toString()), (r) {
-          userRatingModel = UserRatingModel(userId: docId.value, star: rate);
+          userRatingModel = UserRatingModel(star: rate, docId: r);
           userRatingModelList.add(userRatingModel);
           updateLocalStar(0, rate, '');
           Get.snackbar('Successful', r.toString());
         });
       }
     }
+    // checkUserrating(model.userId);
+
     ratingchange.toggle();
     // reRate.toggle();
   }
@@ -199,8 +205,6 @@ class HomeController extends GetxController {
           name: myinfo.value.username,
           photo: myinfo.value.photoUrl,
           comment: reviewController.text);
-
-      // print(reviewController.text);
 
       Either<String, String> writedata =
           await _accountRepo.insertUserReview(usermodel.userId, mymodel);
@@ -374,7 +378,7 @@ class HomeController extends GetxController {
 
   getUsers() async {
     List<UserModel> users = await userRepo.getuser();
-    // print(users.length);
+
     userlist = users.obs;
   }
 

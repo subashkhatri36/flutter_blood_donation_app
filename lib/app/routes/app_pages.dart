@@ -6,6 +6,8 @@ import 'package:flutter_blood_donation_app/app/modules/account/bindings/account_
 import 'package:flutter_blood_donation_app/app/modules/account/views/account_view.dart';
 import 'package:flutter_blood_donation_app/app/modules/donation/bindings/donation_binding.dart';
 import 'package:flutter_blood_donation_app/app/modules/donation/views/donation_view.dart';
+import 'package:flutter_blood_donation_app/app/modules/forgetpassword/bindings/forgetpassword_binding.dart';
+import 'package:flutter_blood_donation_app/app/modules/forgetpassword/views/forgetpassword_view.dart';
 import 'package:flutter_blood_donation_app/app/modules/home/bindings/home_binding.dart';
 import 'package:flutter_blood_donation_app/app/modules/home/views/home_view.dart';
 import 'package:flutter_blood_donation_app/app/modules/login/bindings/login_binding.dart';
@@ -95,6 +97,11 @@ class AppPages {
       name: _Paths.NOTIFICATIONS,
       page: () => NotificationsView(),
       binding: NotificationsBinding(),
+    ),
+    GetPage(
+      name: _Paths.FORGETPASSWORD,
+      page: () => ForgetpasswordView(),
+      binding: ForgetpasswordBinding(),
     ),
   ];
 }
