@@ -47,12 +47,12 @@ class DonorProfile extends StatelessWidget {
     donationController.countDocumentDonation(user.userId);
 
     return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
+      // backgroundColor: Theme.of(context).backgroundColor,
       body: ListView(
         children: [
           DonorProfileHeader(user: user),
           Container(
-            color: Theme.of(context).backgroundColor,
+            //  color: Theme.of(context).backgroundColor,
             child: Column(
               children: [
                 // Text("${user.twostar.toString()}"),
@@ -61,8 +61,8 @@ class DonorProfile extends StatelessWidget {
                   title: Text(
                     'Last Donations',
                     style: largeText.copyWith(
-                        fontWeight: FontWeight.w800,
-                        color: Theme.of(context).primaryColorDark),
+                      fontWeight: FontWeight.w800,
+                    ),
                   ),
                   subtitle: Obx(() => Text(donationController.donationmodel !=
                           null
@@ -84,8 +84,8 @@ class DonorProfile extends StatelessWidget {
                     Text(
                       'All Donations',
                       style: largeText.copyWith(
-                          fontWeight: FontWeight.w800,
-                          color: Theme.of(context).primaryColor),
+                        fontWeight: FontWeight.w800,
+                      ),
                     ),
                     SizedBox(width: 10),
                     Container(
@@ -134,8 +134,7 @@ class DonorProfile extends StatelessWidget {
                   ),
                   Text(
                     'Tell others what you think',
-                    style: smallText.copyWith(
-                        color: Theme.of(context).primaryColor),
+                    style: smallText.copyWith(),
                   ),
                   SizedBox(
                     height: 10,
