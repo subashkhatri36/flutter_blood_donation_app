@@ -270,7 +270,7 @@ class _CustomMapState extends State<CustomMap> {
                                     backgroundColor: Colors.red,
                                     radius: 8,
                                     child: Text(
-                                      "$selectedbloodgroup",
+                                      "${userController.userlist[e.donorindex].bloodgroup}",
                                       style: TextStyle(
                                           color: Colors.white, fontSize: 8),
                                     )),

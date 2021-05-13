@@ -74,22 +74,41 @@ class DonorDetailsController extends GetxController {
   getDonors(String bloodgroup) {
     List<UsermodelSortedtoMyLocationModel> mylist = [];
     List<UserModel> users = userController.userlist.toList();
-    if(users.length>0)
-    users.forEach((element) {
-      if (element.bloodgroup == bloodgroup) {
-        UsermodelSortedtoMyLocationModel mod =
-            UsermodelSortedtoMyLocationModel()
-              ..distance = Geolocator.distanceBetween(
-                      userController.mylatitude.value,
-                      userController.mylongitude.value,
-                      element.latitude,
-                      element.longitude)
-                  .truncate()
-              ..name = element.username
-              ..donorindex = users.indexOf(element);
-        if (mod.distance / 1000 < userController.distance.value) mylist.add(mod);
-      }
-    });
+    if (users.length > 0)
+      users.forEach((element) {
+        if (
+            //if bloodgroup ==user bloodgroup
+            element.bloodgroup == bloodgroup ||
+                //if bloodgroup=='AB+' ,all
+                bloodgroup == 'AB+' ||
+                bloodgroup == 'AB-' && element.bloodgroup.contains('-')
+                // (element.bloodgroup == 'O-' ||
+                //     element.bloodgroup == 'B-' ||
+                //     element.bloodgroup.contains('A'))
+                ||
+                bloodgroup == 'O+' && element.bloodgroup == "O-" ||
+                bloodgroup == 'B-' && element.bloodgroup == 'O-' ||
+                bloodgroup == 'B+' &&
+                    (element.bloodgroup.contains('O') ||
+                        element.bloodgroup.contains('B')) ||
+                bloodgroup == 'A-' && element.bloodgroup == 'O-' ||
+                bloodgroup == 'A+' &&
+                    (element.bloodgroup.contains('O') ||
+                        element.bloodgroup.contains('A'))) {
+          UsermodelSortedtoMyLocationModel mod =
+              UsermodelSortedtoMyLocationModel()
+                ..distance = Geolocator.distanceBetween(
+                        userController.mylatitude.value,
+                        userController.mylongitude.value,
+                        element.latitude,
+                        element.longitude)
+                    .truncate()
+                ..name = element.username
+                ..donorindex = users.indexOf(element);
+          if (mod.distance / 1000 < userController.distance.value)
+            mylist.add(mod);
+        }
+      });
     mylist.sort((a, b) => a.distance.compareTo(b.distance));
 
     return mylist;
