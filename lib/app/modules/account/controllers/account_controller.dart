@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_blood_donation_app/app/constant/const.dart';
 import 'package:flutter_blood_donation_app/app/core/model/request_model.dart';
 import 'package:flutter_blood_donation_app/app/core/model/review_model.dart';
 import 'package:get/get.dart';
@@ -41,9 +42,26 @@ class AccountController extends GetxController {
   @override
   void onInit() {
     getUserData();
+    getallRequest();
     // getMyRequest();
     getCurrentRequest();
     super.onInit();
+  }
+
+  getallRequest() async {
+    bool req = false;
+    var data = await firebaseFirestore
+        .collection('request')
+        .where('userid', isEqualTo: FirebaseAuth.instance.currentUser.uid)
+        .get();
+    data.docs.forEach((element) {
+      if (element.data()['status'] == 'waiting') {
+        myrequestList.add(RequestModel.fromDocumentSnapshot(element));
+
+        req = true;
+      }
+    });
+    requestSendOn.value = req;
   }
 
   loadingComment() async {
@@ -67,7 +85,7 @@ class AccountController extends GetxController {
           await _accountRepo.deleteuserRequest(currentRequest.id);
       val.fold((l) => Get.snackbar('Error', l.toString()), (r) {
         Get.snackbar('Info', r.toString());
-        requestSendOn.value = false;
+        //requestSendOn.value = false;
         currentRequest = null;
         getCurrentRequest();
       });

@@ -68,7 +68,7 @@ class HomeView extends GetView<HomeController> {
   @override
   Widget build(BuildContext context) {
     return Obx(() => Scaffold(
-          backgroundColor: Colors.grey[300],
+          backgroundColor: grey[400],
           appBar: AppBar(
               title: Row(
                 children: [
@@ -93,7 +93,7 @@ class HomeView extends GetView<HomeController> {
                 IconButton(
                     onPressed: () {
                       authResult.signOut();
-                      localStorage.clear('myinfo');
+                      localStorage.write('myinfo', null);
                       Get.offNamed('/login');
                     },
                     icon: Icon(Icons.logout))
@@ -113,6 +113,7 @@ class HomeView extends GetView<HomeController> {
               ]),
           body: buildBody(context),
           bottomNavigationBar: BottomAppBar(
+            // color: Theme.of(context).scaffoldBackgroundColor,
             elevation: 0,
             shape: CircularNotchedRectangle(),
             notchMargin: 3,
@@ -124,7 +125,7 @@ class HomeView extends GetView<HomeController> {
 
                 controller.userlistshown.value = true;
               },
-              selectedItemColor: Theme.of(context).primaryColor,
+              // selectedItemColor: Theme.of(context).backgroundColor,
               currentIndex: controller.selectedIndex.value,
               items: [
                 BottomNavigationBarItem(

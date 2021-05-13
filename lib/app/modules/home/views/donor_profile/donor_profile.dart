@@ -71,12 +71,14 @@ class _DonorProfileState extends State<DonorProfile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // backgroundColor: Theme.of(context).backgroundColor,
       body: ListView(
         children: [
           Obx(() => controller.ratingchange.isFalse
               ? DonorProfileHeader()
               : DonorProfileHeader()),
           Container(
+            // color: Theme.of(context).backgroundColor,
             child: Column(
               children: [
                 // Text("${user.twostar.toString()}"),
@@ -85,13 +87,15 @@ class _DonorProfileState extends State<DonorProfile> {
                   title: Text(
                     'Last Donations',
                     style: largeText.copyWith(
-                        fontWeight: FontWeight.w800, color: Colors.grey[700]),
+                        fontWeight: FontWeight.w800,
+                        color: Theme.of(context).primaryColorDark),
                   ),
                   subtitle: Obx(() => Text(donationController.donationmodel !=
                           null
                       ? 'Donate to -${donationController.donationmodel.value.person} on ${donationController.donationmodel.value.date}.'
                       : donationController.nodata.value)),
                 ),
+                Divider(),
               ],
             ),
           ),
@@ -106,7 +110,8 @@ class _DonorProfileState extends State<DonorProfile> {
                     Text(
                       'All Donations',
                       style: largeText.copyWith(
-                          fontWeight: FontWeight.w800, color: Colors.grey[700]),
+                          fontWeight: FontWeight.w800,
+                          color: Theme.of(context).primaryColor),
                     ),
                     SizedBox(width: 10),
                     Container(
@@ -698,7 +703,7 @@ class DonorProfileHeader extends StatelessWidget {
                 left: 0,
                 child: Container(
                   decoration: BoxDecoration(
-                      color: Colors.white,
+                      // color: Theme.of(context).primaryColor,
                       borderRadius:
                           BorderRadius.only(topRight: Radius.circular(10))),
                   child: IconButton(

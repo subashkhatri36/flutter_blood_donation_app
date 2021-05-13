@@ -49,7 +49,7 @@ class _AccountViewState extends State<AccountView>
     ),
     Tab(
       child: Text(
-        'Rate & Review',
+        'Review',
         style: TextStyle(fontSize: 12),
       ),
       // text: 'Rate and Review',
