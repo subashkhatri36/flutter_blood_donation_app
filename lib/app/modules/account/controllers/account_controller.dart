@@ -11,6 +11,7 @@ import 'package:flutter_blood_donation_app/app/core/model/user_models.dart';
 import 'package:flutter_blood_donation_app/app/core/repositories/account_repository.dart';
 import 'package:flutter_blood_donation_app/app/modules/login/bindings/login_binding.dart';
 import 'package:flutter_blood_donation_app/app/modules/login/views/login_view.dart';
+import 'package:get/get_connect/http/src/request/request.dart';
 import 'package:image_picker/image_picker.dart';
 
 class AccountController extends GetxController {
@@ -28,7 +29,7 @@ class AccountController extends GetxController {
   File image;
   RxList commentList;
   RxList<ReviewModel> reviewList;
-  RxList<RequestModel> myrequestList;
+  var myrequestList = List<RequestModel>.empty(growable: true);
 
   RxBool loadComment = false.obs;
 

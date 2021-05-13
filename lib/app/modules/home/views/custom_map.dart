@@ -175,7 +175,7 @@ class _CustomMapState extends State<CustomMap> {
     if (selectedbloodgroup != null)
       return Stack(
         children: [
-          if (0 != 0)
+         // if (0 != 0)
             GoogleMap(
               mapType: MapType.normal,
               initialCameraPosition: CameraPosition(
