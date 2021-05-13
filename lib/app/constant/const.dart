@@ -8,10 +8,8 @@ final Future<FirebaseApp> initialization = Firebase.initializeApp();
 FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
 FirebaseAuth authResult = FirebaseAuth.instance;
 
-final largeText = TextStyle(
-  fontSize: 16,
-);
-final mediumText = TextStyle(fontSize: 16);
+final largeText = TextStyle(fontSize: 16, color: Colors.grey[700]);
+final mediumText = TextStyle(fontSize: 16, color: Colors.grey[600]);
 final smallText = TextStyle(fontSize: 14);
 
 //colors

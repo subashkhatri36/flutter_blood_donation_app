@@ -12,7 +12,6 @@ import 'package:get/get.dart';
 import 'package:share/share.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../controllers/home_controller.dart';
-import 'package:flutter_blood_donation_app/app/core/services/storage_service/get_storage.dart';
 
 class UserRequest extends StatelessWidget {
   final RequestModel request;
@@ -40,7 +39,7 @@ class UserRequest extends StatelessWidget {
               child: Container(
                 width: double.infinity,
                 decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: Theme.of(context).scaffoldBackgroundColor,
                     borderRadius:
                         BorderRadius.only(topLeft: Radius.circular(5))),
                 child: Column(
@@ -99,16 +98,19 @@ class UserRequest extends StatelessWidget {
                             // ),
                             SizedBox(width: 10),
                             Column(
-                                //  mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
                                     '${request.name.capitalize}',
                                     style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w700,
-                                        color: Colors.grey[800]),
+                                      fontSize: 16,
+                                      color: Colors.grey[700],
+                                      fontWeight: FontWeight.w700,
+                                    ),
                                   ),
+                                  // Text(
+                                  //     '(${(Geolocator.distanceBetween(userController.mylatitude.value, userController.mylongitude.value, request.latitude, request.longitude) / 1000).toStringAsFixed(2)} Km)'),
                                   Container(
                                     // padding: EdgeInsets.symmetric(vertical: 3),
                                     width:
@@ -122,8 +124,7 @@ class UserRequest extends StatelessWidget {
                                   ),
                                   Text(
                                     " ${request.timestamp != null ? TimeFormatting.displayTimeAgoFromTimestamp(request.timestamp.toDate().toString()) : ''}",
-                                    style: smallText.copyWith(
-                                        color: Colors.grey, fontSize: 12),
+                                    style: smallText.copyWith(fontSize: 12),
                                   ),
                                 ]),
                           ],
@@ -192,8 +193,7 @@ class UserRequest extends StatelessWidget {
                                   children: [
                                     Text(
                                         '${!request.bloodtype ? 'Blood' : 'Blood Plasma'} Donors Needed',
-                                        style: mediumText.copyWith(
-                                            color: Colors.grey[700])),
+                                        style: mediumText.copyWith()),
                                     Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
@@ -209,8 +209,7 @@ class UserRequest extends StatelessWidget {
                                                 '${request.hospitaldetail} ',
                                                 maxLines: 1,
                                                 overflow: TextOverflow.ellipsis,
-                                                style: smallText.copyWith(
-                                                    color: Colors.grey[700])),
+                                                style: mediumText.copyWith()),
                                           ),
                                         ]),
                                     Container(
@@ -218,7 +217,6 @@ class UserRequest extends StatelessWidget {
                                       child: Text('${request.address} ',
                                           overflow: TextOverflow.ellipsis,
                                           style: smallText.copyWith(
-                                              color: Colors.grey,
                                               fontWeight: FontWeight.w400)),
                                     ),
                                   ]),

@@ -47,10 +47,12 @@ class DonorProfile extends StatelessWidget {
     donationController.countDocumentDonation(user.userId);
 
     return Scaffold(
+      backgroundColor: Theme.of(context).backgroundColor,
       body: ListView(
         children: [
           DonorProfileHeader(user: user),
           Container(
+            color: Theme.of(context).backgroundColor,
             child: Column(
               children: [
                 // Text("${user.twostar.toString()}"),
@@ -59,13 +61,15 @@ class DonorProfile extends StatelessWidget {
                   title: Text(
                     'Last Donations',
                     style: largeText.copyWith(
-                        fontWeight: FontWeight.w800, color: Colors.grey[700]),
+                        fontWeight: FontWeight.w800,
+                        color: Theme.of(context).primaryColorDark),
                   ),
                   subtitle: Obx(() => Text(donationController.donationmodel !=
                           null
                       ? 'Donate to -${donationController.donationmodel.value.person} on ${donationController.donationmodel.value.date}.'
                       : donationController.nodata.value)),
                 ),
+                Divider(),
               ],
             ),
           ),
@@ -80,7 +84,8 @@ class DonorProfile extends StatelessWidget {
                     Text(
                       'All Donations',
                       style: largeText.copyWith(
-                          fontWeight: FontWeight.w800, color: Colors.grey[700]),
+                          fontWeight: FontWeight.w800,
+                          color: Theme.of(context).primaryColor),
                     ),
                     SizedBox(width: 10),
                     Container(
@@ -129,7 +134,8 @@ class DonorProfile extends StatelessWidget {
                   ),
                   Text(
                     'Tell others what you think',
-                    style: smallText.copyWith(color: Colors.grey[600]),
+                    style: smallText.copyWith(
+                        color: Theme.of(context).primaryColor),
                   ),
                   SizedBox(
                     height: 10,
@@ -149,7 +155,7 @@ class DonorProfile extends StatelessWidget {
                     child: Text(
                       'Reviews -- add your review',
                       style: TextStyle(
-                          color: Colors.redAccent[900],
+                          color: Theme.of(context).primaryColor,
                           fontSize: 16,
                           fontWeight: FontWeight.bold),
                     ),
@@ -657,7 +663,7 @@ class DonorProfileHeader extends StatelessWidget {
                 left: 0,
                 child: Container(
                   decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: Theme.of(context).primaryColor,
                       borderRadius:
                           BorderRadius.only(topRight: Radius.circular(10))),
                   child: IconButton(

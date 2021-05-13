@@ -388,17 +388,18 @@ class RequestViewWidget extends StatelessWidget {
                       child: CircleAvatar(
                         radius: Defaults.paddingbig * 2 - 4,
                         backgroundColor: Theme.of(context).backgroundColor,
-                        child: Text(userRequest.currentRequest != null
-                            ? userRequest.currentRequest.bloodgroup
-                            : 'Na'),
+                        child: Text(userRequest.myrequestList[0].bloodgroup),
+                        // child: Text(userRequest.currentRequest != null
+                        //     ? userRequest.currentRequest.bloodgroup
+                        //     : 'Na'),
                       ),
                     ),
                     Container(
                       padding:
                           EdgeInsets.symmetric(horizontal: Defaults.paddingbig),
                       child: Text(
-                        userRequest.currentRequest != null
-                            ? userRequest.currentRequest.address
+                        userRequest.myrequestList != null
+                            ? userRequest.myrequestList[0].address
                             : 'No address',
                         maxLines: 2,
                       ),

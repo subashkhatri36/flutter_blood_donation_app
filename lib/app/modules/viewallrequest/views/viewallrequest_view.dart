@@ -7,10 +7,10 @@ import 'package:get/get.dart';
 import '../controllers/viewallrequest_controller.dart';
 
 List<PopupMenuItem> menuItem = [
-  // PopupMenuItem(
-  //   child: Text('Settings'),
-  //   value: '/settings',
-  // ),
+  PopupMenuItem(
+    child: Text('Cancel'),
+    value: '/cancel',
+  ),
   PopupMenuItem(
     child: Text('Completed'),
     value: 'completed',
@@ -61,6 +61,17 @@ class ViewallrequestView extends GetView<ViewallrequestController> {
                                     }).whenComplete(() => Get.snackbar(
                                             'Complete',
                                             'Successfully updated'));
+                                  else
+                                    firebaseFirestore
+                                        .collection('request')
+                                        .doc(rmodel.id)
+                                        .update({
+                                      'status': 'canceled'
+                                    }).whenComplete(() => Get.snackbar(
+                                            'Complete',
+                                            'Successfully canceled'));
+
+                                  controller.loadAllRequest();
                                   // print(v);
                                   // Get.snackbar(v, v);
                                 },
