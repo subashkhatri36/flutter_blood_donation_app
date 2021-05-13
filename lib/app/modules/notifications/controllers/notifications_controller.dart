@@ -12,11 +12,11 @@ class NotificationsController extends GetxController {
         FlutterLocalNotificationsPlugin();
     AndroidInitializationSettings androidInitializationSettings =
         AndroidInitializationSettings("@mipmap/ic_launcher");
-    final MacOSInitializationSettings initializationSettingsMacOS =
-        MacOSInitializationSettings(
-            requestAlertPermission: true,
-            requestBadgePermission: false,
-            requestSoundPermission: true);
+    // final MacOSInitializationSettings initializationSettingsMacOS =
+    //     MacOSInitializationSettings(
+    //         requestAlertPermission: true,
+    //         requestBadgePermission: false,
+    //         requestSoundPermission: true);
     IOSInitializationSettings iosInitializationSettings =
         IOSInitializationSettings();
     final InitializationSettings initializationSettings =

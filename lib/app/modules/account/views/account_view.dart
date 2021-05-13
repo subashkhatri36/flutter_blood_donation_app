@@ -70,8 +70,6 @@ class _AccountViewState extends State<AccountView>
   Widget build(BuildContext context) {
     final accountController = Get.find<AccountController>();
     accountController.getCurrentRequest();
-    print(accountController.requestSendOn.value);
-    // print(accountController.model.bloodgroup);
 
     return Scaffold(
         body: Obx(
@@ -109,46 +107,98 @@ class _AccountViewState extends State<AccountView>
                               SingleChildScrollView(
                                 child: Obx(() => controller.requestSendOn.value
                                     ? RequestViewWidget()
-                                    : Container(
-                                        alignment: Alignment.center,
-                                        padding: EdgeInsets.symmetric(
-                                            horizontal: Defaults.paddingsmall),
-                                        width:
-                                            MediaQuery.of(context).size.width,
-                                        height: Defaults.paddinglarge * 11,
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              'Send Blood Request',
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize:
-                                                      Defaults.fontheading),
-                                              textAlign: TextAlign.left,
+                                    : Column(
+                                        children: [
+                                          Container(
+                                            margin: EdgeInsets.all(
+                                                Defaults.paddingsmall),
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal:
+                                                    Defaults.paddingsmall),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Expanded(
+                                                  flex: 8,
+                                                  child: Text(
+                                                    'All Request',
+                                                    style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color: Colors.grey,
+                                                        fontSize: Defaults
+                                                            .fontheading),
+                                                  ),
+                                                ),
+                                                Expanded(
+                                                  flex: 3,
+                                                  child: CustomButton(
+                                                    btnColor: Colors.white,
+                                                    label: 'VIEW ALL',
+                                                    labelColor:
+                                                        Theme.of(context)
+                                                            .backgroundColor,
+                                                    onPressed: () {
+                                                      Get.to(
+                                                          () =>
+                                                              ViewallrequestView(),
+                                                          binding:
+                                                              ViewallrequestBinding());
+                                                    },
+                                                    borderRadius: 10,
+                                                  ),
+                                                )
+                                              ],
                                             ),
-                                            Container(
-                                              padding: EdgeInsets.symmetric(
-                                                  horizontal:
-                                                      Defaults.paddingbig),
-                                              child: CustomButton(
-                                                btnColor: Theme.of(context)
-                                                    .backgroundColor,
-                                                label: 'Send',
-                                                labelColor: Colors.white,
-                                                onPressed: () {
-                                                  Get.to(() => RequestView(),
-                                                      binding:
-                                                          RequestBinding());
-                                                },
-                                                borderRadius: 10,
-                                              ),
+                                          ),
+                                          Container(
+                                            alignment: Alignment.center,
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal:
+                                                    Defaults.paddingsmall),
+                                            width: MediaQuery.of(context)
+                                                .size
+                                                .width,
+                                            height: Defaults.paddinglarge * 7,
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Text(
+                                                  'Send Blood Request',
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize:
+                                                          Defaults.fontheading),
+                                                  textAlign: TextAlign.left,
+                                                ),
+                                                Container(
+                                                  padding: EdgeInsets.symmetric(
+                                                      horizontal:
+                                                          Defaults.paddingbig),
+                                                  child: CustomButton(
+                                                    btnColor: Theme.of(context)
+                                                        .backgroundColor,
+                                                    label: 'Send',
+                                                    labelColor: Colors.white,
+                                                    onPressed: () {
+                                                      Get.to(
+                                                          () => RequestView(),
+                                                          binding:
+                                                              RequestBinding());
+                                                    },
+                                                    borderRadius: 10,
+                                                  ),
+                                                ),
+                                              ],
                                             ),
-                                          ],
-                                        ),
+                                          ),
+                                        ],
                                       )),
                               ),
                               //2

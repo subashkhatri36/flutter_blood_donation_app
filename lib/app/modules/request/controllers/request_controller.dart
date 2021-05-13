@@ -50,7 +50,7 @@ class RequestController extends GetxController {
     loading.value = true;
     RequestModel req = RequestModel(
         name: userController.myinfo.value.username,
-        userid: userController.myinfo.value.userId,
+        userid: FirebaseAuth.instance.currentUser.uid,
         userphotoUrl: userController.myinfo.value.photoUrl,
         address: userAddressController.text,
         contactno: phoneController.text,

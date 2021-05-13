@@ -4,8 +4,6 @@ import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_blood_donation_app/app/core/model/request_model.dart';
 import 'package:flutter_blood_donation_app/app/core/model/review_model.dart';
-import 'package:flutter_blood_donation_app/app/core/repositories/post_repo.dart';
-import 'package:flutter_blood_donation_app/app/modules/home/controllers/home_controller.dart';
 import 'package:get/get.dart';
 
 import 'package:flutter_blood_donation_app/app/core/model/user_models.dart';
@@ -29,8 +27,8 @@ class AccountController extends GetxController {
   File image;
   RxList commentList;
   RxList<ReviewModel> reviewList;
-  RxList<RequestModel> myrequestList =
-      List<RequestModel>.empty(growable: true).obs;
+  RxList<RequestModel> myrequestList;
+
   RxBool loadComment = false.obs;
 
   RxDouble average = 0.0.obs;
@@ -44,7 +42,7 @@ class AccountController extends GetxController {
   void onInit() {
     getUserData();
     // getMyRequest();
-    //getCurrentRequest();
+    getCurrentRequest();
     super.onInit();
   }
 
@@ -76,22 +74,19 @@ class AccountController extends GetxController {
     }
   }
 
-  getMyRequest() {
-    myrequestList.bindStream(postRepo.mybloodrequest());
-  }
-
   getCurrentRequest() async {
     requestSendOn.value = false;
-    var id = userController.myinfo.value.userId;
+    var id = FirebaseAuth.instance.currentUser.uid;
     if (id != null) {
-      // print('data is not null');
       Either<String, RequestModel> userRequest =
           await _accountRepo.getCurrentRequest(id);
 
-      userRequest.fold((l) => Get.snackbar('Error', l.toString()), (r) {
-        currentRequest = r;
-        print(r.address + ' donation ' + r.bloodgroup);
-        requestSendOn.value = true;
+      userRequest.fold((l) => print(l), (r) {
+        if (r != null) {
+          currentRequest = r;
+          //  print(r.address + ' donation ' + r.bloodgroup);
+          requestSendOn.value = true;
+        }
       });
     }
   }
