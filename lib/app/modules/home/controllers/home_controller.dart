@@ -369,7 +369,7 @@ class HomeController extends GetxController {
   }
 
   writeSettings() {
-    localStorage.write('distance', distance.value);
+    localStorage.write('distance', distance.value.toPrecision(2));
   }
 
   getUsers() async {

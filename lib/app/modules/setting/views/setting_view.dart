@@ -42,11 +42,13 @@ class _SettingViewState extends State<SettingView> {
             child: Obx(
               () => CupertinoSlider(
                   max: 100,
-                  divisions: 10,
-                  min: 10,
+                  divisions: 19,
+                  min: 5,
                   value: userController.distance.value,
+                  activeColor: Colors.red.shade600,
+                  thumbColor: Colors.red.shade600,
                   onChanged: (v) {
-                    userController.distance.value = v;
+                    userController.distance.value = v.toPrecision(2);
                     userController.writeSettings();
                   }),
             ),
