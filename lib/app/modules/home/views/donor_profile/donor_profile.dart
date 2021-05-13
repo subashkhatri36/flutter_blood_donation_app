@@ -663,7 +663,7 @@ class DonorProfileHeader extends StatelessWidget {
                 left: 0,
                 child: Container(
                   decoration: BoxDecoration(
-                      color: Theme.of(context).primaryColor,
+                      // color: Theme.of(context).primaryColor,
                       borderRadius:
                           BorderRadius.only(topRight: Radius.circular(10))),
                   child: IconButton(
