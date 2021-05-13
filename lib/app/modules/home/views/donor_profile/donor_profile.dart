@@ -87,8 +87,8 @@ class _DonorProfileState extends State<DonorProfile> {
                   title: Text(
                     'Last Donations',
                     style: largeText.copyWith(
-                        fontWeight: FontWeight.w800,
-                        color: Theme.of(context).primaryColorDark),
+                      fontWeight: FontWeight.w800,
+                    ),
                   ),
                   subtitle: Obx(() => Text(donationController.donationmodel !=
                           null
@@ -110,8 +110,8 @@ class _DonorProfileState extends State<DonorProfile> {
                     Text(
                       'All Donations',
                       style: largeText.copyWith(
-                          fontWeight: FontWeight.w800,
-                          color: Theme.of(context).primaryColor),
+                        fontWeight: FontWeight.w800,
+                      ),
                     ),
                     SizedBox(width: 10),
                     Container(
@@ -302,7 +302,9 @@ Row buildStarsRating(UserModel model, {bool userratingplace = false}) {
             calculateAverage(model).round() >= i
                 ? Icons.star
                 : Icons.star_border,
-            color: Colors.redAccent[400],
+            color: calculateAverage(model).round() >= i
+                ? Colors.redAccent[400]
+                : Colors.grey,
           ),
         )
     //checking user from bottom part
@@ -624,7 +626,6 @@ class DonorProfileHeader extends StatelessWidget {
                               'Ratings ',
                               style: mediumText.copyWith(
                                   color: Colors.white,
-                                  letterSpacing: 3,
                                   fontSize: 20,
                                   fontWeight: FontWeight.bold),
 
