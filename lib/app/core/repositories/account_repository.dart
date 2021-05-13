@@ -182,6 +182,7 @@ class AccountRepositories implements AccountRepo {
       await FirebaseFirestore.instance
           .collection('request')
           .where('userid', isEqualTo: userId)
+          .where('status', isEqualTo: 'waiting')
           .get()
           .then((value) {
         value.docs.forEach((element) {
@@ -190,7 +191,7 @@ class AccountRepositories implements AccountRepo {
         });
       }).whenComplete(() => complete = true);
 
-      if (requestModel != null && complete) {
+      if (complete) {
         return right(requestModel);
       } else {
         return left('Something went Wrong while fetching request');

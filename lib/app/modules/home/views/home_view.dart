@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_blood_donation_app/app/constant/const.dart';
 import 'package:flutter_blood_donation_app/app/constant/defaults.dart';

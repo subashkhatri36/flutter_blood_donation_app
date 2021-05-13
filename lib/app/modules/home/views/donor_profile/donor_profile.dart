@@ -33,26 +33,52 @@ call(String no) async {
   }
 }
 
-class DonorProfile extends StatelessWidget {
-  final donationController = Get.find<DonationController>();
-  DonorProfile({this.user});
+class DonorProfile extends StatefulWidget {
+  DonorProfile({@required this.user});
   final UserModel user;
+
+  @override
+  _DonorProfileState createState() => _DonorProfileState();
+}
+
+class _DonorProfileState extends State<DonorProfile> {
+  final donationController = Get.find<DonationController>();
   final controller = Get.find<HomeController>();
+
+  var id;
+
+  @override
+  void initState() {
+    controller.userModel = widget.user.obs;
+    loadData();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    print('dispose');
+    super.dispose();
+  }
+
+  void loadData() async {
+    id = widget.user.userId;
+    controller.checkUserrating(id);
+    controller.loadreview(id);
+    donationController.loadDonation(id);
+    donationController.countDocumentDonation(id);
+  }
 
   @override
   Widget build(BuildContext context) {
-    controller.checkUserrating(user.userId);
-    controller.loadreview(user);
-    donationController.loadDonation(user.userId);
-    donationController.countDocumentDonation(user.userId);
-
     return Scaffold(
       // backgroundColor: Theme.of(context).backgroundColor,
       body: ListView(
         children: [
-          DonorProfileHeader(user: user),
+          Obx(() => controller.ratingchange.isFalse
+              ? DonorProfileHeader()
+              : DonorProfileHeader()),
           Container(
-            //  color: Theme.of(context).backgroundColor,
+            // color: Theme.of(context).backgroundColor,
             child: Column(
               children: [
                 // Text("${user.twostar.toString()}"),
@@ -121,42 +147,45 @@ class DonorProfile extends StatelessWidget {
           SizedBox(
             height: 10,
           ),
-          if (FirebaseAuth.instance.currentUser.uid != user.userId)
+          if (FirebaseAuth.instance.currentUser.uid != id)
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'Rate this user',
-                    style: largeText.copyWith(
-                        fontWeight: FontWeight.w800, color: Colors.grey[700]),
-                  ),
-                  Text(
-                    'Tell others what you think',
-                    style: smallText.copyWith(),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Obx(() => controller.ratingchange.isTrue
-                      ? CircularProgressIndicator(
-                          backgroundColor: Colors.redAccent,
-                        )
-                      : buildStarsRating(user, userratingplace: true)),
-                  SizedBox(
-                    height: 15,
-                  ),
-                  InkWell(
-                    onTap: () {
-                      Get.to(ReviewPage(user: user));
-                    },
-                    child: Text(
-                      'Reviews -- add your review',
-                      style: TextStyle(
-                          color: Theme.of(context).primaryColor,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold),
+                  Container(
+                    padding: EdgeInsets.all(5.0),
+                    color: Theme.of(context).backgroundColor,
+                    child: Row(
+                      children: [
+                        Text(
+                          'Reviews',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        Spacer(),
+                        InkWell(
+                          onTap: () {
+                            Get.to(ReviewPage(user: widget.user));
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(color: Colors.white),
+                            ),
+                            margin: EdgeInsets.all(5.0),
+                            padding: EdgeInsets.all(5.0),
+                            child: Text(
+                              'Add Review',
+                              style: TextStyle(
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   SizedBox(
@@ -171,7 +200,12 @@ class DonorProfile extends StatelessWidget {
                                 if (controller.reviewmodellist != null)
                                   if (controller.reviewmodellist.length > 1)
                                     for (int i = 0;
-                                        i < controller.reviewmodellist.length;
+                                        i <
+                                            (controller.reviewmodellist.length >
+                                                    5
+                                                ? 5
+                                                : controller
+                                                    .reviewmodellist.length);
                                         i++)
                                       Column(
                                         children: [
@@ -362,6 +396,28 @@ class ReviewPage extends StatelessWidget {
         body: ListView(
           padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           children: [
+            Text(
+              'Rate this user',
+              style: largeText.copyWith(
+                  fontWeight: FontWeight.w800, color: Colors.grey[700]),
+            ),
+            Text(
+              'Tell others what you think',
+              style: smallText.copyWith(color: Colors.grey[600]),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Obx(() => controller.ratingchange.isTrue
+                ? Center(
+                    child: CircularProgressIndicator(
+                      backgroundColor: Colors.redAccent,
+                    ),
+                  )
+                : buildStarsRating(user, userratingplace: true)),
+            SizedBox(
+              height: 15,
+            ),
             Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
               CircleAvatar(
                 backgroundImage: userController.myinfo.value.photoUrl != null &&
@@ -385,7 +441,7 @@ class ReviewPage extends StatelessWidget {
                     'Reviews are public and include\n your account details.',
                     style: TextStyle(fontSize: 12),
                   ),
-                  SizedBox(height: 20),
+                  SizedBox(height: 10),
                 ],
               ),
             ]),
@@ -421,11 +477,11 @@ class ReviewPage extends StatelessWidget {
 }
 
 class DonorProfileHeader extends StatelessWidget {
-  final UserModel user;
-  const DonorProfileHeader({Key key, this.user}) : super(key: key);
+  const DonorProfileHeader({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.find<HomeController>();
     return Container(
         height: 300,
         child: Stack(
@@ -434,9 +490,10 @@ class DonorProfileHeader extends StatelessWidget {
                 height: 300,
                 width: double.infinity,
                 child: Image.network(
-                    user.photoUrl == '' || user.photoUrl == null
+                    controller.userModel.value.photoUrl == '' ||
+                            controller.userModel.value.photoUrl == null
                         ? noimage
-                        : user.photoUrl,
+                        : controller.userModel.value.photoUrl,
                     fit: BoxFit.cover)),
             BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
@@ -453,9 +510,10 @@ class DonorProfileHeader extends StatelessWidget {
                           child: CircleAvatar(
                             radius: 50,
                             backgroundImage: NetworkImage(
-                                user.photoUrl == '' || user.photoUrl == null
+                                controller.userModel.value.photoUrl == ''
                                     ? noimage
-                                    : user.photoUrl ?? noimage),
+                                    : controller.userModel.value.photoUrl ??
+                                        noimage),
                           ),
                         ),
                         Positioned(
@@ -467,7 +525,7 @@ class DonorProfileHeader extends StatelessWidget {
                                   radius: 15,
                                   backgroundColor: Colors.red,
                                   child: Text(
-                                    user.bloodgroup,
+                                    controller.userModel.value.bloodgroup,
                                     style: TextStyle(
                                         color: Colors.white,
                                         fontWeight: FontWeight.bold),
@@ -478,7 +536,7 @@ class DonorProfileHeader extends StatelessWidget {
               ),
             ),
             Container(
-              //color: Colors.grey[500].withOpacity(.5),
+              width: MediaQuery.of(context).size.width * .4,
               padding: const EdgeInsets.only(left: 10.0),
               child: Align(
                   alignment: Alignment.bottomLeft,
@@ -486,39 +544,41 @@ class DonorProfileHeader extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.end,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(children: [
-                        InkWell(
-                          onTap: () {
-                            call(user.phoneNo);
-                          },
-                          child: CircleAvatar(
-                              radius: 15,
-                              backgroundColor: Colors.white.withOpacity(.5),
-                              child: Icon(Icons.phone,
-                                  color: Colors.redAccent[400], size: 15)),
-                        ),
-                        SizedBox(
-                          width: 5,
-                        ),
-                        InkWell(
-                          onTap: () {
-                            print('sms');
-                            sendSMS(user.phoneNo);
-                          },
-                          child: CircleAvatar(
-                              radius: 15,
-                              backgroundColor: Colors.white.withOpacity(.5),
-                              child: Icon(Icons.message,
-                                  color: Colors.redAccent[400], size: 15)),
-                        )
-                      ]),
+                      Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            InkWell(
+                              onTap: () {
+                                call(controller.userModel.value.phoneNo);
+                              },
+                              child: CircleAvatar(
+                                  radius: 15,
+                                  backgroundColor: Colors.white.withOpacity(.5),
+                                  child: Icon(Icons.phone,
+                                      color: Colors.redAccent[400], size: 15)),
+                            ),
+                            SizedBox(
+                              width: 5,
+                            ),
+                            InkWell(
+                              onTap: () {
+                                print('sms');
+                                sendSMS(controller.userModel.value.phoneNo);
+                              },
+                              child: CircleAvatar(
+                                  radius: 15,
+                                  backgroundColor: Colors.white.withOpacity(.5),
+                                  child: Icon(Icons.message,
+                                      color: Colors.redAccent[400], size: 15)),
+                            )
+                          ]),
                       SizedBox(
                         height: 5,
                       ),
                       Row(
                         children: [
                           Text(
-                            user.username.capitalize,
+                            controller.userModel.value.username.capitalize,
                             style: largeText.copyWith(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w600),
@@ -531,42 +591,13 @@ class DonorProfileHeader extends StatelessWidget {
                             //   mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               Text(
-                                "${user.userAddress.capitalize},Ktm",
+                                "${controller.userModel.value.userAddress.capitalize},Ktm",
                                 style: largeText.copyWith(
                                     fontSize: 14,
                                     color: Colors.white,
                                     fontWeight: FontWeight.w600),
                               ),
                               SizedBox(width: 5),
-                              // InkWell(
-                              //   onTap: () {
-                              //     // print('phone');
-                              //     call(user.phoneNo);
-                              //   },
-                              //   child: CircleAvatar(
-                              //       radius: 15,
-                              //       backgroundColor:
-                              //           Colors.white.withOpacity(.5),
-                              //       child: Icon(Icons.phone,
-                              //           color: Colors.redAccent[400],
-                              //           size: 15)),
-                              // ),
-                              // SizedBox(
-                              //   width: 5,
-                              // ),
-                              // InkWell(
-                              //   onTap: () {
-                              //     print('sms');
-                              //     sendSMS(user.phoneNo);
-                              //   },
-                              //   child: CircleAvatar(
-                              //       radius: 15,
-                              //       backgroundColor:
-                              //           Colors.white.withOpacity(.5),
-                              //       child: Icon(Icons.message,
-                              //           color: Colors.redAccent[400],
-                              //           size: 15)),
-                              // )
                             ]),
                       ),
                       SizedBox(
@@ -608,28 +639,38 @@ class DonorProfileHeader extends StatelessWidget {
                             )
                           ]),
                       SizedBox(height: 5),
-                      Text(
-                        calculateAverage(user).toStringAsPrecision(2),
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 30,
-                            fontWeight: FontWeight.w700),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(
+                            calculateAverage(controller.userModel.value)
+                                .toStringAsPrecision(2),
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 30,
+                                fontWeight: FontWeight.w700),
+                          ),
+                          Text(
+                            ' (' +
+                                totalvalue(controller.userModel.value)
+                                    .toInt()
+                                    .toString() +
+                                ')',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600),
+                          ),
+                        ],
                       ),
-                      buildStarsRating(user),
-                      // Row(
-                      //   mainAxisAlignment: MainAxisAlignment.start,
-                      //   children: [
-                      //     for (int i = 0; i < 5; i++)
-                      //       Icon(Icons.star, color: Colors.redAccent[400])
-                      //   ],
-                      // ),
+                      Obx(() => controller.ratingchange.isTrue
+                          ? Center(
+                              child: CircularProgressIndicator(
+                                backgroundColor: Colors.redAccent,
+                              ),
+                            )
+                          : buildStarsRating(controller.userModel.value)),
                       SizedBox(
                         height: 5,
-                      ),
-                      Text(
-                        ' ' + totalvalue(user).toInt().toString(),
-                        style: TextStyle(
-                            color: Colors.white, fontWeight: FontWeight.w600),
                       ),
                       SizedBox(height: 10),
                       for (int i = 5; i > 0; i--)
@@ -647,13 +688,13 @@ class DonorProfileHeader extends StatelessWidget {
                               width: 5,
                             ),
                             Expanded(
-                              child: LinearPercentIndicator(
-                                lineHeight: 5.0,
-                                percent: showpercentage(i, user),
-                                backgroundColor: Colors.white,
-                                progressColor: Colors.redAccent[400],
-                              ),
-                            ),
+                                child: LinearPercentIndicator(
+                              lineHeight: 5.0,
+                              percent:
+                                  showpercentage(i, controller.userModel.value),
+                              backgroundColor: Colors.white,
+                              progressColor: Colors.redAccent[400],
+                            )),
                           ],
                         ),
                     ],

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -51,6 +52,9 @@ class HomeController extends GetxController {
   UserRatingModel userRatingModel;
   RxList<UserRatingModel> userRatingModelList;
 
+  Rx<UserModel> userModel;
+  // = UserModel().obs;
+
   TextEditingController reviewController = new TextEditingController();
   // var mapController = GoogleMapController();
   var ismap = true.obs;
@@ -97,8 +101,11 @@ class HomeController extends GetxController {
   }
 
   int prevalue;
+  //RxBool reRate = false.obs;
   setUserrating(int rate, UserModel model) async {
     ratingchange.toggle();
+    // reRate.toggle();
+    userModel = model.obs;
 
     var id = FirebaseAuth.instance.currentUser.uid;
     if (id != null) {
@@ -108,10 +115,12 @@ class HomeController extends GetxController {
         Either<String, String> updateData = await _ratingRepo.updateRating(
             id, docId.value, rate,
             usermodel: model, prevalue: prevalue);
+
         updateData.fold((l) => Get.snackbar('Error', l.toString()), (r) {
           UserRatingModel mdl = userRatingModel;
           mdl.star = rate;
           userRatingModel = mdl;
+          updateLocalStar(prevalue, rate, 'update');
           prevalue = mdl.star;
           userRatingModelList.add(mdl);
           userRatingModelList.remove(userRatingModel);
@@ -123,10 +132,63 @@ class HomeController extends GetxController {
         updateData.fold((l) => Get.snackbar('Error', l.toString()), (r) {
           userRatingModel = UserRatingModel(userId: docId.value, star: rate);
           userRatingModelList.add(userRatingModel);
+          updateLocalStar(0, rate, '');
           Get.snackbar('Successful', r.toString());
         });
       }
-      ratingchange.toggle();
+    }
+    ratingchange.toggle();
+    // reRate.toggle();
+  }
+
+  updateLocalStar(int pre, int now, String value) {
+    if (value == 'update')
+      switch (prevalue) {
+        case 1:
+          if (userModel.value.onestar > 0)
+            userModel.value.onestar = userModel.value.onestar - 1;
+
+          break;
+        case 2:
+          if (userModel.value.twostar > 0)
+            userModel.value.twostar = userModel.value.twostar - 1;
+          break;
+        case 3:
+          if (userModel.value.threestar > 0)
+            userModel.value.threestar = userModel.value.threestar - 1;
+          break;
+        case 4:
+          if (userModel.value.fourstar > 0)
+            userModel.value.fourstar = userModel.value.fourstar - 1;
+          break;
+        case 5:
+          if (userModel.value.fivestar > 0)
+            userModel.value.fivestar = userModel.value.fivestar - 1;
+          break;
+
+        default:
+          break;
+      }
+    switch (now) {
+      case 1:
+        userModel.value.onestar++;
+
+        break;
+      case 2:
+        userModel.value.twostar++;
+        break;
+      case 3:
+        userModel.value.threestar++;
+        break;
+      case 4:
+        userModel.value.fourstar++;
+        break;
+      case 5:
+        userModel.value.fivestar++;
+        break;
+
+      default:
+        break;
     }
   }
 
@@ -155,17 +217,35 @@ class HomeController extends GetxController {
     }
   }
 
-  loadreview(UserModel usermodel) async {
+  loadreview(String userId) async {
     loadRevew.toggle();
     List<ReviewModel> rmodel = [];
 
     Either<String, List<ReviewModel>> reviewdata =
-        await _accountRepo.getUserComment(usermodel.userId);
+        await _accountRepo.getUserComment(userId);
     reviewdata.fold((l) => Get.snackbar('Error', l.toString()), (r) {
       rmodel = r.toList();
       reviewmodellist = rmodel.obs;
     });
     loadRevew.toggle();
+  }
+
+  RxBool reLoadStar = false.obs;
+  loadRating(String userId) async {
+    reLoadStar.value = true;
+    bool complete = false;
+    UserModel user;
+    await FirebaseFirestore.instance
+        .collection('User')
+        .doc(userId)
+        .get()
+        .then((value) {
+      user = new UserModel.fromMap(value.data());
+    }).whenComplete(() => complete = true);
+    if (complete) {
+      return user;
+    } else
+      return null;
   }
 
   void _updateConnectionState(ConnectivityResult result) {

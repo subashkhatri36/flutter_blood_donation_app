@@ -32,13 +32,8 @@ class PostsRepo {
         .map((QuerySnapshot query) {
       List<RequestModel> requests = [];
       query.docs.forEach((element) {
-        // if (Geolocator.distanceBetween(
-        //         userController.mylatitude.value,
-        //         userController.mylongitude.value,
-        //         element.data()['latitude'] ?? 00,
-        //         element.data()['longitude'] ?? 0) <=
-        //     userController.distance * 1000)
-        requests.add(RequestModel.fromDocumentSnapshot(element));
+        if (element.data()['status'] == 'waiting')
+          requests.add(RequestModel.fromDocumentSnapshot(element));
       });
 
       return requests;

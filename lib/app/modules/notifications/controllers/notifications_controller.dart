@@ -4,8 +4,6 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 
 class NotificationsController extends GetxController {
-  //TODO: Implement NotificationsController
-
   FlutterLocalNotificationsPlugin _flutterLocalNotificationPlugin =
       FlutterLocalNotificationsPlugin();
   var notificationData = List<NotificationData>.empty(growable: true).obs;
@@ -14,11 +12,11 @@ class NotificationsController extends GetxController {
         FlutterLocalNotificationsPlugin();
     AndroidInitializationSettings androidInitializationSettings =
         AndroidInitializationSettings("@mipmap/ic_launcher");
-    final MacOSInitializationSettings initializationSettingsMacOS =
-        MacOSInitializationSettings(
-            requestAlertPermission: true,
-            requestBadgePermission: false,
-            requestSoundPermission: true);
+    // final MacOSInitializationSettings initializationSettingsMacOS =
+    //     MacOSInitializationSettings(
+    //         requestAlertPermission: true,
+    //         requestBadgePermission: false,
+    //         requestSoundPermission: true);
     IOSInitializationSettings iosInitializationSettings =
         IOSInitializationSettings();
     final InitializationSettings initializationSettings =

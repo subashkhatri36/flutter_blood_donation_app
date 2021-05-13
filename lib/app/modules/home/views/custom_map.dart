@@ -509,6 +509,8 @@ class _CustomMapState extends State<CustomMap> {
           // Center(child: Text('Text("$pinPillPosition")')),
         ],
       );
+    else
+      return Container();
   }
 
   void adduserMarker() {

@@ -2,8 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_blood_donation_app/app/core/model/user_models.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:get/get.dart';
 
 abstract class AuthenticationRepo {
   Future<Either<String, String>> userLogin(String email, String password);
@@ -11,7 +9,7 @@ abstract class AuthenticationRepo {
 }
 
 class Authentication implements AuthenticationRepo {
-  Position _currentPosition;
+  //Position _currentPosition;
 
   @override
   Future<Either<String, String>> userLogin(
@@ -38,8 +36,12 @@ class Authentication implements AuthenticationRepo {
   Future<Either<String, String>> userRegister(
       UserModel model, String password) async {
     try {
+      // _getCurrentLocation();
       double lat = 0.0;
       double logi = 0.0;
+
+      // if (_currentPosition.latitude != null) lat = _currentPosition.latitude;
+      // if (_currentPosition.longitude != null) logi = _currentPosition.longitude;
 
       model.latitude = lat;
       model.longitude = logi;
@@ -69,4 +71,19 @@ class Authentication implements AuthenticationRepo {
       return left('Error Occured while Registering User');
     }
   }
+
+  // _getCurrentLocation() {
+  //   try {
+  //     Geolocator.getCurrentPosition(
+  //             desiredAccuracy: LocationAccuracy.best,
+  //             forceAndroidLocationManager: true)
+  //         .then((Position position) => _currentPosition = position)
+  //         .catchError((e) {
+  //       // print(e);
+  //     });
+  //   } catch (error) {
+  //     Get.snackbar('Info', 'Please Trun On Your Location',
+  //         snackPosition: SnackPosition.BOTTOM);
+  //   }
+  // }
 }

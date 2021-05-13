@@ -34,13 +34,25 @@ class _AccountViewState extends State<AccountView>
   TabController _controller;
   List<Widget> list = [
     Tab(
-      text: 'Requests',
+      child: Text(
+        'Status',
+        style: TextStyle(fontSize: 12),
+      ),
+      // text: 'Status',
     ),
     Tab(
-      text: 'Donations',
+      child: Text(
+        'Donation',
+        style: TextStyle(fontSize: 12),
+      ),
+      // text: 'Donation',
     ),
     Tab(
-      text: 'Reviews',
+      child: Text(
+        'Review',
+        style: TextStyle(fontSize: 12),
+      ),
+      // text: 'Rate and Review',
     ),
   ];
   @override
@@ -58,8 +70,6 @@ class _AccountViewState extends State<AccountView>
   Widget build(BuildContext context) {
     final accountController = Get.find<AccountController>();
     accountController.getCurrentRequest();
-    print(accountController.requestSendOn.value);
-    // print(accountController.model.bloodgroup);
 
     return Scaffold(
         body: Obx(
@@ -97,46 +107,98 @@ class _AccountViewState extends State<AccountView>
                               SingleChildScrollView(
                                 child: Obx(() => controller.requestSendOn.value
                                     ? RequestViewWidget()
-                                    : Container(
-                                        alignment: Alignment.center,
-                                        padding: EdgeInsets.symmetric(
-                                            horizontal: Defaults.paddingsmall),
-                                        width:
-                                            MediaQuery.of(context).size.width,
-                                        height: Defaults.paddinglarge * 11,
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              'Send Blood Request',
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize:
-                                                      Defaults.fontheading),
-                                              textAlign: TextAlign.left,
+                                    : Column(
+                                        children: [
+                                          Container(
+                                            margin: EdgeInsets.all(
+                                                Defaults.paddingsmall),
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal:
+                                                    Defaults.paddingsmall),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Expanded(
+                                                  flex: 8,
+                                                  child: Text(
+                                                    'All Request',
+                                                    style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color: Colors.grey,
+                                                        fontSize: Defaults
+                                                            .fontheading),
+                                                  ),
+                                                ),
+                                                Expanded(
+                                                  flex: 3,
+                                                  child: CustomButton(
+                                                    btnColor: Colors.white,
+                                                    label: 'VIEW ALL',
+                                                    labelColor:
+                                                        Theme.of(context)
+                                                            .backgroundColor,
+                                                    onPressed: () {
+                                                      Get.to(
+                                                          () =>
+                                                              ViewallrequestView(),
+                                                          binding:
+                                                              ViewallrequestBinding());
+                                                    },
+                                                    borderRadius: 10,
+                                                  ),
+                                                )
+                                              ],
                                             ),
-                                            Container(
-                                              padding: EdgeInsets.symmetric(
-                                                  horizontal:
-                                                      Defaults.paddingbig),
-                                              child: CustomButton(
-                                                btnColor: Theme.of(context)
-                                                    .backgroundColor,
-                                                label: 'Request Now',
-                                                labelColor: Colors.white,
-                                                onPressed: () {
-                                                  Get.to(() => RequestView(),
-                                                      binding:
-                                                          RequestBinding());
-                                                },
-                                                borderRadius: 10,
-                                              ),
+                                          ),
+                                          Container(
+                                            alignment: Alignment.center,
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal:
+                                                    Defaults.paddingsmall),
+                                            width: MediaQuery.of(context)
+                                                .size
+                                                .width,
+                                            height: Defaults.paddinglarge * 7,
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Text(
+                                                  'Send Blood Request',
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize:
+                                                          Defaults.fontheading),
+                                                  textAlign: TextAlign.left,
+                                                ),
+                                                Container(
+                                                  padding: EdgeInsets.symmetric(
+                                                      horizontal:
+                                                          Defaults.paddingbig),
+                                                  child: CustomButton(
+                                                    btnColor: Theme.of(context)
+                                                        .backgroundColor,
+                                                    label: 'Send',
+                                                    labelColor: Colors.white,
+                                                    onPressed: () {
+                                                      Get.to(
+                                                          () => RequestView(),
+                                                          binding:
+                                                              RequestBinding());
+                                                    },
+                                                    borderRadius: 10,
+                                                  ),
+                                                ),
+                                              ],
                                             ),
-                                          ],
-                                        ),
+                                          ),
+                                        ],
                                       )),
                               ),
                               //2
@@ -174,58 +236,60 @@ class Donation extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final donationController = Get.find<DonationController>();
-    return Container(
-      margin: EdgeInsets.all(Defaults.paddingmiddle),
-      decoration: BoxDecoration(border: Border.all(color: Colors.grey)),
-      height: MediaQuery.of(context).size.height,
-      child: Column(
-        children: [
-          Container(
-            color: Colors.grey,
-            padding: EdgeInsets.all(Defaults.paddingmiddle),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('Donation',
-                    style: TextStyle(
-                        fontSize: Defaults.fontheading, color: Colors.white)),
-                InkWell(
-                  onTap: () {
-                    Get.to(DonationView(),
-                        binding: DonationBinding(), arguments: id);
-                  },
-                  child: Container(
-                    padding: EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                        border: Border.all(color: Colors.white),
-                        borderRadius: BorderRadius.circular(20)),
-                    child: Text(
-                      'Add Donation',
+    return SingleChildScrollView(
+      child: Container(
+        margin: EdgeInsets.all(Defaults.paddingmiddle),
+        decoration: BoxDecoration(border: Border.all(color: Colors.grey)),
+        // height: MediaQuery.of(context).size.height,
+        child: Column(
+          children: [
+            Container(
+              color: Colors.grey,
+              padding: EdgeInsets.all(Defaults.paddingmiddle),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Donation',
                       style: TextStyle(
-                          fontSize: Defaults.fontnormal, color: Colors.white),
+                          fontSize: Defaults.fontheading, color: Colors.white)),
+                  InkWell(
+                    onTap: () {
+                      Get.to(DonationView(),
+                          binding: DonationBinding(), arguments: id);
+                    },
+                    child: Container(
+                      padding: EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                          border: Border.all(color: Colors.white),
+                          borderRadius: BorderRadius.circular(20)),
+                      child: Text(
+                        'Add Donation',
+                        style: TextStyle(
+                            fontSize: Defaults.fontnormal, color: Colors.white),
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          Obx(
-            () => donationController.isloading.isFalse
-                ? donationController.donationList.length > 0
-                    ? AllDonationview(
-                        donationController: donationController,
-                        del: true,
-                      )
-                    : Text('No Donation Yet.')
-                : Container(
-                    child: CircularProgressIndicator(
-                    backgroundColor: Colors.red,
-                  )),
-          ),
-        ],
+            SizedBox(
+              height: 10,
+            ),
+            Obx(
+              () => donationController.isloading.isFalse
+                  ? donationController.donationList.length > 0
+                      ? AllDonationview(
+                          donationController: donationController,
+                          del: true,
+                        )
+                      : Text('No Donation Yet.')
+                  : Container(
+                      child: CircularProgressIndicator(
+                      backgroundColor: Colors.red,
+                    )),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -252,6 +316,8 @@ class AllDonationview extends StatelessWidget {
     if (value != null)
       return ListView.separated(
           shrinkWrap: true,
+          scrollDirection: Axis.vertical,
+          physics: NeverScrollableScrollPhysics(),
           itemBuilder: (context, index) {
             DonationModel model = value[index];
             return ListTile(
@@ -266,7 +332,7 @@ class AllDonationview extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                     fontSize: Defaults.fontsubheading),
               ),
-              subtitle: Text('${model.details} --On ${model.date}'),
+              subtitle: Text('${model.details} \n${model.date}'),
               trailing: del
                   ? IconButton(
                       icon: Icon(Icons.delete),
@@ -388,18 +454,20 @@ class RequestViewWidget extends StatelessWidget {
                       child: CircleAvatar(
                         radius: Defaults.paddingbig * 2 - 4,
                         backgroundColor: Theme.of(context).backgroundColor,
-                        child: Text(userRequest.myrequestList[0].bloodgroup),
-                        // child: Text(userRequest.currentRequest != null
-                        //     ? userRequest.currentRequest.bloodgroup
-                        //     : 'Na'),
+                        child: Text(
+                          userRequest.currentRequest != null
+                              ? userRequest.currentRequest.bloodgroup
+                              : 'Na',
+                          style: TextStyle(color: Colors.white),
+                        ),
                       ),
                     ),
                     Container(
                       padding:
                           EdgeInsets.symmetric(horizontal: Defaults.paddingbig),
                       child: Text(
-                        userRequest.myrequestList != null
-                            ? userRequest.myrequestList[0].address
+                        userRequest.currentRequest != null
+                            ? userRequest.currentRequest.address
                             : 'No address',
                         maxLines: 2,
                       ),
@@ -585,6 +653,8 @@ class AccountHeaderWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final accountController = Get.find<AccountController>();
+    Get.find<DonationController>().bloodgroup.value =
+        accountController.model.bloodgroup;
 
     return Obx(() => Container(
         width: MediaQuery.of(context).size.width,
@@ -636,9 +706,13 @@ class AccountHeaderWidget extends StatelessWidget {
                         radius: 25,
                         backgroundColor: Colors.white,
                         child: CircleAvatar(
-                            backgroundColor: Theme.of(context).backgroundColor,
-                            radius: 22,
-                            child: Text(accountController.model.bloodgroup)),
+                          backgroundColor: Theme.of(context).backgroundColor,
+                          radius: 22,
+                          child: Text(
+                            accountController.model.bloodgroup,
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ),
                       ),
                       Positioned(
                         bottom: 4,
@@ -654,7 +728,7 @@ class AccountHeaderWidget extends StatelessWidget {
                                 icon: Icon(
                                   Icons.camera,
                                   color: Colors.white,
-                                  size: 20,
+                                  size: 15,
                                 ),
                                 onPressed: () {
                                   accountController.getImage(true);
