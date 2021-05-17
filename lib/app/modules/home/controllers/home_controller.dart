@@ -361,7 +361,7 @@ class HomeController extends GetxController {
   }
 
   void initMessaging() {
-    var androiInit = AndroidInitializationSettings('ic_launcher');
+    var androiInit = AndroidInitializationSettings("@mipmap/ic_launcher");
 
     var iosInit = IOSInitializationSettings();
 

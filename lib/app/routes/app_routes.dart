@@ -17,6 +17,7 @@ abstract class Routes {
   static const SETTING = _Paths.SETTING;
   static const NOTIFICATIONS = _Paths.NOTIFICATIONS;
   static const FORGETPASSWORD = _Paths.FORGETPASSWORD;
+  static const MAP_PAGE = _Paths.MAP_PAGE;
 }
 
 abstract class _Paths {
@@ -37,4 +38,5 @@ abstract class _Paths {
   static const SETTING = '/setting';
   static const NOTIFICATIONS = '/notifications';
   static const FORGETPASSWORD = '/forgetpassword';
+  static const MAP_PAGE = '/map-page';
 }

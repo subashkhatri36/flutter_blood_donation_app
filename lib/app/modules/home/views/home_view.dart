@@ -131,7 +131,7 @@ class HomeView extends GetView<HomeController> {
               child: Icon(
                   controller.userlistshown.value ? Icons.map_sharp : Icons.list,
                   color: controller.userlistshown.value
-                      ? Colors.grey
+                      ? Colors.grey[300]
                       : Colors.white),
             ),
           ),

@@ -8,7 +8,6 @@ import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../controllers/setting_controller.dart';
-// import 'package:flutter_range_slider/flutter_range_slider.dart' as frs;
 
 class SettingView extends StatefulWidget {
   @override
@@ -17,9 +16,6 @@ class SettingView extends StatefulWidget {
 
 class _SettingViewState extends State<SettingView> {
   final controller = Get.put(SettingController());
-
-  // double _lowerValue = 10.0;
-  // double _upperValue = 10.0;
 
   @override
   Widget build(BuildContext context) {
@@ -42,10 +38,6 @@ class _SettingViewState extends State<SettingView> {
           ),
           SizedBox(height: Defaults.paddingbig),
 
-          // Obx(() => Padding(
-          //       padding: const EdgeInsets.all(8.0),
-          //       child: Text('${controller.minkilo.value} km'),
-          //     )),
           Center(
             child: Obx(
               () => CupertinoSlider(
@@ -106,15 +98,26 @@ class _SettingViewState extends State<SettingView> {
             ),
           ),
           Divider(),
-          ListTile(
-            onTap: () {
-              Get.toNamed(
-                '/notifications',
-              ); //,transition: Transition.rightToLeft);
-            },
-            title: Text('Notifications'),
+          // ListTile(
+          //   onTap: () {
+          //     Get.toNamed(
+          //       '/notifications',
+          //     ); //,transition: Transition.rightToLeft);
+          //   },
+          //   title: Text('Notifications'),
+          // ),
+          Row(
+            children: [
+              Obx(
+                () => Checkbox(
+                    value: controller.notification,
+                    onChanged: (v) {
+                      controller.shownotification.value = v;
+                    }),
+              ),
+              Text('Show Notification')
+            ],
           ),
-
           ListTile(
               onTap: () {
                 Get.to(HelpFeedbackReport(title: 'Help'),

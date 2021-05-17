@@ -93,7 +93,7 @@ class NotificationsController extends GetxController {
   final count = 0.obs;
   @override
   void onInit() {
-    initialize();
+    // initialize();
     // listenMessage();
 
     super.onInit();
