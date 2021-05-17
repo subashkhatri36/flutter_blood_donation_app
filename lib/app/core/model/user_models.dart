@@ -19,6 +19,7 @@ class UserModel {
   int fourstar;
   int fivestar;
   bool candonate;
+  String token;
 
   UserModel({
     this.onestar = 0,
@@ -37,6 +38,7 @@ class UserModel {
     this.email,
     this.active,
     this.photoUrl = '',
+    this.token,
   });
 
   Map<String, dynamic> toMap() {
@@ -56,47 +58,48 @@ class UserModel {
       'fourstar': fourstar,
       'fivestar': fivestar,
       'candonate': candonate,
+      'token': token
     };
   }
 
   factory UserModel.fromMap(Map<String, dynamic> map) {
     return UserModel(
-      photoUrl: map['photoUrl'],
-      username: map['username'],
-      userAddress: map['userAddress'],
-      latitude: map['latitude'],
-      longitude: map['longitude'],
-      bloodgroup: map['bloodgroup'],
-      phoneNo: map['phoneNo'],
-      email: map['email'],
-      active: map['active'],
-      onestar: map['onestar'],
-      twostar: map['twostar'],
-      threestar: map['threestar'],
-      fourstar: map['fourstar'],
-      fivestar: map['fivestar'],
-      candonate: map['candonate'],
-    );
+        photoUrl: map['photoUrl'],
+        username: map['username'],
+        userAddress: map['userAddress'],
+        latitude: map['latitude'],
+        longitude: map['longitude'],
+        bloodgroup: map['bloodgroup'],
+        phoneNo: map['phoneNo'],
+        email: map['email'],
+        active: map['active'],
+        onestar: map['onestar'],
+        twostar: map['twostar'],
+        threestar: map['threestar'],
+        fourstar: map['fourstar'],
+        fivestar: map['fivestar'],
+        candonate: map['candonate'],
+        token: map['token']);
   }
 
   factory UserModel.fromDocumentSnapshot(DocumentSnapshot map) {
     return UserModel(
-      userId: map.id,
-      username: map.data()['username'],
-      userAddress: map.data()['userAddress'],
-      latitude: map.data()['latitude'],
-      longitude: map.data()['longitude'],
-      bloodgroup: map.data()['bloodgroup'],
-      phoneNo: map.data()['phoneNo'],
-      email: map.data()['email'],
-      active: map.data()['active'],
-      photoUrl: map.data()['photoUrl'],
-      onestar: map.data()['onestar'],
-      twostar: map.data()['twostar'],
-      threestar: map.data()['threestar'],
-      fourstar: map.data()['fourstar'],
-      fivestar: map.data()['fivestar'],
-    );
+        userId: map.id,
+        username: map.data()['username'],
+        userAddress: map.data()['userAddress'],
+        latitude: map.data()['latitude'],
+        longitude: map.data()['longitude'],
+        bloodgroup: map.data()['bloodgroup'],
+        phoneNo: map.data()['phoneNo'],
+        email: map.data()['email'],
+        active: map.data()['active'],
+        photoUrl: map.data()['photoUrl'],
+        onestar: map.data()['onestar'],
+        twostar: map.data()['twostar'],
+        threestar: map.data()['threestar'],
+        fourstar: map.data()['fourstar'],
+        fivestar: map.data()['fivestar'],
+        token: map.data()['token'] ?? '');
   }
   String toJson() => json.encode(toMap());
 

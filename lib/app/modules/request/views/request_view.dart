@@ -197,6 +197,7 @@ class RequestView extends GetView<RequestController> {
                                 UIHelpers.showLoading();
                                 controller.sendrequest();
                                 UIHelpers.dismiss();
+                                Get.offNamed('/home');
                                 UIHelpers.showToast(
                                     "Blood request submitted successfully");
                                 Get.back();

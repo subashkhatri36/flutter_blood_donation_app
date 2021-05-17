@@ -107,6 +107,15 @@ class _SettingViewState extends State<SettingView> {
           ),
           Divider(),
           ListTile(
+            onTap: () {
+              Get.toNamed(
+                '/notifications',
+              ); //,transition: Transition.rightToLeft);
+            },
+            title: Text('Notifications'),
+          ),
+
+          ListTile(
               onTap: () {
                 Get.to(HelpFeedbackReport(title: 'Help'),
                     transition: Transition.rightToLeft);

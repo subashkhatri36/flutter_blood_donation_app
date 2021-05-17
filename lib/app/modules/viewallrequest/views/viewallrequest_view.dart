@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_blood_donation_app/app/constant/const.dart';
 import 'package:flutter_blood_donation_app/app/core/model/request_model.dart';
 import 'package:get/get.dart';
 
@@ -36,6 +37,7 @@ class ListInfo extends StatelessWidget {
         itemBuilder: (context, index) {
           RequestModel rmodel = controller.requestList[index];
           return ListTile(
+              //  tileColor: Colors.redAccent[100],
               leading: CircleAvatar(
                 backgroundColor: Theme.of(context).primaryColor,
                 child: Text(
@@ -48,7 +50,15 @@ class ListInfo extends StatelessWidget {
                 children: [
                   Text(rmodel.hospitaldetail),
                   SizedBox(width: 10),
-                  Text(rmodel.status)
+                  Container(
+                    decoration: BoxDecoration(
+                        color: Colors.green[300],
+                        //border: Border.all(width: 1, color: Colors.grey),
+                        borderRadius: BorderRadius.circular(20)),
+                    padding: EdgeInsets.all(4),
+                    child: Text(rmodel.status,
+                        style: smallText.copyWith(color: Colors.white)),
+                  )
                 ],
               ),
               trailing: Column(
@@ -56,12 +66,31 @@ class ListInfo extends StatelessWidget {
                 children: [
                   if (rmodel.status == 'waiting')
                     InkWell(
-                        child: Icon(Icons.check),
+                        child: CircleAvatar(
+                          radius: 12,
+                          backgroundColor: Colors.grey.withOpacity(.5),
+                          child: Icon(
+                            Icons.check,
+                            size: 15,
+                            color: Colors.green[800],
+                          ),
+                        ),
                         onTap: () {
                           controller.updateRequest(index, rmodel.id);
                         }),
+                  SizedBox(
+                    height: 5,
+                  ),
                   InkWell(
-                      child: Icon(Icons.delete),
+                      child: CircleAvatar(
+                        radius: 12,
+                        backgroundColor: Colors.grey.withOpacity(.5),
+                        child: Icon(
+                          Icons.delete,
+                          size: 15,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                      ),
                       onTap: () {
                         //for delete
                         controller.loadingRequest.toggle();

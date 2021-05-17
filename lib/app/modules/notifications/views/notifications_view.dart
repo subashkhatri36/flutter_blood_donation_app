@@ -7,6 +7,7 @@ import '../controllers/notifications_controller.dart';
 class NotificationsView extends GetView<NotificationsController> {
   @override
   Widget build(BuildContext context) {
+    controller.inistantNotification(1, 'Sudarhsan', 'MEssage');
     return Scaffold(
       appBar: AppBar(
         title: Text('NotificationsView'),

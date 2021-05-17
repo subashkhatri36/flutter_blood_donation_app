@@ -28,10 +28,11 @@ class PostsRepo {
         .orderBy('timestamp', descending: true)
 
         //.limit(3)
-        .snapshots()
+        .snapshots(includeMetadataChanges: true)
         .map((QuerySnapshot query) {
       List<RequestModel> requests = [];
       query.docs.forEach((element) {
+        // print(element);
         if (element.data()['status'] == 'waiting')
           requests.add(RequestModel.fromDocumentSnapshot(element));
       });
