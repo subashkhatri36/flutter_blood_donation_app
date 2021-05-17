@@ -16,7 +16,7 @@ class NotificationProvider extends GetConnect {
     Map<String, dynamic> data = {
       "to": token,
       "notification": {
-        "body": "Urgent $userName requires $bloodgroup blood on $address!",
+        "body": "Urgent!!! $userName requires $bloodgroup blood on $address!",
         "title": "Blood Required"
       }
     };

@@ -66,12 +66,14 @@ class RequestController extends GetxController {
     List<UsermodelSortedtoMyLocationModel> users =
         donorController.getDonors(bloodgroup.value);
     users.forEach((element) {
-      if (userController.userlist[element.donorindex].online)
-        NotificationProvider().postnotification(
-            userController.userlist[element.donorindex].fcmtoken,
-            userController.myinfo.value.username,
-            bloodgroup.value,
-            userAddressController.text);
+      // if (userController.userlist[element.donorindex].online) if (userController
+      //         .userlist[element.donorindex] !=
+      //     userController.myinfo.value)
+      NotificationProvider().postnotification(
+          userController.userlist[element.donorindex].fcmtoken,
+          userController.myinfo.value.username,
+          bloodgroup.value,
+          userAddressController.text);
     });
     //sending request
     try {

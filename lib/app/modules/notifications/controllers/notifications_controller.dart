@@ -97,7 +97,7 @@ class NotificationsController extends GetxController {
     // listenMessage();
 
     super.onInit();
-    shownotification();
+    // shownotification();
   }
 
   shownotification() {
