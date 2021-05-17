@@ -5,7 +5,6 @@ import 'package:flutter_blood_donation_app/app/core/model/notificationmodel.dart
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import 'package:get/get.dart';
-import 'package:http/http.dart';
 
 class NotificationsController extends GetxController {
   var notificationOn = false.obs;
@@ -23,22 +22,22 @@ class NotificationsController extends GetxController {
     print('User granted permission: ${settings.authorizationStatus}');
   }
 
-  getToken() async {
-    String token = await messaging.getToken();
-    print(token);
-    // return token;
-  }
+  // getToken() async {
+  //   String token = await messaging.getToken();
+  //   print(token);
+  //   // return token;
+  // }
 
-  listenMessage() {
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      print('Got a message whilst in the foreground!');
-      print('Message data: ${message.data}');
+  // listenMessage() {
+  //   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+  //     print('Got a message whilst in the foreground!');
+  //     print('Message data: ${message.data}');
 
-      if (message.notification != null) {
-        print('Message also contained a notification: ${message.notification}');
-      }
-    });
-  }
+  //     if (message.notification != null) {
+  //       print('Message also contained a notification: ${message.notification}');
+  //     }
+  //   });
+  // }
 
   Future<void> _firebaseMessagingBackgroundHandler(
       RemoteMessage message) async {
@@ -95,7 +94,7 @@ class NotificationsController extends GetxController {
   @override
   void onInit() {
     initialize();
-    listenMessage();
+    // listenMessage();
 
     super.onInit();
     shownotification();

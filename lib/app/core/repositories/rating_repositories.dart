@@ -1,33 +1,33 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
-import 'package:flutter_blood_donation_app/app/core/model/user_models.dart';
 import 'package:flutter_blood_donation_app/app/core/model/user_rating_model.dart';
 
 abstract class RatingRepo {
   Future<Either<String, List<UserRatingModel>>> loadingUserRating(
       String userId);
   Future<Either<String, String>> insertrating(
-      String userId, String id, int rate);
+      String userId, String starid, int rate);
   Future<Either<String, String>> updateRating(String id, String docId, int rate,
-      {UserModel usermodel, int prevalue});
+      {String userId, int prevalue});
 }
 
 class RatingRepositiories implements RatingRepo {
   @override
   Future<Either<String, String>> insertrating(
-      String userId, String id, int rate) async {
+      String userId, String starid, int rate) async {
     try {
       bool complete = false;
-      UserRatingModel userRatingModel =
-          new UserRatingModel(userId: id, star: rate);
+      String id = starid;
+      UserRatingModel userRatingModel = new UserRatingModel(star: rate);
       await FirebaseFirestore.instance
           .collection('User')
           .doc(userId)
           .collection('rating')
-          .add(userRatingModel.toMap())
+          .doc(starid)
+          .set(userRatingModel.toMap())
           .whenComplete(() => complete = true);
       if (complete) {
-        return right('Successfully rateded');
+        return right(id);
       } else {
         return left('Error while inserting data');
       }
@@ -65,7 +65,7 @@ class RatingRepositiories implements RatingRepo {
 
   @override
   Future<Either<String, String>> updateRating(String id, String docId, int rate,
-      {UserModel usermodel, int prevalue}) async {
+      {String userId, int prevalue}) async {
     try {
       bool complete = false;
       await FirebaseFirestore.instance
@@ -76,17 +76,11 @@ class RatingRepositiories implements RatingRepo {
           .update({'star': rate}).whenComplete(() => complete = true);
       if (complete) {
         complete = false;
-        await FirebaseFirestore.instance
-            .collection('User')
-            .doc(usermodel.userId)
-            .update({
+        await FirebaseFirestore.instance.collection('User').doc(userId).update({
           convertoString(rate): FieldValue.increment(1)
         }).whenComplete(() => complete = true);
 
-        await FirebaseFirestore.instance
-            .collection('User')
-            .doc(usermodel.userId)
-            .update({
+        await FirebaseFirestore.instance.collection('User').doc(userId).update({
           convertoString(prevalue): FieldValue.increment(-1)
         }).whenComplete(() => complete = true);
 

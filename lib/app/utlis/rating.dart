@@ -25,9 +25,11 @@ double calculateAverage(UserModel model) {
 
 double calculate(int value, UserModel model) {
   double total = totalvalue(model);
+  print(total);
+  double result = value / total;
 
-  if (total > 0)
-    return value / total;
+  if (total > 0 && result > 0)
+    return result;
   else
     return 0.0;
 }

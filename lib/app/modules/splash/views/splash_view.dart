@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_blood_donation_app/app/constant/defaults.dart';
 
@@ -57,4 +59,23 @@ class SplashView extends GetView {
       ),
     );
   }
+}
+
+// Crude counter to make messages unique
+int _messageCount = 0;
+
+/// The API endpoint here accepts a raw FCM payload for demonstration purposes.
+String constructFCMPayload(String token) {
+  _messageCount++;
+  return jsonEncode({
+    'token': token,
+    'data': {
+      'via': 'FlutterFire Cloud Messaging!!!',
+      'count': _messageCount.toString(),
+    },
+    'notification': {
+      'title': 'Hello FlutterFire!',
+      'body': 'This notification (#$_messageCount) was created via FCM!',
+    },
+  });
 }

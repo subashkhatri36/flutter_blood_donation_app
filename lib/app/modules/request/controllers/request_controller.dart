@@ -8,7 +8,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_blood_donation_app/app/constant/const.dart';
 import 'package:flutter_blood_donation_app/app/core/model/request_model.dart';
 import 'package:flutter_blood_donation_app/app/core/repositories/post_repo.dart';
+import 'package:flutter_blood_donation_app/app/modules/donor_details/controllers/donor_details_controller.dart';
 import 'package:flutter_blood_donation_app/app/modules/home/controllers/home_controller.dart';
+import 'package:flutter_blood_donation_app/app/modules/notifications/providers/notification_provider.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -61,7 +63,16 @@ class RequestController extends GetxController {
         longitude: selectedlongitude.value,
         latitude: selectedlatitude.value,
         photoUrl: base64Encode(data.value));
-
+    List<UsermodelSortedtoMyLocationModel> users =
+        donorController.getDonors(bloodgroup.value);
+    users.forEach((element) {
+      if (userController.userlist[element.donorindex].online)
+        NotificationProvider().postnotification(
+            userController.userlist[element.donorindex].fcmtoken,
+            userController.myinfo.value.username,
+            bloodgroup.value,
+            userAddressController.text);
+    });
     //sending request
     try {
       await PostsRepo().sendRequest(req);

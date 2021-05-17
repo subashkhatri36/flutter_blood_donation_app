@@ -1,11 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_blood_donation_app/app/core/model/user_models.dart';
 
 abstract class AuthenticationRepo {
   Future<Either<String, String>> userLogin(String email, String password);
   Future<Either<String, String>> userRegister(UserModel model, String password);
+  Future<void> updateUserInfo(
+      {@required String userId,
+      @required String fieldname,
+      @required dynamic value});
 }
 
 class Authentication implements AuthenticationRepo {
@@ -21,8 +27,16 @@ class Authentication implements AuthenticationRepo {
       await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password)
           .whenComplete(() => complete = true);
-
+      String fcmtoken = await FirebaseMessaging.instance.getToken();
       if (complete) {
+        updateUserInfo(
+            userId: FirebaseAuth.instance.currentUser.uid,
+            fieldname: 'online',
+            value: true);
+        updateUserInfo(
+            userId: FirebaseAuth.instance.currentUser.uid,
+            fieldname: 'fcmtoken',
+            value: fcmtoken);
         return right('Successfully Logged In');
       } else {
         return left('Something went wrong while Log in');
@@ -45,6 +59,7 @@ class Authentication implements AuthenticationRepo {
 
       model.latitude = lat;
       model.longitude = logi;
+      String fcmtoken = await FirebaseMessaging.instance.getToken();
 
       // String id = '';
       bool complete = false;
@@ -55,6 +70,8 @@ class Authentication implements AuthenticationRepo {
           .whenComplete(() => null);
 
       if (user != null) {
+        model.fcmtoken = fcmtoken;
+        model.online = true;
         await FirebaseFirestore.instance
             .collection('User')
             .doc(user.user.uid)
@@ -86,4 +103,10 @@ class Authentication implements AuthenticationRepo {
   //         snackPosition: SnackPosition.BOTTOM);
   //   }
   // }
+  @override
+  Future<void> updateUserInfo(
+      {String userId, String fieldname, dynamic value}) async {
+    await FirebaseFirestore.instance.collection('User').doc(userId).update(
+        {fieldname: value}).whenComplete(() => print('Completed update.'));
+  }
 }

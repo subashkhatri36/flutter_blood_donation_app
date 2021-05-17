@@ -16,6 +16,7 @@ abstract class Routes {
   static const DONATION = _Paths.DONATION;
   static const SETTING = _Paths.SETTING;
   static const NOTIFICATIONS = _Paths.NOTIFICATIONS;
+  static const FORGETPASSWORD = _Paths.FORGETPASSWORD;
 }
 
 abstract class _Paths {
@@ -35,4 +36,5 @@ abstract class _Paths {
   static const DONATION = '/donation';
   static const SETTING = '/setting';
   static const NOTIFICATIONS = '/notifications';
+  static const FORGETPASSWORD = '/forgetpassword';
 }

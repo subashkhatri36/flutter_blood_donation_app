@@ -11,6 +11,7 @@ class DonationController extends GetxController {
   TextEditingController dateController = new TextEditingController();
   TextEditingController personController = new TextEditingController();
   TextEditingController detailsController = new TextEditingController();
+
   Rx<DonationModel> donationmodel;
   RxString nodata = 'No Data'.obs;
   RxBool isloading = false.obs;
@@ -22,6 +23,7 @@ class DonationController extends GetxController {
   // List<DonationModel>.empty(growable: true).obs;
   RxBool showdonartotal = false.obs;
   RxInt totalDonation = 0.obs;
+  // Rx<UserModel> usermodel;
 
   @override
   void onInit() {

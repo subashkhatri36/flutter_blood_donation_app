@@ -175,33 +175,33 @@ class _CustomMapState extends State<CustomMap> {
     if (selectedbloodgroup != null)
       return Stack(
         children: [
-         // if (0 != 0)
-            GoogleMap(
-              mapType: MapType.normal,
-              initialCameraPosition: CameraPosition(
-                  zoom: 5.0,
-                  target: LatLng(userController.mylatitude.value,
-                      userController.mylongitude.value)),
-              myLocationEnabled: true,
-              onTap: (pos) {
-                setState(() {
-                  pinPillPosition = -190;
-                });
-              },
-              markers: markers,
-              onMapCreated: (GoogleMapController controller) {
-                addMarker();
-                setState(() {
-                  mapController = controller;
-                });
+          // if (0 != 0)
+          GoogleMap(
+            mapType: MapType.normal,
+            initialCameraPosition: CameraPosition(
+                zoom: 5.0,
+                target: LatLng(userController.mylatitude.value,
+                    userController.mylongitude.value)),
+            myLocationEnabled: true,
+            onTap: (pos) {
+              setState(() {
+                pinPillPosition = -190;
+              });
+            },
+            markers: markers,
+            onMapCreated: (GoogleMapController controller) {
+              addMarker();
+              setState(() {
+                mapController = controller;
+              });
 
-                controller.animateCamera(CameraUpdate.newCameraPosition(
-                    CameraPosition(
-                        zoom: 10,
-                        target: LatLng(userController.mylatitude.value,
-                            userController.mylongitude.value))));
-              },
-            ),
+              controller.animateCamera(CameraUpdate.newCameraPosition(
+                  CameraPosition(
+                      zoom: 10,
+                      target: LatLng(userController.mylatitude.value,
+                          userController.mylongitude.value))));
+            },
+          ),
           if (userController.userlistshown.value)
             Container(
               color: Colors.white,
@@ -244,8 +244,9 @@ class _CustomMapState extends State<CustomMap> {
                       contentPadding:
                           EdgeInsets.symmetric(horizontal: 5, vertical: 5),
                       onTap: () {
-                        Get.to(DonorProfile(
-                            user: userController.userlist[e.donorindex]));
+                        userController.userModel =
+                            userController.userlist[e.donorindex].obs;
+                        Get.to(DonorProfile());
                       },
                       leading: Container(
                         width: 60,
@@ -344,7 +345,8 @@ class _CustomMapState extends State<CustomMap> {
                   : SizeConfig.screenWidth * .15,
               child: InkWell(
                 onTap: () {
-                  Get.to(DonorProfile(user: selectedUser));
+                  userController.userModel = selectedUser.obs;
+                  Get.to(DonorProfile());
                 },
                 child: Container(
                   height: 70,
@@ -580,7 +582,8 @@ class OntapUser extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Get.to(DonorProfile(user: user));
+        userController.userModel = user.obs;
+        Get.to(DonorProfile());
       },
       child: Container(
           margin: const EdgeInsets.only(bottom: 30, left: 20, right: 70),

@@ -1,10 +1,18 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_blood_donation_app/app/constant/const.dart';
 import 'package:flutter_blood_donation_app/app/core/model/request_model.dart';
+import 'package:flutter_blood_donation_app/app/core/model/user_models.dart';
 import 'package:flutter_blood_donation_app/app/modules/home/controllers/home_controller.dart';
 import 'package:get/get.dart';
 
 class PostsRepo {
+  String notificationUrl = 'https://fcm.googleapis.com/fcm/send';
+  sendNotification(String userId, List<UserModel> userList) async {
+    try {} catch (error) {
+      print(error);
+    }
+  }
+
   final repo = firebaseFirestore.collection('request');
   sendRequest(RequestModel req) async {
     // print(req.toJson());

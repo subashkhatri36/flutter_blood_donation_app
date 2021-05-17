@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_blood_donation_app/app/constant/const.dart';
@@ -13,11 +14,13 @@ import 'package:flutter_blood_donation_app/app/core/model/review_model.dart';
 import 'package:flutter_blood_donation_app/app/core/model/user_models.dart';
 import 'package:flutter_blood_donation_app/app/core/model/user_rating_model.dart';
 import 'package:flutter_blood_donation_app/app/core/repositories/account_repository.dart';
+import 'package:flutter_blood_donation_app/app/core/repositories/authentication_repositories.dart';
 import 'package:flutter_blood_donation_app/app/core/repositories/like_repo.dart';
 import 'package:flutter_blood_donation_app/app/core/repositories/post_repo.dart';
 import 'package:flutter_blood_donation_app/app/core/repositories/rating_repositories.dart';
 import 'package:flutter_blood_donation_app/app/core/repositories/users_repo.dart';
 import 'package:flutter_blood_donation_app/app/core/services/storage_service/get_storage.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 
@@ -51,7 +54,7 @@ class HomeController extends GetxController {
   RxBool ratingchange = false.obs;
   UserRatingModel userRatingModel;
   RxList<UserRatingModel> userRatingModelList;
-
+  FlutterLocalNotificationsPlugin fltNotification;
   Rx<UserModel> userModel;
   // = UserModel().obs;
 
@@ -89,15 +92,17 @@ class HomeController extends GetxController {
     bool status = false;
     if (userRatingModelList != null) {
       userRatingModelList.forEach((element) {
-        if (userId == element.userId) {
+        if (userId == element.docId) {
           status = true;
           docId.value = element.docId;
           userRatingModel =
-              new UserRatingModel(userId: element.userId, star: element.star);
+              new UserRatingModel(docId: element.docId, star: element.star);
         }
       });
+      return status;
+    } else {
+      return status;
     }
-    return status;
   }
 
   int prevalue;
@@ -114,29 +119,33 @@ class HomeController extends GetxController {
 
         Either<String, String> updateData = await _ratingRepo.updateRating(
             id, docId.value, rate,
-            usermodel: model, prevalue: prevalue);
+            userId: model.userId, prevalue: prevalue);
 
         updateData.fold((l) => Get.snackbar('Error', l.toString()), (r) {
           UserRatingModel mdl = userRatingModel;
           mdl.star = rate;
           userRatingModel = mdl;
+
           updateLocalStar(prevalue, rate, 'update');
           prevalue = mdl.star;
           userRatingModelList.add(mdl);
+          //  updateLocalStar(prevalue, rate, '');
           userRatingModelList.remove(userRatingModel);
-          Get.snackbar('Successful', r.toString());
+          Get.snackbar('Successful', 'Updated Successfully');
         });
       } else {
         Either<String, String> updateData =
             await _ratingRepo.insertrating(id, model.userId, rate);
         updateData.fold((l) => Get.snackbar('Error', l.toString()), (r) {
-          userRatingModel = UserRatingModel(userId: docId.value, star: rate);
+          userRatingModel = UserRatingModel(star: rate, docId: r);
           userRatingModelList.add(userRatingModel);
           updateLocalStar(0, rate, '');
           Get.snackbar('Successful', r.toString());
         });
       }
     }
+    // checkUserrating(model.userId);
+
     ratingchange.toggle();
     // reRate.toggle();
   }
@@ -199,8 +208,6 @@ class HomeController extends GetxController {
           name: myinfo.value.username,
           photo: myinfo.value.photoUrl,
           comment: reviewController.text);
-
-      // print(reviewController.text);
 
       Either<String, String> writedata =
           await _accountRepo.insertUserReview(usermodel.userId, mymodel);
@@ -338,6 +345,8 @@ class HomeController extends GetxController {
 
   @override
   void onInit() {
+    notitficationPermission();
+    initMessaging();
     loadingUserRating();
     loadAllLikes();
     super.onInit();
@@ -351,21 +360,75 @@ class HomeController extends GetxController {
     streamRequest();
   }
 
+  void initMessaging() {
+    var androiInit = AndroidInitializationSettings('ic_launcher');
+
+    var iosInit = IOSInitializationSettings();
+
+    var initSetting = InitializationSettings(android: androiInit, iOS: iosInit);
+
+    fltNotification = FlutterLocalNotificationsPlugin();
+
+    fltNotification.initialize(initSetting);
+
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      showNotification(message);
+    });
+  }
+
+  void showNotification(RemoteMessage message) async {
+    var androidDetails = AndroidNotificationDetails(message.messageId,
+        message.notification.title, message.notification.body);
+
+    var iosDetails = IOSNotificationDetails();
+
+    var generalNotificationDetails =
+        NotificationDetails(android: androidDetails, iOS: iosDetails);
+
+    await fltNotification.show(0, message.notification.title,
+        message.notification.body, generalNotificationDetails,
+        payload: 'Notification');
+  }
+
+  void notitficationPermission() async {
+    NotificationSettings settings = await messaging.requestPermission(
+      alert: true,
+      announcement: false,
+      badge: true,
+      carPlay: false,
+      criticalAlert: false,
+      provisional: false,
+      sound: true,
+    );
+  }
+
   @override
   void onReady() {
     super.onReady();
   }
 
+  AuthenticationRepo authrepo = new Authentication();
   @override
-  void onClose() {}
+  void onClose() {
+    authrepo.updateUserInfo(
+        userId: FirebaseAuth.instance.currentUser.uid,
+        fieldname: 'online',
+        value: 'false');
+    super.onClose();
+  }
+
   getmyinfo() async {
     var mydata = localStorage.read('myinfo');
-    if (mydata != null)
-      myinfo.value = (UserModel.fromJson(mydata));
-    else {
-      myinfo.value = await userRepo.getmyinfo();
-      localStorage.write('myinfo', myinfo.value.toJson());
-    }
+    // if (mydata != null) {
+    //   myinfo.value = (UserModel.fromJson(mydata));
+    //   print(myinfo.value.fcmtoken);
+
+    // } else {
+    myinfo.value = await userRepo.getmyinfo();
+    print(myinfo.value.fcmtoken);
+    print(myinfo.value.online);
+    localStorage.write('myinfo', myinfo.value.toJson());
+    //}
   }
 
   writeSettings() {
@@ -374,7 +437,7 @@ class HomeController extends GetxController {
 
   getUsers() async {
     List<UserModel> users = await userRepo.getuser();
-    // print(users.length);
+
     userlist = users.obs;
   }
 
@@ -402,6 +465,10 @@ class HomeController extends GetxController {
 
   //signout
   signout() async {
+    authrepo.updateUserInfo(
+        userId: FirebaseAuth.instance.currentUser.uid,
+        fieldname: 'online',
+        value: 'false');
     await authResult.signOut();
     Get.offNamed('/login');
   }

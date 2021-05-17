@@ -190,8 +190,8 @@ class RequestView extends GetView<RequestController> {
                           width: double.infinity,
                           child: TextButton(
                             onPressed: () {
-                              if (!controller.requestonProgress.value) if (controller
-                                  .requestformKey.currentState
+                              // if (!controller.requestonProgress.value)
+                              if (controller.requestformKey.currentState
                                   .validate()) {
                                 // if (controller.map.value) {
                                 UIHelpers.showLoading();
@@ -205,7 +205,7 @@ class RequestView extends GetView<RequestController> {
                               }
                             },
                             child: Text(controller.requestonProgress.value
-                                ? 'Request already on progress\nCancel or MarK Completed your previous request first'
+                                ? 'Request already on progress\nDo you want to send another request'
                                 : 'Request'),
                             style: TextButton.styleFrom(
                                 primary: Colors.white,

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_blood_donation_app/app/Widgets/CustomButton.dart';
 import 'package:flutter_blood_donation_app/app/Widgets/custome_text_field.dart';
 import 'package:flutter_blood_donation_app/app/constant/defaults.dart';
+import 'package:flutter_blood_donation_app/app/modules/forgetpassword/bindings/forgetpassword_binding.dart';
+import 'package:flutter_blood_donation_app/app/modules/forgetpassword/views/forgetpassword_view.dart';
 
 import 'package:flutter_blood_donation_app/app/modules/login/controllers/login_controller.dart';
 import 'package:flutter_blood_donation_app/app/utlis/validators.dart';
@@ -44,8 +46,14 @@ class LoginWidgets extends StatelessWidget {
                 SizedBox(height: Defaults.paddingbig),
                 Align(
                     alignment: Alignment.centerRight,
-                    child: Text('Forgot Password',
-                        style: TextStyle(fontWeight: FontWeight.w400))),
+                    child: InkWell(
+                      onTap: () {
+                        Get.to(() => ForgetpasswordView(),
+                            binding: ForgetpasswordBinding());
+                      },
+                      child: Text('Forgot Password',
+                          style: TextStyle(fontWeight: FontWeight.w400)),
+                    )),
                 SizedBox(
                   height: Defaults.paddingbig,
                 ),

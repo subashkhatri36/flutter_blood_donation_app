@@ -5,8 +5,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blood_donation_app/app/constant/const.dart';
 import 'package:flutter_blood_donation_app/app/constant/defaults.dart';
-import 'package:flutter_blood_donation_app/app/core/model/user_models.dart';
-import 'package:flutter_blood_donation_app/app/modules/account/views/account_view.dart';
 import 'package:flutter_blood_donation_app/app/modules/donation/controllers/donation_controller.dart';
 import 'package:flutter_blood_donation_app/app/modules/home/controllers/home_controller.dart';
 import 'package:flutter_blood_donation_app/app/utlis/rating.dart';
@@ -34,8 +32,8 @@ call(String no) async {
 }
 
 class DonorProfile extends StatefulWidget {
-  DonorProfile({@required this.user});
-  final UserModel user;
+  DonorProfile();
+  // final UserModel user;
 
   @override
   _DonorProfileState createState() => _DonorProfileState();
@@ -49,19 +47,20 @@ class _DonorProfileState extends State<DonorProfile> {
 
   @override
   void initState() {
-    controller.userModel = widget.user.obs;
+    //controller.userModel = widget.user.obs;
     loadData();
     super.initState();
   }
 
   @override
   void dispose() {
-    print('dispose');
+    controller.userRatingModel = null;
+
     super.dispose();
   }
 
   void loadData() async {
-    id = widget.user.userId;
+    id = controller.userModel.value.userId;
     controller.checkUserrating(id);
     controller.loadreview(id);
     donationController.loadDonation(id);
@@ -77,73 +76,40 @@ class _DonorProfileState extends State<DonorProfile> {
           Obx(() => controller.ratingchange.isFalse
               ? DonorProfileHeader()
               : DonorProfileHeader()),
-          Container(
-            // color: Theme.of(context).backgroundColor,
-            child: Column(
-              children: [
-                // Text("${user.twostar.toString()}"),
-                ListTile(
-                  contentPadding: EdgeInsets.only(left: 10),
-                  title: Text(
-                    'Last Donations',
-                    style: largeText.copyWith(
-                      fontWeight: FontWeight.w800,
-                    ),
-                  ),
-                  subtitle: Obx(() => Text(donationController.donationmodel !=
-                          null
-                      ? 'Donate to -${donationController.donationmodel.value.person} on ${donationController.donationmodel.value.date}.'
-                      : donationController.nodata.value)),
+          ListTile(
+            onTap: () {
+              if (donationController.donationmodel != null)
+                donationController.showdonartotal.toggle();
+            },
+            contentPadding: EdgeInsets.only(left: 10),
+            title: Row(children: [
+              Text(
+                'All Donations',
+                style: largeText.copyWith(
+                  fontWeight: FontWeight.w800,
                 ),
-                Divider(),
-              ],
-            ),
+              ),
+              SizedBox(width: 10),
+              Container(
+                padding: EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                    color: Colors.grey,
+                    borderRadius: BorderRadius.circular(20)),
+                child: Obx(() =>
+                    Text('${donationController.totalDonation.value} times',
+                        style: TextStyle(
+                          fontSize: Defaults.fontsmall,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ))),
+              )
+            ]),
+            subtitle: Obx(() => Text(donationController.donationmodel != null
+                ?
+                //("${donationController.donationmodel}")),
+                'Last Donated  ${donationController.donationmodel.value.date}.'
+                : donationController.nodata.value)),
           ),
-          Obx(() => donationController.showdonartotal.isFalse
-              ? ListTile(
-                  onTap: () {
-                    if (donationController.donationmodel != null)
-                      donationController.showdonartotal.toggle();
-                  },
-                  contentPadding: EdgeInsets.only(left: 10),
-                  title: Row(children: [
-                    Text(
-                      'All Donations',
-                      style: largeText.copyWith(
-                        fontWeight: FontWeight.w800,
-                      ),
-                    ),
-                    SizedBox(width: 10),
-                    Container(
-                      padding: EdgeInsets.all(4),
-                      decoration: BoxDecoration(
-                          color: Colors.grey,
-                          borderRadius: BorderRadius.circular(20)),
-                      child: Obx(
-                        () => Text(
-                            '${donationController.totalDonation.value} times',
-                            style: TextStyle(
-                              fontSize: Defaults.fontsmall,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            )),
-                      ),
-                    )
-                  ]),
-                  subtitle: Obx(() => Text(donationController.donationmodel !=
-                          null
-                      ?
-                      //("${donationController.donationmodel}")),
-                      'Donate to -${donationController.donationmodel.value.person} on ${donationController.donationmodel.value.person}.'
-                      : donationController.nodata.value)),
-                )
-              : InkWell(
-                  onTap: () {
-                    if (donationController.donationmodel != null)
-                      donationController.showdonartotal.toggle();
-                  },
-                  child:
-                      AllDonationview(donationController: donationController))),
           SizedBox(
             height: 10,
           ),
@@ -168,7 +134,7 @@ class _DonorProfileState extends State<DonorProfile> {
                         Spacer(),
                         InkWell(
                           onTap: () {
-                            Get.to(ReviewPage(user: widget.user));
+                            Get.to(ReviewPage());
                           },
                           child: Container(
                             decoration: BoxDecoration(
@@ -289,8 +255,9 @@ class _DonorProfileState extends State<DonorProfile> {
   }
 }
 
-Row buildStarsRating(UserModel model, {bool userratingplace = false}) {
+Row buildStarsRating({bool userratingplace = false}) {
   final controller = Get.find<HomeController>();
+  // controller.checkUserrating(controller.userModel.value.userId);
 
   return Row(mainAxisAlignment: MainAxisAlignment.start, children: [
     //if its a header part then
@@ -299,10 +266,10 @@ Row buildStarsRating(UserModel model, {bool userratingplace = false}) {
       for (int i = 1; i < 6; i++)
         Container(
           child: Icon(
-            calculateAverage(model).round() >= i
+            calculateAverage(controller.userModel.value).round() >= i
                 ? Icons.star
                 : Icons.star_border,
-            color: calculateAverage(model).round() >= i
+            color: calculateAverage(controller.userModel.value).round() >= i
                 ? Colors.redAccent[400]
                 : Colors.grey,
           ),
@@ -313,7 +280,7 @@ Row buildStarsRating(UserModel model, {bool userratingplace = false}) {
         Container(
           child: InkWell(
               onTap: () {
-                controller.setUserrating(i, model);
+                controller.setUserrating(i, controller.userModel.value);
               },
               child: Icon(
                 controller.userRatingModel.star + 1 <= i
@@ -327,14 +294,20 @@ Row buildStarsRating(UserModel model, {bool userratingplace = false}) {
         Container(
           padding: EdgeInsets.only(left: 10),
           child: InkWell(
-            onTap: () {
-              controller.setUserrating(i, model);
-            },
-            child: Icon(
-              Icons.star_border,
-              color: Colors.redAccent,
-            ),
-          ),
+              onTap: () {
+                controller.setUserrating(i, controller.userModel.value);
+              },
+              child: Container(
+                child: Icon(
+                  calculateAverage(controller.userModel.value).round() >= i
+                      ? Icons.star
+                      : Icons.star_border,
+                  color:
+                      calculateAverage(controller.userModel.value).round() >= i
+                          ? Colors.redAccent[400]
+                          : Colors.grey,
+                ),
+              )),
         ),
   ]);
 }
@@ -342,9 +315,8 @@ Row buildStarsRating(UserModel model, {bool userratingplace = false}) {
 class ReviewPage extends StatelessWidget {
   const ReviewPage({
     Key key,
-    this.user,
   }) : super(key: key);
-  final UserModel user;
+  //final UserModel user;
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<HomeController>();
@@ -364,8 +336,9 @@ class ReviewPage extends StatelessWidget {
                 CircleAvatar(
                   backgroundColor: Theme.of(context).primaryColor,
                   backgroundImage:
-                      user.photoUrl != null && user.photoUrl.isNotEmpty
-                          ? NetworkImage(user.photoUrl)
+                      controller.userModel.value.photoUrl != null &&
+                              controller.userModel.value.photoUrl.isNotEmpty
+                          ? NetworkImage(controller.userModel.value.photoUrl)
                           : AssetImage('assets/images/bannerImage.jpeg'),
                 ),
                 SizedBox(
@@ -373,7 +346,7 @@ class ReviewPage extends StatelessWidget {
                 ),
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                   Text(
-                    user.username.capitalize,
+                    controller.userModel.value.username.capitalize,
                     style: TextStyle(fontSize: 16),
                   ),
                   Text(
@@ -384,7 +357,7 @@ class ReviewPage extends StatelessWidget {
                 Spacer(),
                 InkWell(
                   onTap: () {
-                    controller.writeUserReview(user);
+                    controller.writeUserReview(controller.userModel.value);
                   },
                   child: Text(
                     'Post'.toUpperCase(),
@@ -414,7 +387,7 @@ class ReviewPage extends StatelessWidget {
                       backgroundColor: Colors.redAccent,
                     ),
                   )
-                : buildStarsRating(user, userratingplace: true)),
+                : buildStarsRating(userratingplace: true)),
             SizedBox(
               height: 15,
             ),
@@ -445,15 +418,6 @@ class ReviewPage extends StatelessWidget {
                 ],
               ),
             ]),
-            // Row(
-            //   mainAxisAlignment: MainAxisAlignment.center,
-            //   children: [
-            //     for (int i = 0; i < 5; i++)
-            //       Container(
-            //           padding: EdgeInsets.symmetric(horizontal: 10),
-            //           child: Icon(Icons.star_border))
-            //   ],
-            // ),
             SizedBox(height: 30),
             TextFormField(
                 controller: controller.reviewController,
@@ -463,14 +427,6 @@ class ReviewPage extends StatelessWidget {
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10)))),
             SizedBox(height: 20),
-            // Text('Tell us more about user (optional)'),
-            // SizedBox(height: 10),
-            // Container(
-            //   decoration: BoxDecoration(
-            //       borderRadius: BorderRadius.circular(10),
-            //       border: Border.all(color: Colors.grey)),
-            //   height: 140,
-            // )
           ],
         ));
   }
@@ -668,7 +624,7 @@ class DonorProfileHeader extends StatelessWidget {
                                 backgroundColor: Colors.redAccent,
                               ),
                             )
-                          : buildStarsRating(controller.userModel.value)),
+                          : buildStarsRating()),
                       SizedBox(
                         height: 5,
                       ),

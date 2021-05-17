@@ -15,19 +15,8 @@ import '../controllers/home_controller.dart';
 
 import 'request_widgets.dart';
 
-List<PopupMenuItem> menuItem = [
-  // PopupMenuItem(
-  //   child: Text('Settings'),
-  //   value: '/settings',
-  // ),
-  PopupMenuItem(
-    child: Text('Signout'),
-    value: '/login',
-  ),
-];
-
 class HomeView extends GetView<HomeController> {
-  final donationController = Get.put(DonationController());
+  final donationController = Get.put(DonationController(), permanent: true);
   Widget buildBody(context) {
     switch (controller.selectedIndex.value) {
       case 2:
@@ -97,19 +86,6 @@ class HomeView extends GetView<HomeController> {
                       Get.offNamed('/login');
                     },
                     icon: Icon(Icons.logout))
-                // PopupMenuButton(onSelected: (v) {
-                //   // Get.snackbar(v, v);
-                //   if (v == '/login') {
-                //     FirebaseAuth.instance.signOut();
-                //     Get.offAll(LoginView(), binding: LoginBinding());
-                //   }
-                // },
-                // child: Icon(Icons.signout),
-                //  itemBuilder: (context) {
-                //   return List.generate(menuItem.length, (i) {
-                //     return menuItem[i];
-                //   });
-                // }),
               ]),
           body: buildBody(context),
           bottomNavigationBar: BottomAppBar(
