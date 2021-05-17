@@ -13,6 +13,7 @@ import 'package:flutter_blood_donation_app/app/core/model/review_model.dart';
 import 'package:flutter_blood_donation_app/app/core/model/user_models.dart';
 import 'package:flutter_blood_donation_app/app/core/model/user_rating_model.dart';
 import 'package:flutter_blood_donation_app/app/core/repositories/account_repository.dart';
+import 'package:flutter_blood_donation_app/app/core/repositories/authentication_repositories.dart';
 import 'package:flutter_blood_donation_app/app/core/repositories/like_repo.dart';
 import 'package:flutter_blood_donation_app/app/core/repositories/post_repo.dart';
 import 'package:flutter_blood_donation_app/app/core/repositories/rating_repositories.dart';
@@ -360,8 +361,16 @@ class HomeController extends GetxController {
     super.onReady();
   }
 
+  AuthenticationRepo authrepo = new Authentication();
   @override
-  void onClose() {}
+  void onClose() {
+    authrepo.updateUserInfo(
+        userId: FirebaseAuth.instance.currentUser.uid,
+        fieldname: 'online',
+        value: 'false');
+    super.onClose();
+  }
+
   getmyinfo() async {
     var mydata = localStorage.read('myinfo');
     if (mydata != null)
@@ -406,6 +415,10 @@ class HomeController extends GetxController {
 
   //signout
   signout() async {
+    authrepo.updateUserInfo(
+        userId: FirebaseAuth.instance.currentUser.uid,
+        fieldname: 'online',
+        value: 'false');
     await authResult.signOut();
     Get.offNamed('/login');
   }

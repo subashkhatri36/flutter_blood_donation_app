@@ -250,9 +250,7 @@ class AccountRepositories implements AccountRepo {
 
   @override
   Future<Either<String, String>> insertUserReview(
-    String userId,
-    ReviewModel model,
-  ) async {
+      String userId, ReviewModel model) async {
     try {
       bool compelete = false;
       String id = '';

@@ -6,6 +6,10 @@
         android:icon="@mipmap/ic_launcher">
                  <meta-data android:name="com.google.android.geo.API_KEY"
                android:value="AIzaSyDxrRjn - jWMlWQxR4HcEym45_Q3zxbLRJw"/>
+               <activity
+    android:showWhenLocked="true"
+    android:turnScreenOn="true">
+    
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"

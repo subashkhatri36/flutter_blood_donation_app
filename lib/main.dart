@@ -13,6 +13,8 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   await GetStorage.init();
+  //FirebaseMessaging.onBackgroundMessage(_messageHandler);
+
   runApp(
     GetMaterialApp(
       title: Strings.appName,

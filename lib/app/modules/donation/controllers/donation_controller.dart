@@ -2,7 +2,6 @@ import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_blood_donation_app/app/core/model/donation_model.dart';
-import 'package:flutter_blood_donation_app/app/core/model/user_models.dart';
 import 'package:flutter_blood_donation_app/app/core/repositories/donation_repositiories.dart';
 import 'package:get/get.dart';
 

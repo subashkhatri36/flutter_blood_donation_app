@@ -19,6 +19,9 @@ class UserModel {
   int fourstar;
   int fivestar;
   bool candonate;
+  String fcmtoken;
+  String devicetoken;
+  bool online;
 
   UserModel({
     this.onestar = 0,
@@ -37,6 +40,10 @@ class UserModel {
     this.email,
     this.active,
     this.photoUrl = '',
+    this.fcmtoken,
+    this.devicetoken,
+    this.online,
+
   });
 
   Map<String, dynamic> toMap() {
@@ -56,6 +63,9 @@ class UserModel {
       'fourstar': fourstar,
       'fivestar': fivestar,
       'candonate': candonate,
+      'devicetoken': devicetoken,
+      'fcmtoken': fcmtoken,
+      'online':online,
     };
   }
 
@@ -76,6 +86,9 @@ class UserModel {
       fourstar: map['fourstar'],
       fivestar: map['fivestar'],
       candonate: map['candonate'],
+      devicetoken: map['devicetoken'],
+      fcmtoken: map['fcmtoken'],
+      online:map['online']
     );
   }
 
@@ -96,6 +109,9 @@ class UserModel {
       threestar: map.data()['threestar'],
       fourstar: map.data()['fourstar'],
       fivestar: map.data()['fivestar'],
+      devicetoken: map.data()['devicetoken'],
+      fcmtoken: map.data()['fcmtoken'],
+      online:map.data()['online'],
     );
   }
   String toJson() => json.encode(toMap());
@@ -103,46 +119,5 @@ class UserModel {
   factory UserModel.fromJson(String source) =>
       UserModel.fromMap(json.decode(source));
 
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-
-    return other is UserModel &&
-        other.photoUrl == photoUrl &&
-        other.userId == userId &&
-        other.username == username &&
-        other.userAddress == userAddress &&
-        other.latitude == latitude &&
-        other.longitude == longitude &&
-        other.bloodgroup == bloodgroup &&
-        other.phoneNo == phoneNo &&
-        other.email == email &&
-        other.active == active &&
-        other.onestar == onestar &&
-        other.twostar == twostar &&
-        other.threestar == threestar &&
-        other.fourstar == fourstar &&
-        other.fivestar == fivestar &&
-        other.candonate == candonate;
-  }
-
-  @override
-  int get hashCode {
-    return photoUrl.hashCode ^
-        userId.hashCode ^
-        username.hashCode ^
-        userAddress.hashCode ^
-        latitude.hashCode ^
-        longitude.hashCode ^
-        bloodgroup.hashCode ^
-        phoneNo.hashCode ^
-        email.hashCode ^
-        active.hashCode ^
-        onestar.hashCode ^
-        twostar.hashCode ^
-        threestar.hashCode ^
-        fourstar.hashCode ^
-        fivestar.hashCode ^
-        candonate.hashCode;
-  }
+  
 }
